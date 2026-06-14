@@ -12,7 +12,6 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -29,10 +28,14 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName('EduManage')
+            ->brandName('EliteCampus')
+            ->brandLogo(asset('images/logo-elitecampus.svg'))
+            ->darkModeBrandLogo(asset('images/logo-elitecampus-white.svg'))
+            ->brandLogoHeight('2rem')
+            ->favicon(asset('favicon.svg'))
             ->colors([
-                'primary' => Color::hex('#4f46e5'),
-                'gray'    => Color::Zinc,
+                'primary' => Color::hex('#1d4ed8'),
+                'gray'    => Color::Slate,
                 'info'    => Color::Sky,
                 'success' => Color::Emerald,
                 'warning' => Color::Amber,
@@ -61,6 +64,17 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
             ])
+            ->renderHook(
+                'panels::head.end',
+                fn () => '<link rel="preconnect" href="https://fonts.googleapis.com">'
+                       . '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
+                       . '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">'
+                       . '<style>body,button,input,select,textarea,h1,h2,h3,h4,h5,h6,p,span,a,label,th,td{font-family:\'Inter\',sans-serif!important}</style>'
+            )
+            ->renderHook(
+                'panels::auth.login.form.before',
+                fn () => view('filament.auth.login-branding')
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

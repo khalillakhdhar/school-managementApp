@@ -24,9 +24,13 @@ class ParentPanelProvider extends PanelProvider
             ->id('parent')
             ->path('parent')
             ->login()
-            ->brandName('EduManage — Portail Parents')
+            ->brandName('EliteCampus — Portail Parents')
+            ->brandLogo(asset('images/logo-elitecampus.svg'))
+            ->darkModeBrandLogo(asset('images/logo-elitecampus-white.svg'))
+            ->brandLogoHeight('2rem')
+            ->favicon(asset('favicon.svg'))
             ->colors([
-                'primary' => Color::Teal,
+                'primary' => Color::hex('#1d4ed8'),
                 'gray'    => Color::Slate,
                 'success' => Color::Emerald,
                 'warning' => Color::Amber,

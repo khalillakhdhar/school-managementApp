@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 44" fill="none">
+  <defs>
+    <linearGradient id="iconGrad" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#60a5fa"/>
+      <stop offset="1" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+  <!-- Icon: rounded square with gradient -->
+  <rect width="44" height="44" rx="11" fill="url(#iconGrad)"/>
+  <!-- EC monogram -->
+  <text x="5" y="31" font-family="Inter,Arial,sans-serif" font-size="22" font-weight="800" fill="white" letter-spacing="-1">EC</text>
+  <!-- Wordmark: Elite (dark) + Campus (blue) -->
+  <text x="54" y="28" font-family="Inter,Arial,sans-serif" font-size="19" font-weight="800" fill="#0f172a" letter-spacing="-0.5">Elite<tspan fill="#1d4ed8">Campus</tspan></text>
+</svg>
