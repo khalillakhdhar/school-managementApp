@@ -8,11 +8,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Payment extends Model
 {
     protected $fillable = [
-        'student_id', 'amount', 'payment_date', 'payment_method',
+        'student_id', 'amount', 'payment_date', 'due_date', 'payment_method',
         'reference_number', 'status', 'notes', 'receipt_path',
     ];
 
-    protected $casts = ['payment_date' => 'date', 'amount' => 'decimal:3'];
+    protected $casts = [
+        'payment_date' => 'date',
+        'due_date'     => 'date',
+        'amount'       => 'decimal:3',
+    ];
 
     public function student(): BelongsTo
     {
