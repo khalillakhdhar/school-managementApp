@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Employee extends Model
@@ -42,6 +43,18 @@ class Employee extends Model
     public function classrooms(): HasMany
     {
         return $this->hasMany(Classroom::class, 'teacher_id');
+    }
+
+    public function subjects(): BelongsToMany
+    {
+        return $this->belongsToMany(Subject::class, 'employee_subject')
+            ->withPivot('specialization', 'max_hours_per_week')
+            ->withTimestamps();
+    }
+
+    public function timetableEntries(): HasMany
+    {
+        return $this->hasMany(TimetableEntry::class, 'employee_id');
     }
 
     public function getFullNameAttribute(): string

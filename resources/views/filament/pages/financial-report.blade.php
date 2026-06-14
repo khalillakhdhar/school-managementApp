@@ -1,482 +1,762 @@
 <x-filament-panels::page>
 
-    {{-- Chart.js — @assets ensures it loads before @script runs --}}
-    @assets
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    @endassets
+@assets
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+@endassets
 
-    @php
-        $revenue   = $this->getRevenue();
-        $expenses  = $this->getExpensesTotal();
-        $net       = $this->getNetProfit();
-        $pending   = $this->getPendingTotal();
-        $rate      = $this->getCollectionRate();
-        $overdue   = $this->getTotalOverdue();
-        $aging     = $this->getOverdueByAging();
-        $students  = $this->getStudentsWithBalance();
-        $byMethod  = $this->getRevenueByPaymentMethod();
-        $expByCat  = $this->getExpensesByCategory();
-        $chartData = $this->getChartData();
+<style>
+@media(max-width:1100px){
+    .ec-kpi-grid{grid-template-columns:repeat(2,1fr)!important}
+    .ec-charts-main{grid-template-columns:1fr!important}
+    .ec-two-col{grid-template-columns:1fr!important}
+    .ec-insights{grid-template-columns:repeat(2,1fr)!important}
+    .ec-hdr-inner{flex-direction:column!important;gap:12px!important}
+    .ec-period-row{flex-wrap:wrap!important}
+}
+@media(max-width:640px){
+    .ec-kpi-grid{grid-template-columns:1fr 1fr!important}
+    .ec-insights{grid-template-columns:1fr 1fr!important}
+    .ec-hdr-inner{gap:10px!important}
+}
+@media print{
+    .ec-cmd-bar,.ec-no-print{display:none!important}
+}
+</style>
 
-        $catColors = ['#4f46e5','#ef4444','#f59e0b','#10b981','#06b6d4','#8b5cf6','#ec4899','#14b8a6','#f97316','#84cc16'];
-        $catBgColors = ['bg-indigo-500','bg-red-500','bg-amber-500','bg-emerald-500','bg-cyan-500','bg-violet-500','bg-pink-500','bg-teal-500','bg-orange-500','bg-lime-500'];
-    @endphp
+@php
+    $revenue       = $this->getRevenue();
+    $expenses      = $this->getExpensesTotal();
+    $net           = $this->getNetProfit();
+    $overdue       = $this->getTotalOverdue();
+    $overdueCount  = $this->getOverdueCount();
+    $rate          = $this->getCollectionRate();
+    $revenueGrowth = $this->getRevenueGrowth();
+    $expenseGrowth = $this->getExpenseGrowth();
+    $payPerf       = $this->getPaymentPerformance();
+    $aging         = $this->getOverdueByAging();
+    $overdueDetail = $this->getOverduePaymentsDetailed();
+    $expByCat      = $this->getExpensesByCategory();
+    $byMethod      = $this->getRevenueByPaymentMethod();
+    $chartData     = $this->getChartData();
 
-    <div class="space-y-6">
+    $hasData = $revenue > 0 || $expenses > 0 || $overdue > 0;
 
-        {{-- ══ PERIOD SELECTOR ══════════════════════════════════════════════ --}}
-        <div class="rounded-2xl bg-gradient-to-br from-blue-900 via-blue-700 to-blue-600 p-5 shadow-xl">
-            <div class="flex flex-wrap items-center justify-between gap-4">
-                <div>
-                    <h2 class="text-white font-bold text-xl tracking-tight">{{ __('Financial Report') }}</h2>
-                    <p class="text-indigo-200 text-sm mt-0.5">
-                        {{ \Carbon\Carbon::parse($from)->locale('fr')->isoFormat('D MMM YYYY') }}
-                        &nbsp;→&nbsp;
-                        {{ \Carbon\Carbon::parse($until)->locale('fr')->isoFormat('D MMM YYYY') }}
-                    </p>
-                </div>
-                <div class="flex flex-wrap items-center gap-2">
-                    @foreach([
-                        'month'   => __('This Month'),
-                        'quarter' => __('This Quarter'),
-                        'year'    => __('This Year'),
-                    ] as $key => $label)
-                        <button wire:click="setPeriod('{{ $key }}')"
-                            class="px-4 py-2 rounded-lg text-sm font-semibold transition-all
-                                {{ $period === $key
-                                    ? 'bg-white text-indigo-700 shadow-md'
-                                    : 'bg-white/15 text-white hover:bg-white/25 border border-white/20' }}">
-                            {{ $label }}
-                        </button>
-                    @endforeach
+    // SVG sparkline path generator
+    $spark = function(array $values, int $w = 100, int $h = 34) {
+        if (empty($values)) return "M0,{$h} L{$w},{$h}";
+        $max = max($values); $min = min($values);
+        if ($max <= 0) return 'M0,'.round($h/2).' L'.$w.','.round($h/2);
+        $range = ($max - $min) ?: 1;
+        $n = count($values);
+        $pts = [];
+        foreach ($values as $i => $v) {
+            $x = round($i / max($n-1,1) * $w, 2);
+            $y = round($h - (($v-$min)/$range)*($h*0.78) - $h*0.11, 2);
+            $pts[] = "$x,$y";
+        }
+        return 'M'.implode(' L',$pts);
+    };
 
-                    <div class="flex items-center gap-1.5 bg-white/10 border border-white/20 rounded-lg px-3 py-1.5">
-                        <input type="date" wire:model.live="from"
-                            class="bg-transparent text-white text-sm border-none outline-none [color-scheme:dark] w-28">
-                        <span class="text-indigo-300 text-xs font-bold">→</span>
-                        <input type="date" wire:model.live="until"
-                            class="bg-transparent text-white text-sm border-none outline-none [color-scheme:dark] w-28">
-                    </div>
-                </div>
-            </div>
-        </div>
+    $netArr  = array_map(fn($r,$e)=>$r-$e, $chartData['revenue'], $chartData['expenses']);
 
-        {{-- ══ 6 KPI CARDS ═════════════════════════════════════════════════ --}}
-        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
+    // Trend helpers
+    $badge = function(float $pct, bool $invertBad = false) {
+        $up = $pct > 0;
+        if ($invertBad) { // for expenses: up = bad (red), down = good (green)
+            return $up
+                ? ['bg'=>'#fee2e2','clr'=>'#dc2626','arr'=>'↑']
+                : ($pct < 0 ? ['bg'=>'#dcfce7','clr'=>'#16a34a','arr'=>'↓'] : ['bg'=>'#f1f5f9','clr'=>'#64748b','arr'=>'→']);
+        }
+        return $up
+            ? ['bg'=>'#dcfce7','clr'=>'#16a34a','arr'=>'↑']
+            : ($pct < 0 ? ['bg'=>'#fee2e2','clr'=>'#dc2626','arr'=>'↓'] : ['bg'=>'#f1f5f9','clr'=>'#64748b','arr'=>'→']);
+    };
 
-            {{-- Recettes --}}
-            <div class="rounded-xl bg-white dark:bg-gray-900 border-t-4 border-emerald-500 shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 p-4 flex flex-col gap-3">
-                <div class="flex items-center justify-between">
-                    <div class="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/30">
-                        <svg class="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                    <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">+</span>
-                </div>
-                <div>
-                    <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Revenue') }}</div>
-                    <div class="text-lg font-bold text-gray-900 dark:text-white tabular-nums leading-tight mt-0.5">{{ number_format($revenue, 3) }}</div>
-                    <div class="text-xs text-gray-400">TND</div>
-                </div>
-            </div>
+    $rBadge = $badge($revenueGrowth);
+    $eBadge = $badge($expenseGrowth, true);
+    $nBadge = $badge($net >= 0 ? 1 : -1);
 
-            {{-- Dépenses --}}
-            <div class="rounded-xl bg-white dark:bg-gray-900 border-t-4 border-red-500 shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 p-4 flex flex-col gap-3">
-                <div class="flex items-center justify-between">
-                    <div class="p-2 rounded-lg bg-red-50 dark:bg-red-900/30">
-                        <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/>
-                        </svg>
-                    </div>
-                    <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400">−</span>
-                </div>
-                <div>
-                    <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Expenses') }}</div>
-                    <div class="text-lg font-bold text-gray-900 dark:text-white tabular-nums leading-tight mt-0.5">{{ number_format($expenses, 3) }}</div>
-                    <div class="text-xs text-gray-400">TND</div>
-                </div>
-            </div>
+    $fromFmt  = \Carbon\Carbon::parse($from)->locale('fr')->isoFormat('D MMM YYYY');
+    $untilFmt = \Carbon\Carbon::parse($until)->locale('fr')->isoFormat('D MMM YYYY');
+    $chartColors = ['#1d4ed8','#ef4444','#f59e0b','#10b981','#06b6d4','#8b5cf6','#ec4899','#14b8a6','#f97316','#84cc16'];
+@endphp
 
-            {{-- Bénéfice net --}}
-            @php $netColor = $net >= 0 ? 'indigo' : 'rose'; @endphp
-            <div class="rounded-xl bg-white dark:bg-gray-900 border-t-4 {{ $net >= 0 ? 'border-indigo-500' : 'border-rose-500' }} shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 p-4 flex flex-col gap-3">
-                <div class="flex items-center justify-between">
-                    <div class="p-2 rounded-lg {{ $net >= 0 ? 'bg-indigo-50 dark:bg-indigo-900/30' : 'bg-rose-50 dark:bg-rose-900/30' }}">
-                        <svg class="w-5 h-5 {{ $net >= 0 ? 'text-indigo-600' : 'text-rose-600' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                        </svg>
-                    </div>
-                </div>
-                <div>
-                    <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Net Profit') }}</div>
-                    <div class="text-lg font-bold {{ $net >= 0 ? 'text-indigo-600' : 'text-rose-600' }} tabular-nums leading-tight mt-0.5">
-                        {{ $net >= 0 ? '+' : '' }}{{ number_format($net, 3) }}
-                    </div>
-                    <div class="text-xs text-gray-400">TND</div>
-                </div>
-            </div>
+<div style="display:flex;flex-direction:column;gap:20px;">
 
-            {{-- En attente --}}
-            <div class="rounded-xl bg-white dark:bg-gray-900 border-t-4 border-amber-500 shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 p-4 flex flex-col gap-3">
-                <div class="flex items-center justify-between">
-                    <div class="p-2 rounded-lg bg-amber-50 dark:bg-amber-900/30">
-                        <svg class="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                </div>
-                <div>
-                    <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Pending') }}</div>
-                    <div class="text-lg font-bold text-amber-600 tabular-nums leading-tight mt-0.5">{{ number_format($pending, 3) }}</div>
-                    <div class="text-xs text-gray-400">TND</div>
-                </div>
-            </div>
+{{-- ═══════════════════════════════════════════════════════════════
+     COMMAND BAR — gradient header with period selector + export
+════════════════════════════════════════════════════════════════ --}}
+<div class="ec-cmd-bar" style="background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 55%,#1d4ed8 100%);border-radius:16px;padding:20px 24px;box-shadow:0 4px 24px rgba(15,23,42,0.28);">
+    <div class="ec-hdr-inner" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
 
-            {{-- Taux de recouvrement --}}
-            <div class="rounded-xl bg-white dark:bg-gray-900 border-t-4 border-violet-500 shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 p-4 flex flex-col gap-3">
-                <div class="flex items-center justify-between">
-                    <div class="p-2 rounded-lg bg-violet-50 dark:bg-violet-900/30">
-                        <svg class="w-5 h-5 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
-                        </svg>
-                    </div>
-                    <span class="text-xs font-bold px-2 py-0.5 rounded-full {{ $rate >= 80 ? 'bg-emerald-100 text-emerald-700' : ($rate >= 50 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700') }}">
-                        {{ $rate }}%
-                    </span>
-                </div>
-                <div>
-                    <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Collection Rate') }}</div>
-                    <div class="mt-1.5 w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2">
-                        <div class="h-2 rounded-full transition-all duration-700 {{ $rate >= 80 ? 'bg-emerald-500' : ($rate >= 50 ? 'bg-amber-500' : 'bg-red-500') }}"
-                             style="width: {{ $rate }}%"></div>
-                    </div>
-                    <div class="text-xs text-gray-400 mt-1">{{ __('of total due collected') }}</div>
-                </div>
-            </div>
-
-            {{-- Impayés en retard --}}
-            <div class="rounded-xl bg-white dark:bg-gray-900 border-t-4 border-rose-500 shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 p-4 flex flex-col gap-3">
-                <div class="flex items-center justify-between">
-                    <div class="p-2 rounded-lg bg-rose-50 dark:bg-rose-900/30">
-                        <svg class="w-5 h-5 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                        </svg>
-                    </div>
-                    @if($overdue > 0)
-                        <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400 animate-pulse">!</span>
-                    @endif
-                </div>
-                <div>
-                    <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Overdue') }}</div>
-                    <div class="text-lg font-bold text-rose-600 tabular-nums leading-tight mt-0.5">{{ number_format($overdue, 3) }}</div>
-                    <div class="text-xs text-gray-400">TND</div>
-                </div>
-            </div>
-        </div>
-
-        {{-- ══ CHARTS ROW ═══════════════════════════════════════════════════ --}}
-        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-
-            {{-- Revenue vs Expenses Bar Chart --}}
-            <div class="lg:col-span-2 rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 p-6">
-                <div class="flex items-center justify-between mb-5">
-                    <div>
-                        <h3 class="text-sm font-bold text-gray-900 dark:text-white">{{ __('Revenue vs Expenses') }}</h3>
-                        <p class="text-xs text-gray-400 mt-0.5">{{ __('Last 6 months') }}</p>
-                    </div>
-                    <div class="flex items-center gap-3 text-xs">
-                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>{{ __('Revenue') }}</span>
-                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>{{ __('Expenses') }}</span>
-                    </div>
-                </div>
-                <div class="relative" style="height:220px">
-                    <canvas id="revenueChart"></canvas>
-                </div>
-            </div>
-
-            {{-- Expenses Doughnut --}}
-            <div class="rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 p-6">
-                <div class="mb-5">
-                    <h3 class="text-sm font-bold text-gray-900 dark:text-white">{{ __('Expenses by Category') }}</h3>
-                    <p class="text-xs text-gray-400 mt-0.5">{{ __('Current period') }}</p>
-                </div>
-                @if(empty($expByCat))
-                    <div class="flex flex-col items-center justify-center h-44 text-gray-400 gap-2">
-                        <svg class="w-10 h-10 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                        <span class="text-sm">{{ __('No expenses in this period') }}</span>
-                    </div>
-                @else
-                    <div class="relative" style="height:180px">
-                        <canvas id="expensesDoughnut"></canvas>
-                    </div>
-                @endif
-            </div>
-        </div>
-
-        {{-- ══ PAYMENT METHODS + CATEGORY BREAKDOWN ════════════════════════ --}}
-        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-
-            {{-- Revenue by payment method --}}
-            <div class="rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 p-6">
-                <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-4">{{ __('Revenue by Payment Method') }}</h3>
-                @if(empty($byMethod))
-                    <p class="text-sm text-gray-400">{{ __('No revenue in this period') }}</p>
-                @else
-                    @php
-                        $methodMeta = [
-                            'cash'          => ['icon' => '💵', 'label' => __('Cash'),          'color' => 'bg-emerald-500'],
-                            'bank_transfer' => ['icon' => '🏦', 'label' => __('Bank Transfer'), 'color' => 'bg-indigo-500'],
-                            'cheque'        => ['icon' => '📋', 'label' => __('Cheque'),        'color' => 'bg-amber-500'],
-                            'app'           => ['icon' => '📱', 'label' => __('App'),           'color' => 'bg-violet-500'],
-                        ];
-                    @endphp
-                    <div class="space-y-4">
-                        @foreach($byMethod as $method => $amount)
-                        @php $pct = $revenue > 0 ? round($amount / $revenue * 100) : 0; @endphp
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 text-xl text-center flex-shrink-0">{{ $methodMeta[$method]['icon'] ?? '💰' }}</div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex justify-between text-xs mb-1.5">
-                                    <span class="font-semibold text-gray-700 dark:text-gray-300">{{ $methodMeta[$method]['label'] ?? $method }}</span>
-                                    <span class="text-gray-500 tabular-nums">{{ number_format($amount, 3) }} TND &nbsp;<span class="text-gray-400">({{ $pct }}%)</span></span>
-                                </div>
-                                <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2">
-                                    <div class="{{ $methodMeta[$method]['color'] ?? 'bg-gray-400' }} h-2 rounded-full transition-all duration-700" style="width:{{ $pct }}%"></div>
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
-
-            {{-- Expenses breakdown list --}}
-            <div class="rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 p-6">
-                <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-4">{{ __('Expenses by Category') }}</h3>
-                @if(empty($expByCat))
-                    <p class="text-sm text-gray-400">{{ __('No expenses in this period') }}</p>
-                @else
-                    <div class="space-y-3">
-                        @foreach(array_slice($expByCat, 0, 8, true) as $category => $amount)
-                        @php
-                            $ci  = $loop->index;
-                            $pct = $expenses > 0 ? round($amount / $expenses * 100) : 0;
-                        @endphp
-                        <div>
-                            <div class="flex justify-between text-xs mb-1">
-                                <div class="flex items-center gap-2 min-w-0">
-                                    <span class="w-2.5 h-2.5 rounded-full flex-shrink-0 {{ $catBgColors[$ci % count($catBgColors)] }}"></span>
-                                    <span class="text-gray-700 dark:text-gray-300 truncate">{{ $category }}</span>
-                                </div>
-                                <span class="ml-2 font-semibold text-gray-900 dark:text-white tabular-nums flex-shrink-0">
-                                    {{ number_format($amount, 3) }} <span class="text-gray-400 font-normal">({{ $pct }}%)</span>
-                                </span>
-                            </div>
-                            <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5">
-                                <div class="{{ $catBgColors[$ci % count($catBgColors)] }} h-1.5 rounded-full transition-all duration-700" style="width:{{ $pct }}%"></div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
-        </div>
-
-        {{-- ══ AGING ANALYSIS ═══════════════════════════════════════════════ --}}
-        @if(array_sum($aging) > 0)
-        <div class="rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 p-6">
-            <div class="flex items-center gap-2 mb-5">
-                <svg class="w-5 h-5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        {{-- Title --}}
+        <div style="display:flex;align-items:center;gap:14px;">
+            <div style="width:44px;height:44px;background:rgba(255,255,255,0.12);border-radius:12px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.15);">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
                 </svg>
-                <h3 class="text-sm font-bold text-gray-900 dark:text-white">{{ __('Overdue Analysis') }}</h3>
-                <span class="text-xs text-rose-500 bg-rose-50 dark:bg-rose-900/20 px-2 py-0.5 rounded-full font-medium">
-                    {{ __('Total') }}: {{ number_format(array_sum($aging), 3) }} TND
-                </span>
             </div>
-            <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
-                @foreach([
-                    ['label'=>__('1–30 days'),  'key'=>'1_30',  'border'=>'border-amber-400', 'bg'=>'bg-amber-50 dark:bg-amber-900/15',   'text'=>'text-amber-700 dark:text-amber-400',  'badge'=>'bg-amber-500'],
-                    ['label'=>__('31–60 days'), 'key'=>'31_60', 'border'=>'border-orange-400','bg'=>'bg-orange-50 dark:bg-orange-900/15',  'text'=>'text-orange-700 dark:text-orange-400','badge'=>'bg-orange-500'],
-                    ['label'=>__('61–90 days'), 'key'=>'61_90', 'border'=>'border-red-400',   'bg'=>'bg-red-50 dark:bg-red-900/15',         'text'=>'text-red-700 dark:text-red-400',     'badge'=>'bg-red-500'],
-                    ['label'=>__('90+ days'),   'key'=>'90p',   'border'=>'border-rose-600',  'bg'=>'bg-rose-50 dark:bg-rose-900/15',        'text'=>'text-rose-700 dark:text-rose-400',   'badge'=>'bg-rose-600'],
-                ] as $bucket)
-                <div class="rounded-xl border {{ $bucket['border'] }} {{ $bucket['bg'] }} p-4">
-                    <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">{{ $bucket['label'] }}</div>
-                    <div class="text-xl font-bold {{ $bucket['text'] }} tabular-nums">
-                        {{ number_format($aging[$bucket['key']], 3) }}
-                    </div>
-                    <div class="text-xs text-gray-400 mt-0.5">TND</div>
-                    @if($aging[$bucket['key']] > 0)
-                    <div class="mt-2 inline-flex items-center justify-center w-5 h-5 rounded-full {{ $bucket['badge'] }} text-white text-[10px] font-bold">!</div>
-                    @endif
-                </div>
-                @endforeach
+            <div>
+                <div style="font-size:18px;font-weight:800;color:white;letter-spacing:-0.3px;">Rapport Financier</div>
+                <div style="font-size:12px;color:rgba(147,197,253,0.85);margin-top:1px;">{{ $fromFmt }} → {{ $untilFmt }}</div>
             </div>
         </div>
-        @endif
 
-        {{-- ══ STUDENTS WITH BALANCE ════════════════════════════════════════ --}}
-        @if(!empty($students))
-        <div class="rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 p-6">
-            <div class="flex items-center gap-2 mb-4">
-                <svg class="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                </svg>
-                <h3 class="text-sm font-bold text-gray-900 dark:text-white">{{ __('Students with Outstanding Balance') }}</h3>
-                <span class="text-xs text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full">
-                    {{ count($students) }} {{ __('students') }}
-                </span>
+        {{-- Controls --}}
+        <div class="ec-period-row" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            {{-- Period toggles --}}
+            @foreach(['month'=>'Ce mois','quarter'=>'Trimestre','year'=>'Année'] as $key=>$lbl)
+            <button wire:click="setPeriod('{{ $key }}')"
+                style="padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,0.2);cursor:pointer;transition:all .15s;
+                {{ $period===$key ? 'background:rgba(255,255,255,0.95);color:#1d4ed8;border-color:transparent;' : 'background:rgba(255,255,255,0.1);color:white;' }}">
+                {{ $lbl }}
+            </button>
+            @endforeach
+
+            {{-- Custom date range --}}
+            <div style="display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:5px 10px;">
+                <input type="date" wire:model.live="from"
+                    style="background:transparent;color:white;font-size:12px;border:none;outline:none;color-scheme:dark;width:120px;">
+                <span style="color:rgba(147,197,253,0.7);font-size:11px;font-weight:700;">→</span>
+                <input type="date" wire:model.live="until"
+                    style="background:transparent;color:white;font-size:12px;border:none;outline:none;color-scheme:dark;width:120px;">
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="border-b border-gray-100 dark:border-gray-800">
-                            <th class="text-left text-xs font-semibold text-gray-400 uppercase tracking-wider pb-3 pr-4">#</th>
-                            <th class="text-left text-xs font-semibold text-gray-400 uppercase tracking-wider pb-3 pr-4">{{ __('Student') }}</th>
-                            <th class="text-right text-xs font-semibold text-gray-400 uppercase tracking-wider pb-3 pr-4">{{ __('Balance') }}</th>
-                            <th class="text-right text-xs font-semibold text-gray-400 uppercase tracking-wider pb-3">{{ __('Status') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-50 dark:divide-gray-800/50">
-                        @foreach($students as $idx => $student)
-                        <tr class="hover:bg-gray-50/70 dark:hover:bg-gray-800/40 transition-colors">
-                            <td class="py-2.5 pr-4 text-gray-400 text-xs">{{ $idx + 1 }}</td>
-                            <td class="py-2.5 pr-4 font-medium text-gray-900 dark:text-white">{{ $student['name'] }}</td>
-                            <td class="py-2.5 pr-4 text-right font-bold tabular-nums {{ $student['is_overdue'] ? 'text-rose-600' : 'text-amber-600' }}">
-                                {{ number_format($student['balance'], 3) }} TND
-                            </td>
-                            <td class="py-2.5 text-right">
-                                @if($student['is_overdue'])
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400">
-                                        {{ __('Overdue') }}
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-                                        {{ __('Pending') }}
-                                    </span>
-                                @endif
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+
+            {{-- Export CSV --}}
+            <button class="ec-no-print" onclick="ecExportCsv()"
+                style="display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:600;background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.2);cursor:pointer;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                CSV
+            </button>
+
+            {{-- Print PDF --}}
+            <button class="ec-no-print" onclick="window.print()"
+                style="display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:600;background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.2);cursor:pointer;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                PDF
+            </button>
         </div>
-        @endif
+    </div>
+</div>
 
+@if(!$hasData)
+{{-- ═══ EMPTY STATE ═══════════════════════════════════════════════════════ --}}
+<div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:64px 24px;text-align:center;">
+    <div style="width:72px;height:72px;background:#f0f9ff;border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+    </div>
+    <div style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:8px;">Aucune donnée financière disponible</div>
+    <div style="font-size:14px;color:#64748b;max-width:400px;margin:0 auto 24px;">Commencez à enregistrer des paiements et des dépenses pour générer des rapports financiers détaillés.</div>
+    <a href="{{ \App\Filament\Resources\PaymentResource::getUrl('create') }}"
+        style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:#1d4ed8;color:white;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Enregistrer un paiement
+    </a>
+</div>
+
+@else
+
+{{-- ═══════════════════════════════════════════════════════════════
+     4 KPI CARDS
+════════════════════════════════════════════════════════════════ --}}
+<div class="ec-kpi-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+
+    {{-- Card 1 — Revenus --}}
+    <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:20px;overflow:hidden;position:relative;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;">
+            <div style="width:40px;height:40px;background:#ecfdf5;border-radius:12px;display:flex;align-items:center;justify-content:center;">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            </div>
+            @if($revenueGrowth != 0)
+            <span style="padding:3px 8px;background:{{ $rBadge['bg'] }};color:{{ $rBadge['clr'] }};border-radius:20px;font-size:11px;font-weight:700;">{{ $rBadge['arr'] }} {{ abs($revenueGrowth) }}%</span>
+            @endif
+        </div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">Revenus</div>
+        <div style="font-size:26px;font-weight:800;color:#0f172a;letter-spacing:-0.8px;line-height:1.1;margin:4px 0 2px;">{{ number_format($revenue, 3) }}</div>
+        <div style="font-size:11px;color:#94a3b8;">TND · cette période</div>
+        <svg viewBox="0 0 100 34" style="width:100%;height:34px;margin-top:12px;" preserveAspectRatio="none">
+            <defs><linearGradient id="gRev" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#10b981" stop-opacity="0.18"/><stop offset="100%" stop-color="#10b981" stop-opacity="0"/></linearGradient></defs>
+            @php $p = $spark($chartData['revenue']); @endphp
+            <path d="{{ $p }} L100,34 L0,34 Z" fill="url(#gRev)"/>
+            <path d="{{ $p }}" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
     </div>
 
-    {{-- ══ CHART.JS INITIALIZATION ══════════════════════════════════════════ --}}
-    @script
-    <script>
-        // Revenue vs Expenses (last 6 months)
-        Chart.getChart('revenueChart')?.destroy();
-        const rvEl = document.getElementById('revenueChart');
-        if (rvEl) {
-            new Chart(rvEl, {
-                type: 'bar',
-                data: {
-                    labels: @json($chartData['labels']),
-                    datasets: [
-                        {
-                            label: '{{ __("Revenue") }}',
-                            data: @json($chartData['revenue']),
-                            backgroundColor: 'rgba(16,185,129,0.75)',
-                            borderColor: 'rgb(16,185,129)',
-                            borderWidth: 2,
-                            borderRadius: 6,
-                            borderSkipped: false,
-                        },
-                        {
-                            label: '{{ __("Expenses") }}',
-                            data: @json($chartData['expenses']),
-                            backgroundColor: 'rgba(239,68,68,0.75)',
-                            borderColor: 'rgb(239,68,68)',
-                            borderWidth: 2,
-                            borderRadius: 6,
-                            borderSkipped: false,
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: 'rgba(17,24,39,0.92)',
-                            titleFont: { size: 12, weight: 'bold' },
-                            bodyFont: { size: 11 },
-                            padding: 10,
-                            cornerRadius: 8,
-                            callbacks: {
-                                label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(3)} TND`
-                            }
-                        }
+    {{-- Card 2 — Dépenses --}}
+    <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:20px;overflow:hidden;position:relative;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;">
+            <div style="width:40px;height:40px;background:#fff1f2;border-radius:12px;display:flex;align-items:center;justify-content:center;">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+            </div>
+            @if($expenseGrowth != 0)
+            <span style="padding:3px 8px;background:{{ $eBadge['bg'] }};color:{{ $eBadge['clr'] }};border-radius:20px;font-size:11px;font-weight:700;">{{ $eBadge['arr'] }} {{ abs($expenseGrowth) }}%</span>
+            @endif
+        </div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">Dépenses</div>
+        <div style="font-size:26px;font-weight:800;color:#0f172a;letter-spacing:-0.8px;line-height:1.1;margin:4px 0 2px;">{{ number_format($expenses, 3) }}</div>
+        <div style="font-size:11px;color:#94a3b8;">TND · cette période</div>
+        <svg viewBox="0 0 100 34" style="width:100%;height:34px;margin-top:12px;" preserveAspectRatio="none">
+            <defs><linearGradient id="gExp" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ef4444" stop-opacity="0.18"/><stop offset="100%" stop-color="#ef4444" stop-opacity="0"/></linearGradient></defs>
+            @php $p = $spark($chartData['expenses']); @endphp
+            <path d="{{ $p }} L100,34 L0,34 Z" fill="url(#gExp)"/>
+            <path d="{{ $p }}" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+
+    {{-- Card 3 — Impayés --}}
+    <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:20px;overflow:hidden;position:relative;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;">
+            <div style="width:40px;height:40px;background:#fffbeb;border-radius:12px;display:flex;align-items:center;justify-content:center;">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            @if($overdueCount > 0)
+            <span style="padding:3px 8px;background:#fee2e2;color:#dc2626;border-radius:20px;font-size:11px;font-weight:700;">{{ $overdueCount }} en retard</span>
+            @endif
+        </div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">Impayés</div>
+        <div style="font-size:26px;font-weight:800;color:#d97706;letter-spacing:-0.8px;line-height:1.1;margin:4px 0 2px;">{{ number_format($overdue, 3) }}</div>
+        <div style="font-size:11px;color:#94a3b8;">TND · total en retard</div>
+        <svg viewBox="0 0 100 34" style="width:100%;height:34px;margin-top:12px;" preserveAspectRatio="none">
+            <defs><linearGradient id="gOvd" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f59e0b" stop-opacity="0.18"/><stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/></linearGradient></defs>
+            @php $p = $spark(array_values($aging)); @endphp
+            <path d="{{ $p }} L100,34 L0,34 Z" fill="url(#gOvd)"/>
+            <path d="{{ $p }}" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+
+    {{-- Card 4 — Résultat Net --}}
+    @php $netColor = $net >= 0 ? '#1d4ed8' : '#ef4444'; $netBg = $net >= 0 ? '#eff6ff' : '#fff1f2'; @endphp
+    <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:20px;overflow:hidden;position:relative;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;">
+            <div style="width:40px;height:40px;background:{{ $netBg }};border-radius:12px;display:flex;align-items:center;justify-content:center;">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="{{ $netColor }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="{{ $net >= 0 ? '23 6 13.5 15.5 8.5 10.5 1 18' : '1 6 10.5 15.5 15.5 10.5 23 18' }}"/></svg>
+            </div>
+            <span style="padding:3px 8px;background:{{ $nBadge['bg'] }};color:{{ $nBadge['clr'] }};border-radius:20px;font-size:11px;font-weight:700;">{{ $net >= 0 ? 'Bénéfice' : 'Déficit' }}</span>
+        </div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">Résultat Net</div>
+        <div style="font-size:26px;font-weight:800;color:{{ $netColor }};letter-spacing:-0.8px;line-height:1.1;margin:4px 0 2px;">{{ $net >= 0 ? '+' : '' }}{{ number_format($net, 3) }}</div>
+        <div style="font-size:11px;color:#94a3b8;">TND · recettes − dépenses</div>
+        <svg viewBox="0 0 100 34" style="width:100%;height:34px;margin-top:12px;" preserveAspectRatio="none">
+            <defs><linearGradient id="gNet" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="{{ $netColor }}" stop-opacity="0.18"/><stop offset="100%" stop-color="{{ $netColor }}" stop-opacity="0"/></linearGradient></defs>
+            @php $p = $spark($netArr); @endphp
+            <path d="{{ $p }} L100,34 L0,34 Z" fill="url(#gNet)"/>
+            <path d="{{ $p }}" fill="none" stroke="{{ $netColor }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+</div>
+
+{{-- ═══════════════════════════════════════════════════════════════
+     CHARTS — Revenue Evolution (line) + Expense Distribution (donut)
+════════════════════════════════════════════════════════════════ --}}
+<div class="ec-charts-main" style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
+
+    {{-- Revenue Evolution Line Chart --}}
+    <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:22px 24px;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;">
+            <div>
+                <div style="font-size:14px;font-weight:700;color:#0f172a;">Évolution des revenus</div>
+                <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Tendance sur les 6 derniers mois</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;font-size:12px;color:#64748b;">
+                <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:3px;background:#10b981;border-radius:2px;display:inline-block;"></span>Revenus</span>
+                <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:3px;background:#ef4444;border-radius:2px;display:inline-block;"></span>Dépenses</span>
+            </div>
+        </div>
+        <div style="position:relative;height:220px;">
+            <canvas id="ecRevLine"></canvas>
+        </div>
+    </div>
+
+    {{-- Expense Distribution Donut --}}
+    <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:22px 24px;">
+        <div style="margin-bottom:16px;">
+            <div style="font-size:14px;font-weight:700;color:#0f172a;">Répartition des dépenses</div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Par catégorie · période en cours</div>
+        </div>
+        @if(empty($expByCat))
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;color:#94a3b8;">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:10px;"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            <span style="font-size:13px;">Aucune dépense sur cette période</span>
+        </div>
+        @else
+        <div style="position:relative;height:170px;">
+            <canvas id="ecExpDonut"></canvas>
+        </div>
+        <div style="margin-top:12px;display:flex;flex-direction:column;gap:5px;">
+            @foreach(array_slice($expByCat,0,5,true) as $cat=>$amt)
+            @php $ci=$loop->index; $pct=$expenses>0?round($amt/$expenses*100):0; @endphp
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;">
+                <span style="display:flex;align-items:center;gap:5px;color:#475569;overflow:hidden;max-width:60%;">
+                    <span style="width:8px;height:8px;border-radius:50%;background:{{ $chartColors[$ci%count($chartColors)] }};flex-shrink:0;display:inline-block;"></span>
+                    <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $cat }}</span>
+                </span>
+                <span style="color:#0f172a;font-weight:600;white-space:nowrap;">{{ $pct }}%</span>
+            </div>
+            @endforeach
+        </div>
+        @endif
+    </div>
+</div>
+
+{{-- ═══════════════════════════════════════════════════════════════
+     CASH FLOW — Bar chart with trend summary
+════════════════════════════════════════════════════════════════ --}}
+<div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:22px 24px;">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+        <div>
+            <div style="font-size:14px;font-weight:700;color:#0f172a;">Flux de trésorerie</div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Revenus, dépenses et résultat net par mois</div>
+        </div>
+        {{-- Summary row --}}
+        <div style="display:flex;align-items:center;gap:20px;">
+            @php $totalRev=$expenses6m=0; foreach($chartData['revenue'] as $v){$totalRev+=$v;} foreach($chartData['expenses'] as $v){$expenses6m+=$v;} $netFlow=$totalRev-$expenses6m; @endphp
+            <div style="text-align:right;">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#64748b;">Entrées 6 mois</div>
+                <div style="font-size:16px;font-weight:800;color:#10b981;">{{ number_format($totalRev,0,'.',' ') }} TND</div>
+            </div>
+            <div style="width:1px;height:36px;background:#e2e8f0;"></div>
+            <div style="text-align:right;">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#64748b;">Sorties 6 mois</div>
+                <div style="font-size:16px;font-weight:800;color:#ef4444;">{{ number_format($expenses6m,0,'.',' ') }} TND</div>
+            </div>
+            <div style="width:1px;height:36px;background:#e2e8f0;"></div>
+            <div style="text-align:right;">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#64748b;">Flux net</div>
+                <div style="font-size:16px;font-weight:800;color:{{ $netFlow>=0?'#1d4ed8':'#ef4444' }};">{{ $netFlow>=0?'+':'' }}{{ number_format($netFlow,0,'.',' ') }} TND</div>
+            </div>
+        </div>
+    </div>
+    <div style="position:relative;height:200px;">
+        <canvas id="ecCashFlow"></canvas>
+    </div>
+</div>
+
+{{-- ═══════════════════════════════════════════════════════════════
+     BREAKDOWN — Payment methods (left) + Aging analysis (right)
+════════════════════════════════════════════════════════════════ --}}
+<div class="ec-two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+    {{-- Payment Methods --}}
+    <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:22px 24px;">
+        <div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:4px;">Revenus par mode de paiement</div>
+        <div style="font-size:12px;color:#94a3b8;margin-bottom:18px;">Répartition des encaissements</div>
+        @if(empty($byMethod))
+        <div style="color:#94a3b8;font-size:13px;padding:20px 0;">Aucun revenu sur cette période</div>
+        @else
+        @php
+            $methodMeta = [
+                'cash'          => ['icon'=>'💵','label'=>'Espèces',         'color'=>'#10b981'],
+                'bank_transfer' => ['icon'=>'🏦','label'=>'Virement bancaire','color'=>'#1d4ed8'],
+                'cheque'        => ['icon'=>'📋','label'=>'Chèque',          'color'=>'#f59e0b'],
+                'app'           => ['icon'=>'📱','label'=>'Application',     'color'=>'#8b5cf6'],
+            ];
+        @endphp
+        <div style="display:flex;flex-direction:column;gap:14px;">
+            @foreach($byMethod as $method=>$amount)
+            @php $meta=$methodMeta[$method]??['icon'=>'💰','label'=>$method,'color'=>'#64748b']; $pct=$revenue>0?round($amount/$revenue*100):0; @endphp
+            <div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                    <span style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#374151;">
+                        <span>{{ $meta['icon'] }}</span>{{ $meta['label'] }}
+                    </span>
+                    <span style="font-size:12px;color:#64748b;font-variant-numeric:tabular-nums;">{{ number_format($amount,0,'.',' ') }} TND &nbsp;<span style="color:#94a3b8;">({{ $pct }}%)</span></span>
+                </div>
+                <div style="width:100%;background:#f1f5f9;border-radius:4px;height:6px;overflow:hidden;">
+                    <div style="width:{{ $pct }}%;background:{{ $meta['color'] }};height:6px;border-radius:4px;transition:width .6s;"></div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        @endif
+    </div>
+
+    {{-- Aging Analysis --}}
+    <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:22px 24px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <div style="font-size:14px;font-weight:700;color:#0f172a;">Analyse par ancienneté des impayés</div>
+            @if(array_sum($aging)>0)
+            <span style="padding:2px 8px;background:#fee2e2;color:#dc2626;border-radius:12px;font-size:11px;font-weight:700;">{{ number_format(array_sum($aging),0,'.',' ') }} TND</span>
+            @endif
+        </div>
+        <div style="font-size:12px;color:#94a3b8;margin-bottom:18px;">Répartition des retards de paiement</div>
+        @php
+            $agingBuckets = [
+                ['label'=>'1–30 jours',   'key'=>'1_30',  'color'=>'#f59e0b','bg'=>'#fffbeb','text'=>'#92400e'],
+                ['label'=>'31–60 jours',  'key'=>'31_60', 'color'=>'#f97316','bg'=>'#fff7ed','text'=>'#9a3412'],
+                ['label'=>'61–90 jours',  'key'=>'61_90', 'color'=>'#ef4444','bg'=>'#fff1f2','text'=>'#b91c1c'],
+                ['label'=>'90+ jours',    'key'=>'90p',   'color'=>'#dc2626','bg'=>'#fef2f2','text'=>'#991b1b'],
+            ];
+            $agingTotal = array_sum($aging) ?: 1;
+        @endphp
+        <div style="display:flex;flex-direction:column;gap:10px;">
+            @foreach($agingBuckets as $b)
+            @php $pct=$aging[$b['key']]>0?round($aging[$b['key']]/$agingTotal*100):0; @endphp
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:8px;height:8px;border-radius:50%;background:{{ $b['color'] }};flex-shrink:0;"></div>
+                <div style="flex:1;min-width:0;">
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+                        <span style="font-weight:600;color:#374151;">{{ $b['label'] }}</span>
+                        <span style="color:{{ $aging[$b['key']]>0?$b['text']:'#94a3b8' }};font-weight:{{ $aging[$b['key']]>0?'700':'400' }};font-variant-numeric:tabular-nums;">
+                            {{ $aging[$b['key']]>0 ? number_format($aging[$b['key']],0,'.',' ').' TND' : '—' }}
+                        </span>
+                    </div>
+                    <div style="width:100%;background:#f1f5f9;border-radius:4px;height:5px;overflow:hidden;">
+                        <div style="width:{{ $pct }}%;background:{{ $b['color'] }};height:5px;border-radius:4px;transition:width .6s;"></div>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</div>
+
+{{-- ═══════════════════════════════════════════════════════════════
+     OUTSTANDING PAYMENTS — Professional table
+════════════════════════════════════════════════════════════════ --}}
+@if(!empty($overdueDetail))
+<div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);overflow:hidden;">
+    {{-- Table header --}}
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px 16px;border-bottom:1px solid #f1f5f9;">
+        <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:34px;height:34px;background:#fff1f2;border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div>
+                <div style="font-size:14px;font-weight:700;color:#0f172a;">Paiements en retard</div>
+                <div style="font-size:12px;color:#94a3b8;">{{ count($overdueDetail) }} élève{{ count($overdueDetail)>1?'s':'' }} · total {{ number_format($overdue,0,'.',' ') }} TND</div>
+            </div>
+        </div>
+        <a href="{{ \App\Filament\Resources\PaymentResource::getUrl('index') }}"
+            style="display:flex;align-items:center;gap:5px;padding:7px 14px;background:#fff1f2;border:1px solid #fecdd3;border-radius:8px;font-size:12px;font-weight:600;color:#dc2626;text-decoration:none;">
+            Voir tous
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+    </div>
+    {{-- Table --}}
+    <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;">
+            <thead>
+                <tr style="background:#f8fafc;">
+                    <th style="padding:10px 24px 10px 24px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;white-space:nowrap;">#</th>
+                    <th style="padding:10px 16px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Élève</th>
+                    <th style="padding:10px 16px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Classe</th>
+                    <th style="padding:10px 16px;text-align:right;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Montant dû</th>
+                    <th style="padding:10px 16px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Échéance</th>
+                    <th style="padding:10px 16px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Retard</th>
+                    <th style="padding:10px 24px 10px 16px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($overdueDetail as $idx => $row)
+                @php
+                    $days = $row['days_overdue'];
+                    if ($days > 60)      { $sLabel='Critique'; $sBg='#fef2f2'; $sClr='#dc2626'; $sBorder='#fecaca'; }
+                    elseif ($days > 30)  { $sLabel='Urgent';   $sBg='#fff7ed'; $sClr='#c2410c'; $sBorder='#fed7aa'; }
+                    else                 { $sLabel='En retard'; $sBg='#fffbeb'; $sClr='#d97706'; $sBorder='#fde68a'; }
+                @endphp
+                <tr style="border-top:1px solid #f8fafc;transition:background .1s;" onmouseover="this.style.background='#fafbfc'" onmouseout="this.style.background=''">
+                    <td style="padding:12px 24px;font-size:12px;color:#94a3b8;font-variant-numeric:tabular-nums;">{{ $idx+1 }}</td>
+                    <td style="padding:12px 16px;font-size:13px;font-weight:600;color:#0f172a;">{{ $row['student_name'] }}</td>
+                    <td style="padding:12px 16px;font-size:12px;color:#64748b;">
+                        @if($row['classroom'] !== '—')
+                        <span style="padding:2px 8px;background:#eff6ff;color:#1d4ed8;border-radius:6px;font-size:11px;font-weight:600;">{{ $row['classroom'] }}</span>
+                        @else —
+                        @endif
+                    </td>
+                    <td style="padding:12px 16px;text-align:right;font-size:13px;font-weight:800;color:#dc2626;font-variant-numeric:tabular-nums;">{{ number_format($row['amount'],3) }} <span style="font-size:10px;font-weight:500;color:#94a3b8;">TND</span></td>
+                    <td style="padding:12px 16px;text-align:center;font-size:12px;color:#475569;font-variant-numeric:tabular-nums;">{{ $row['due_date'] }}</td>
+                    <td style="padding:12px 16px;text-align:center;font-size:12px;font-weight:700;color:{{ $sClr }};font-variant-numeric:tabular-nums;">{{ $days }}j</td>
+                    <td style="padding:12px 24px 12px 16px;text-align:center;">
+                        <span style="display:inline-flex;align-items:center;padding:3px 10px;background:{{ $sBg }};border:1px solid {{ $sBorder }};border-radius:20px;font-size:10px;font-weight:700;color:{{ $sClr }};">{{ $sLabel }}</span>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+@endif
+
+{{-- ═══════════════════════════════════════════════════════════════
+     FINANCIAL INSIGHTS — 4 metric cards
+════════════════════════════════════════════════════════════════ --}}
+<div class="ec-insights" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+
+    {{-- Collection Rate --}}
+    @php $rateColor = $rate>=80?'#10b981':($rate>=50?'#f59e0b':'#ef4444'); @endphp
+    <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">Taux de recouvrement</div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ $rateColor }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div style="font-size:30px;font-weight:900;color:{{ $rateColor }};letter-spacing:-1px;line-height:1;">{{ $rate }}<span style="font-size:18px;">%</span></div>
+        <div style="margin-top:12px;width:100%;background:#f1f5f9;border-radius:4px;height:6px;">
+            <div style="width:{{ $rate }}%;background:{{ $rateColor }};height:6px;border-radius:4px;transition:width .8s;"></div>
+        </div>
+        <div style="font-size:11px;color:#94a3b8;margin-top:6px;">du total dû est encaissé</div>
+    </div>
+
+    {{-- Revenue Growth --}}
+    <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">Croissance revenus</div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+        @if($revenueGrowth != 0)
+        <div style="font-size:30px;font-weight:900;color:{{ $rBadge['clr'] }};letter-spacing:-1px;line-height:1;">{{ $rBadge['arr'] }} {{ abs($revenueGrowth) }}<span style="font-size:18px;">%</span></div>
+        @else
+        <div style="font-size:30px;font-weight:900;color:#64748b;letter-spacing:-1px;line-height:1;">→ 0%</div>
+        @endif
+        <div style="font-size:11px;color:#94a3b8;margin-top:8px;">vs période précédente</div>
+        <div style="margin-top:10px;padding:8px 12px;background:{{ $rBadge['bg'] }};border-radius:8px;">
+            <div style="font-size:12px;font-weight:600;color:{{ $rBadge['clr'] }};">{{ number_format($revenue,0,'.',' ') }} TND cette période</div>
+        </div>
+    </div>
+
+    {{-- Expense Growth --}}
+    <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">Croissance dépenses</div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+        </div>
+        @if($expenseGrowth != 0)
+        <div style="font-size:30px;font-weight:900;color:{{ $eBadge['clr'] }};letter-spacing:-1px;line-height:1;">{{ $eBadge['arr'] }} {{ abs($expenseGrowth) }}<span style="font-size:18px;">%</span></div>
+        @else
+        <div style="font-size:30px;font-weight:900;color:#64748b;letter-spacing:-1px;line-height:1;">→ 0%</div>
+        @endif
+        <div style="font-size:11px;color:#94a3b8;margin-top:8px;">vs période précédente</div>
+        <div style="margin-top:10px;padding:8px 12px;background:{{ $eBadge['bg'] }};border-radius:8px;">
+            <div style="font-size:12px;font-weight:600;color:{{ $eBadge['clr'] }};">{{ number_format($expenses,0,'.',' ') }} TND cette période</div>
+        </div>
+    </div>
+
+    {{-- Payment Performance --}}
+    @php $perfColor = $payPerf>=80?'#1d4ed8':($payPerf>=50?'#0ea5e9':'#94a3b8'); @endphp
+    <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">Performance paiements</div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ $perfColor }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div style="font-size:30px;font-weight:900;color:{{ $perfColor }};letter-spacing:-1px;line-height:1;">{{ $payPerf }}<span style="font-size:18px;">%</span></div>
+        <div style="margin-top:12px;width:100%;background:#f1f5f9;border-radius:4px;height:6px;">
+            <div style="width:{{ $payPerf }}%;background:{{ $perfColor }};height:6px;border-radius:4px;transition:width .8s;"></div>
+        </div>
+        <div style="font-size:11px;color:#94a3b8;margin-top:6px;">des paiements sont soldés</div>
+    </div>
+</div>
+
+@endif {{-- end hasData --}}
+</div>
+
+{{-- ═══════════════════════════════════════════════════════════════
+     CHART.JS INITIALIZATION
+════════════════════════════════════════════════════════════════ --}}
+@script
+<script>
+(function() {
+    const labels    = @json($chartData['labels']);
+    const revenue   = @json($chartData['revenue']);
+    const expenses  = @json($chartData['expenses']);
+    const netFlow   = revenue.map((r,i) => r - expenses[i]);
+    const expCat    = @json($expByCat);
+    const colors    = @json($chartColors);
+
+    const defaultFont = { family: 'Inter, sans-serif' };
+    const tooltip = {
+        backgroundColor: 'rgba(15,23,42,0.92)',
+        titleFont: { ...defaultFont, size: 12, weight: '700' },
+        bodyFont:  { ...defaultFont, size: 11 },
+        padding: 10,
+        cornerRadius: 8,
+        callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString('fr-TN', {minimumFractionDigits:3,maximumFractionDigits:3})} TND` }
+    };
+
+    // ── Revenue Evolution Line Chart ─────────────────────────────────────────
+    Chart.getChart('ecRevLine')?.destroy();
+    const revEl = document.getElementById('ecRevLine');
+    if (revEl) {
+        new Chart(revEl, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Revenus',
+                        data: revenue,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16,185,129,0.08)',
+                        borderWidth: 2.5,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#10b981',
+                        pointBorderColor: 'white',
+                        pointBorderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
                     },
-                    scales: {
-                        x: {
-                            grid: { display: false },
-                            ticks: { font: { size: 11 }, color: '#9ca3af' }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: 'rgba(156,163,175,0.1)' },
-                            ticks: {
-                                font: { size: 11 }, color: '#9ca3af',
-                                callback: val => val >= 1000 ? (val/1000).toFixed(1)+'k' : val.toFixed(0)
-                            }
+                    {
+                        label: 'Dépenses',
+                        data: expenses,
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239,68,68,0.06)',
+                        borderWidth: 2.5,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#ef4444',
+                        pointBorderColor: 'white',
+                        pointBorderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                    },
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: { display: false }, tooltip },
+                scales: {
+                    x: { grid: { display: false }, ticks: { font: defaultFont, size: 11, color: '#9ca3af' } },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(156,163,175,0.1)' },
+                        ticks: {
+                            font: defaultFont,
+                            color: '#9ca3af',
+                            callback: v => v >= 1000 ? (v/1000).toFixed(1)+'k' : v.toFixed(0)
                         }
                     }
                 }
-            });
-        }
+            }
+        });
+    }
 
-        // Expenses by Category — Doughnut
-        Chart.getChart('expensesDoughnut')?.destroy();
-        const donutEl = document.getElementById('expensesDoughnut');
-        if (donutEl) {
-            const expData = @json($expByCat);
-            if (Object.keys(expData).length > 0) {
-                new Chart(donutEl, {
-                    type: 'doughnut',
-                    data: {
-                        labels: Object.keys(expData),
-                        datasets: [{
-                            data: Object.values(expData),
-                            backgroundColor: ['#4f46e5','#ef4444','#f59e0b','#10b981','#06b6d4','#8b5cf6','#ec4899','#14b8a6','#f97316','#84cc16'],
-                            borderWidth: 2,
-                            borderColor: document.documentElement.classList.contains('dark') ? '#111827' : '#ffffff',
-                            hoverOffset: 6,
-                        }]
+    // ── Expense Distribution Donut ───────────────────────────────────────────
+    Chart.getChart('ecExpDonut')?.destroy();
+    const donutEl = document.getElementById('ecExpDonut');
+    if (donutEl && Object.keys(expCat).length > 0) {
+        new Chart(donutEl, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(expCat),
+                datasets: [{
+                    data: Object.values(expCat),
+                    backgroundColor: colors,
+                    borderWidth: 3,
+                    borderColor: '#ffffff',
+                    hoverOffset: 8,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '72%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        ...tooltip,
+                        callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed.toLocaleString('fr-TN', {minimumFractionDigits:3,maximumFractionDigits:3})} TND` }
+                    }
+                }
+            }
+        });
+    }
+
+    // ── Cash Flow Bar Chart ──────────────────────────────────────────────────
+    Chart.getChart('ecCashFlow')?.destroy();
+    const cfEl = document.getElementById('ecCashFlow');
+    if (cfEl) {
+        new Chart(cfEl, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Revenus',
+                        data: revenue,
+                        backgroundColor: 'rgba(16,185,129,0.7)',
+                        borderColor: '#10b981',
+                        borderWidth: 1.5,
+                        borderRadius: 6,
+                        borderSkipped: false,
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        cutout: '68%',
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: { usePointStyle: true, boxWidth: 8, font: { size: 10 }, padding: 6, color: '#6b7280' }
-                            },
-                            tooltip: {
-                                backgroundColor: 'rgba(17,24,39,0.92)',
-                                callbacks: {
-                                    label: ctx => ` ${ctx.label}: ${ctx.parsed.toFixed(3)} TND`
-                                }
-                            }
+                    {
+                        label: 'Dépenses',
+                        data: expenses,
+                        backgroundColor: 'rgba(239,68,68,0.65)',
+                        borderColor: '#ef4444',
+                        borderWidth: 1.5,
+                        borderRadius: 6,
+                        borderSkipped: false,
+                    },
+                    {
+                        label: 'Flux net',
+                        data: netFlow,
+                        type: 'line',
+                        borderColor: '#1d4ed8',
+                        backgroundColor: 'transparent',
+                        borderWidth: 2.5,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#1d4ed8',
+                        pointBorderColor: 'white',
+                        pointBorderWidth: 2,
+                        tension: 0.35,
+                        yAxisID: 'y',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        align: 'end',
+                        labels: { usePointStyle: true, boxWidth: 8, font: defaultFont, padding: 16, color: '#64748b' }
+                    },
+                    tooltip: { ...tooltip, callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString('fr-TN', {minimumFractionDigits:3,maximumFractionDigits:3})} TND` } }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { font: defaultFont, color: '#9ca3af' } },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(156,163,175,0.1)' },
+                        ticks: {
+                            font: defaultFont, color: '#9ca3af',
+                            callback: v => v >= 1000 ? (v/1000).toFixed(1)+'k' : v.toFixed(0)
                         }
                     }
-                });
+                }
             }
+        });
+    }
+
+    // ── CSV Export function ──────────────────────────────────────────────────
+    window.ecExportCsv = function() {
+        const rows = @json($overdueDetail);
+        if (!rows || rows.length === 0) {
+            alert('Aucun impayé à exporter.');
+            return;
         }
-    </script>
-    @endscript
+        let csv = '﻿'; // UTF-8 BOM
+        csv += 'Élève,Classe,Montant dû (TND),Date d\'échéance,Jours de retard\n';
+        rows.forEach(r => {
+            csv += `"${r.student_name}","${r.classroom}","${parseFloat(r.amount).toFixed(3)}","${r.due_date}","${r.days_overdue}"\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url;
+        a.download = 'rapport-financier-{{ now()->format("Y-m-d") }}.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+})();
+</script>
+@endscript
 
 </x-filament-panels::page>

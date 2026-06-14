@@ -2,6 +2,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ClassroomResource\Pages;
+use App\Filament\Resources\ClassroomResource\RelationManagers;
 use App\Models\Classroom;
 use App\Models\Employee;
 use Filament\Actions;
@@ -99,6 +100,13 @@ class ClassroomResource extends Resource
             ->emptyStateActions([Actions\CreateAction::make()->label('Créer une classe')])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
+    }
+
+    public static function getRelationManagers(): array
+    {
+        return [
+            RelationManagers\SubjectsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array
