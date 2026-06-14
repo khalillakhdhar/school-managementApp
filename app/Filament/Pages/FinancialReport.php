@@ -3,28 +3,23 @@ namespace App\Filament\Pages;
 
 use App\Models\Expense;
 use App\Models\Payment;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
+use App\Models\Student;
+use Carbon\Carbon;
 use Filament\Pages\Page;
 
-class FinancialReport extends Page implements HasForms
+class FinancialReport extends Page
 {
-    use InteractsWithForms;
-
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-chart-bar';
+    protected static ?int $navigationSort = 1;
 
-    public function getView(): string { return 'filament.pages.financial-report'; }
-    protected static ?int    $navigationSort = 1;
-
-    public string $period  = 'month';
+    public string  $period = 'month';
     public ?string $from   = null;
     public ?string $until  = null;
 
     public static function getNavigationLabel(): string  { return __('Financial Report'); }
     public static function getNavigationGroup(): ?string { return 'Finances'; }
     public function getTitle(): string                   { return __('Financial Report'); }
+    public function getView(): string                    { return 'filament.pages.financial-report'; }
 
     public function mount(): void
     {
@@ -35,15 +30,13 @@ class FinancialReport extends Page implements HasForms
     public function setPeriod(string $period): void
     {
         $this->period = $period;
-
-        $this->from = match ($period) {
+        $this->from   = match ($period) {
             'month'   => now()->startOfMonth()->toDateString(),
             'quarter' => now()->startOfQuarter()->toDateString(),
             'year'    => now()->startOfYear()->toDateString(),
             default   => $this->from,
         };
-
-        $this->until = match ($period) {
+        $this->until  = match ($period) {
             'month'   => now()->endOfMonth()->toDateString(),
             'quarter' => now()->endOfQuarter()->toDateString(),
             'year'    => now()->endOfYear()->toDateString(),
@@ -51,16 +44,18 @@ class FinancialReport extends Page implements HasForms
         };
     }
 
+    // ── Core KPIs ─────────────────────────────────────────────────────────────
+
     public function getRevenue(): float
     {
-        return Payment::where('status', 'paid')
+        return (float) Payment::where('status', 'paid')
             ->whereBetween('payment_date', [$this->from, $this->until])
             ->sum('amount');
     }
 
     public function getExpensesTotal(): float
     {
-        return Expense::whereBetween('date', [$this->from, $this->until])->sum('amount');
+        return (float) Expense::whereBetween('date', [$this->from, $this->until])->sum('amount');
     }
 
     public function getNetProfit(): float
@@ -68,16 +63,33 @@ class FinancialReport extends Page implements HasForms
         return $this->getRevenue() - $this->getExpensesTotal();
     }
 
-    public function getRevenueByMonth(): array
+    public function getPendingTotal(): float
     {
-        return Payment::selectRaw('DATE_FORMAT(payment_date, "%Y-%m") as month, SUM(amount) as total')
-            ->where('status', 'paid')
-            ->whereBetween('payment_date', [$this->from, $this->until])
-            ->groupBy('month')
-            ->orderBy('month')
-            ->pluck('total', 'month')
-            ->toArray();
+        return (float) Payment::where('status', 'pending')
+            ->when($this->from,  fn ($q) => $q->whereDate('due_date', '>=', $this->from))
+            ->when($this->until, fn ($q) => $q->whereDate('due_date', '<=', $this->until))
+            ->sum('amount');
     }
+
+    public function getCollectionRate(): float
+    {
+        $totalDue = (float) Payment::whereBetween('due_date', [$this->from, $this->until])->sum('amount');
+        if ($totalDue <= 0) return 0;
+        $collected = (float) Payment::where('status', 'paid')
+            ->whereBetween('payment_date', [$this->from, $this->until])
+            ->sum('amount');
+        return round(min(100, ($collected / $totalDue) * 100), 1);
+    }
+
+    public function getTotalOverdue(): float
+    {
+        return (float) Payment::where('status', 'pending')
+            ->whereNotNull('due_date')
+            ->whereDate('due_date', '<', now())
+            ->sum('amount');
+    }
+
+    // ── Breakdowns ────────────────────────────────────────────────────────────
 
     public function getExpensesByCategory(): array
     {
@@ -100,10 +112,63 @@ class FinancialReport extends Page implements HasForms
             ->toArray();
     }
 
-    public function getPendingTotal(): float
+    // ── Aging Analysis ────────────────────────────────────────────────────────
+
+    public function getOverdueByAging(): array
     {
-        return Payment::where('status', 'pending')
-            ->whereBetween('payment_date', [$this->from, $this->until])
-            ->sum('amount');
+        $now = now();
+        return [
+            '1_30'  => (float) Payment::where('status', 'pending')
+                ->whereDate('due_date', '>=', $now->clone()->subDays(30))
+                ->whereDate('due_date', '<', $now)->sum('amount'),
+            '31_60' => (float) Payment::where('status', 'pending')
+                ->whereDate('due_date', '>=', $now->clone()->subDays(60))
+                ->whereDate('due_date', '<', $now->clone()->subDays(30))->sum('amount'),
+            '61_90' => (float) Payment::where('status', 'pending')
+                ->whereDate('due_date', '>=', $now->clone()->subDays(90))
+                ->whereDate('due_date', '<', $now->clone()->subDays(60))->sum('amount'),
+            '90p'   => (float) Payment::where('status', 'pending')
+                ->whereDate('due_date', '<', $now->clone()->subDays(90))->sum('amount'),
+        ];
+    }
+
+    // ── Students with outstanding balance ────────────────────────────────────
+
+    public function getStudentsWithBalance(): array
+    {
+        return Student::whereHas('payments', fn ($q) => $q->where('status', 'pending'))
+            ->with(['payments' => fn ($q) => $q->where('status', 'pending')])
+            ->get()
+            ->map(fn ($s) => [
+                'name'       => $s->full_name,
+                'balance'    => (float) $s->payments->sum('amount'),
+                'is_overdue' => $s->payments->filter(
+                    fn ($p) => $p->due_date && $p->due_date < now()->toDateString()
+                )->isNotEmpty(),
+            ])
+            ->sortByDesc('balance')
+            ->take(10)
+            ->values()
+            ->toArray();
+    }
+
+    // ── Chart data — Last 6 months independent of filter ─────────────────────
+
+    public function getChartData(): array
+    {
+        $months = collect(range(5, 0))->map(fn ($i) => now()->subMonths($i));
+
+        return [
+            'labels'   => $months->map(fn ($m) => ucfirst(
+                Carbon::create($m->year, $m->month, 1)->locale('fr')->isoFormat('MMM YYYY')
+            ))->toArray(),
+            'revenue'  => $months->map(fn ($m) => (float) Payment::where('status', 'paid')
+                ->whereYear('payment_date', $m->year)
+                ->whereMonth('payment_date', $m->month)
+                ->sum('amount'))->toArray(),
+            'expenses' => $months->map(fn ($m) => (float) Expense::whereYear('date', $m->year)
+                ->whereMonth('date', $m->month)
+                ->sum('amount'))->toArray(),
+        ];
     }
 }
