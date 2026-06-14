@@ -3,6 +3,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ClassroomResource\Pages;
 use App\Models\Classroom;
+use App\Models\Employee;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
@@ -39,9 +40,14 @@ class ClassroomResource extends Resource
                     ->numeric()->required()->default(30)->minValue(1)->maxValue(100),
                 Forms\Components\Select::make('teacher_id')
                     ->label(__('Class Teacher'))
-                    ->relationship('teacher', 'first_name')
-                    ->getOptionLabelFromRecordUsing(fn ($r) => $r->full_name)
-                    ->nullable()->searchable()->preload(),
+                    ->options(
+                        Employee::active()
+                            ->teachers()
+                            ->orderBy('last_name')
+                            ->get()
+                            ->mapWithKeys(fn ($e) => [$e->id => "{$e->full_name}" . ($e->specialite ? " — {$e->specialite}" : '')])
+                    )
+                    ->nullable()->searchable(),
                 Forms\Components\Textarea::make('notes')
                     ->label(__('Notes'))
                     ->columnSpanFull(),
@@ -53,12 +59,17 @@ class ClassroomResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('level.code')->label(__('Level'))->badge()->color('primary')->sortable(),
-                Tables\Columns\TextColumn::make('name')->label(__('Classroom'))->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('level.code')
+                    ->label(__('Level'))->badge()->color('primary')->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->label(__('Classroom'))->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('teacher.first_name')
                     ->label(__('Class Teacher'))
-                    ->formatStateUsing(fn ($state, $record) => $record->teacher?->full_name ?? '—'),
-                Tables\Columns\TextColumn::make('capacity')->label(__('Capacity'))->sortable(),
+                    ->formatStateUsing(fn ($state, $record) => $record->teacher
+                        ? $record->teacher->full_name . ($record->teacher->specialite ? " ({$record->teacher->specialite})" : '')
+                        : '—'),
+                Tables\Columns\TextColumn::make('capacity')
+                    ->label(__('Capacity'))->sortable(),
                 Tables\Columns\TextColumn::make('students_count')
                     ->label(__('Students'))
                     ->counts('students')
@@ -69,6 +80,9 @@ class ClassroomResource extends Resource
                 Tables\Filters\SelectFilter::make('level_id')
                     ->label(__('Level'))
                     ->relationship('level', 'name'),
+                Tables\Filters\Filter::make('no_teacher')
+                    ->label(__('Without Teacher'))
+                    ->query(fn ($query) => $query->whereNull('teacher_id')),
             ])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
