@@ -48,13 +48,21 @@ class StudentResource extends Resource
             ])->columns(2),
 
             Section::make(__('School Information'))->schema([
-                Forms\Components\TextInput::make('class')->label(__('Class'))->required()->maxLength(255),
-                Forms\Components\TextInput::make('level')->label(__('Level'))->required()->maxLength(255),
+                Forms\Components\Select::make('classroom_id')
+                    ->label(__('Classroom'))
+                    ->relationship('classroom', 'name')
+                    ->getOptionLabelFromRecordUsing(fn ($r) => $r->level ? "{$r->level->code} — {$r->name}" : $r->name)
+                    ->nullable()->searchable()->preload(),
+                Forms\Components\TextInput::make('class')->label(__('Class'))->maxLength(255),
+                Forms\Components\TextInput::make('level')->label(__('Level'))->maxLength(255),
+                Forms\Components\DatePicker::make('enrollment_date')->label(__('Enrollment Date')),
                 Forms\Components\Select::make('status')
                     ->label(__('Status'))
                     ->options([
-                        'active'   => __('Active'),
-                        'inactive' => __('Inactive'),
+                        'active'    => __('Active'),
+                        'inactive'  => __('Inactive'),
+                        'suspended' => __('Suspended'),
+                        'graduated' => __('Graduated'),
                     ])
                     ->default('active')->required(),
                 Forms\Components\Textarea::make('address')->label(__('Address'))->columnSpanFull(),
@@ -77,18 +85,25 @@ class StudentResource extends Resource
                 Tables\Columns\TextColumn::make('last_name')->label(__('Last Name'))->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('class')->label(__('Class'))->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('level')->label(__('Level'))->sortable(),
+                Tables\Columns\TextColumn::make('classroom.name')
+                    ->label(__('Classroom'))
+                    ->badge()->color('info')->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->label(__('Status'))
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'active'   => 'success',
-                        'inactive' => 'danger',
-                        default    => 'gray',
+                        'active'    => 'success',
+                        'inactive'  => 'danger',
+                        'suspended' => 'warning',
+                        'graduated' => 'info',
+                        default     => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'active'   => __('Active'),
-                        'inactive' => __('Inactive'),
-                        default    => $state,
+                        'active'    => __('Active'),
+                        'inactive'  => __('Inactive'),
+                        'suspended' => __('Suspended'),
+                        'graduated' => __('Graduated'),
+                        default     => $state,
                     }),
                 Tables\Columns\TextColumn::make('date_of_birth')->label(__('Birth Date'))->date()->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->label('Créé le')->dateTime()->sortable()
