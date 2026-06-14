@@ -266,5 +266,17 @@
 
     "Load Hours from Attendance": "Charger heures depuis les présences",
     ":hours hours loaded — :days days with attendance": ":hours heures chargées — :days jours de présence",
-    ":hours h worked (:days days) — loaded from attendance": ":hours h travaillées (:days jours) — chargées depuis les présences"
+    ":hours h worked (:days days) — loaded from attendance": ":hours h travaillées (:days jours) — chargées depuis les présences",
+
+    "Assigned Classes": "Classes assignées",
+    "Classes": "Classes",
+    "Classes with a teacher already assigned are shown with that teacher's name.": "Les classes déjà assignées à un enseignant sont affichées avec son nom.",
+    "current": "actuel",
+
+    "Unpaid Hours": "Heures impayées",
+    "Amount Due": "Montant dû",
+    "Pay All Pending": "Payer tout en attente",
+    "Pay :name": "Payer :name",
+    "Mark :count payslip(s) as paid. :hours h worked — total: :amount TND": "Marquer :count fiche(s) comme payée(s). :hours h travaillées — total : :amount TND",
+    ":count payslip(s) paid for :name": ":count fiche(s) payée(s) pour :name"
 }
