@@ -23,7 +23,7 @@ class FinancialReport extends Page implements HasForms
     public ?string $until  = null;
 
     public static function getNavigationLabel(): string  { return __('Financial Report'); }
-    public static function getNavigationGroup(): ?string { return __('Finance'); }
+    public static function getNavigationGroup(): ?string { return 'Finances'; }
     public function getTitle(): string                   { return __('Financial Report'); }
 
     public function mount(): void

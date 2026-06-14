@@ -18,7 +18,7 @@ class ServiceResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('Finance');
+        return 'Paramètres';
     }
 
     public static function getNavigationLabel(): string

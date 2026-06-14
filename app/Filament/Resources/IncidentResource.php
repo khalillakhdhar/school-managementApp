@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\IncidentResource\Pages;
 use App\Mail\IncidentNotificationMail;
 use App\Models\Incident;
+use App\Models\Student;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Notifications\Notification;
@@ -20,10 +21,21 @@ class IncidentResource extends Resource
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-exclamation-triangle';
     protected static ?int $navigationSort = 1;
 
-    public static function getNavigationGroup(): ?string { return __('Communication'); }
+    public static function getNavigationGroup(): ?string { return 'Communication'; }
     public static function getNavigationLabel(): string  { return __('Incidents'); }
     public static function getModelLabel(): string       { return __('Incident'); }
     public static function getPluralModelLabel(): string { return __('Incidents'); }
+
+    public static function getNavigationBadge(): ?string
+    {
+        $count = Incident::where('parent_notified', false)->count();
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'warning';
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -31,9 +43,11 @@ class IncidentResource extends Resource
             Section::make(__('Incident Details'))->schema([
                 Forms\Components\Select::make('student_id')
                     ->label(__('Student'))
-                    ->relationship('student', 'first_name')
-                    ->getOptionLabelFromRecordUsing(fn ($r) => $r?->full_name ?? '—')
-                    ->required()->searchable()->preload(),
+                    ->options(
+                        Student::orderBy('last_name')->get()
+                            ->mapWithKeys(fn ($s) => [$s->id => $s->full_name])
+                    )
+                    ->required()->searchable(),
                 Forms\Components\DatePicker::make('incident_date')
                     ->label(__('Date'))
                     ->required()->default(now()),

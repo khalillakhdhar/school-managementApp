@@ -3,6 +3,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PaymentResource\Pages;
 use App\Models\Payment;
+use App\Models\Student;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
@@ -18,7 +19,7 @@ class PaymentResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('Finance');
+        return 'Finances';
     }
 
     public static function getNavigationLabel(): string
@@ -36,14 +37,28 @@ class PaymentResource extends Resource
         return __('Payments');
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = Payment::where('status', 'pending')
+            ->whereDate('due_date', '<', now())->count();
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'danger';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
             Forms\Components\Select::make('student_id')
                 ->label(__('Student'))
-                ->relationship('student', 'first_name')
-                ->getOptionLabelFromRecordUsing(fn ($record) => $record->full_name)
-                ->searchable()->preload()->required(),
+                ->options(
+                    Student::orderBy('last_name')->get()
+                        ->mapWithKeys(fn ($s) => [$s->id => $s->full_name])
+                )
+                ->searchable()->required(),
             Forms\Components\TextInput::make('amount')->label(__('Amount'))->required()->numeric()->prefix('TND'),
             Forms\Components\DatePicker::make('payment_date')->label(__('Payment Date'))->required()->default(now()),
             Forms\Components\DatePicker::make('due_date')->label(__('Due Date'))->nullable(),
@@ -136,7 +151,20 @@ class PaymentResource extends Resource
                         'app'           => __('App'),
                     ]),
             ])
-            ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
+            ->actions([
+                Actions\Action::make('mark_paid')
+                    ->label(__('Mark Paid'))
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->action(fn (Payment $record) => $record->update([
+                        'status'       => 'paid',
+                        'payment_date' => now()->toDateString(),
+                    ]))
+                    ->visible(fn (Payment $record): bool => $record->status === 'pending'),
+                Actions\EditAction::make(),
+                Actions\DeleteAction::make(),
+            ])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }
 

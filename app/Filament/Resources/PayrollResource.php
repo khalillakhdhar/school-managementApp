@@ -20,7 +20,7 @@ class PayrollResource extends Resource
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-banknotes';
     protected static ?int $navigationSort = 3;
 
-    public static function getNavigationGroup(): ?string  { return __('HR'); }
+    public static function getNavigationGroup(): ?string  { return 'RH'; }
     public static function getNavigationLabel(): string   { return __('Payroll'); }
     public static function getModelLabel(): string        { return __('Pay Slip'); }
     public static function getPluralModelLabel(): string  { return __('Pay Slips'); }
@@ -197,7 +197,10 @@ class PayrollResource extends Resource
                         ->helperText(__('Edit manually or use "Load from Attendance" action in the table.')),
                     Forms\Components\TextInput::make('gross_salary')
                         ->label(__('Gross Amount'))
-                        ->prefix('TND')->disabled()->dehydrated(),
+                        ->prefix('TND')->disabled()->dehydrated()
+                        ->hint(__('Auto-calculated'))
+                        ->hintIcon('heroicon-o-calculator')
+                        ->hintColor('info'),
                     Forms\Components\TextInput::make('retenue_source')
                         ->label(__('Retenue à la source (RS 15%)'))
                         ->numeric()->default(0)->minValue(0)->prefix('TND')
@@ -211,6 +214,9 @@ class PayrollResource extends Resource
                     Forms\Components\TextInput::make('net_salary')
                         ->label(__('Amount to Pay'))
                         ->prefix('TND')->disabled()->dehydrated()
+                        ->hint(__('Auto-calculated'))
+                        ->hintIcon('heroicon-o-calculator')
+                        ->hintColor('success')
                         ->extraAttributes(['class' => 'font-bold']),
                 ])
                 ->columns(2)
@@ -246,6 +252,9 @@ class PayrollResource extends Resource
                     Forms\Components\TextInput::make('gross_salary')
                         ->label(__('Gross Salary'))
                         ->prefix('TND')->disabled()->dehydrated()
+                        ->hint(__('Auto-calculated'))
+                        ->hintIcon('heroicon-o-calculator')
+                        ->hintColor('info')
                         ->extraAttributes(['class' => 'font-bold']),
                 ])
                 ->columns(2)
@@ -271,6 +280,9 @@ class PayrollResource extends Resource
                     Forms\Components\TextInput::make('net_salary')
                         ->label(__('Net Salary'))
                         ->prefix('TND')->disabled()->dehydrated()
+                        ->hint(__('Auto-calculated from deductions'))
+                        ->hintIcon('heroicon-o-calculator')
+                        ->hintColor('success')
                         ->extraAttributes(['class' => 'font-bold']),
                 ])
                 ->columns(2)
