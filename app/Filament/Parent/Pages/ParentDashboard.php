@@ -6,10 +6,10 @@ use Filament\Pages\Page;
 
 class ParentDashboard extends Page
 {
-    protected static string $view = 'filament.parent.pages.parent-dashboard';
-
-    protected static ?string $navigationIcon = 'heroicon-o-home';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-home';
     protected static ?string $title = 'Mon Tableau de Bord';
+
+    public function getView(): string { return 'filament.parent.pages.parent-dashboard'; }
 
     public ?SchoolParent $schoolParent = null;
 
@@ -33,7 +33,6 @@ class ParentDashboard extends Page
             $totalDue     = $student->services()->sum('services.amount');
             $totalPaid    = $student->payments()->where('status', 'paid')->sum('amount');
             $outstanding  = max(0, $totalDue - $totalPaid);
-            $pendingCount = $student->payments()->where('status', 'pending')->count();
             $incidents    = $student->incidents()->orderBy('incident_date', 'desc')->take(3)->get();
 
             return [
@@ -41,7 +40,6 @@ class ParentDashboard extends Page
                 'totalDue'    => $totalDue,
                 'totalPaid'   => $totalPaid,
                 'outstanding' => $outstanding,
-                'pending'     => $pendingCount,
                 'incidents'   => $incidents,
                 'payments'    => $student->payments()->orderBy('payment_date', 'desc')->take(5)->get(),
             ];
