@@ -126,6 +126,36 @@ class SmartAlertsWidget extends Widget
             ];
         }
 
+        // ── WARNING: CDD contracts expiring within 30 days ────────────────
+        $expiringContracts = Employee::where('contract_type', 'temporary')
+            ->where('is_active', true)
+            ->whereNotNull('end_date')
+            ->whereDate('end_date', '>=', now())
+            ->whereDate('end_date', '<=', now()->addDays(30))
+            ->count();
+
+        if ($expiringContracts > 0) {
+            $soonest = Employee::where('contract_type', 'temporary')
+                ->where('is_active', true)
+                ->whereNotNull('end_date')
+                ->whereDate('end_date', '>=', now())
+                ->whereDate('end_date', '<=', now()->addDays(30))
+                ->orderBy('end_date')
+                ->value('end_date');
+
+            $daysLeft = $soonest ? now()->diffInDays($soonest) : 0;
+
+            $notifications[] = [
+                'level'        => 'warning',
+                'icon'         => 'calendar-clock',
+                'title'        => "{$expiringContracts} contrat" . ($expiringContracts > 1 ? 's' : '') . " CDD expirant dans 30 jours",
+                'description'  => 'Le plus proche expire dans ' . $daysLeft . ' jour' . ($daysLeft > 1 ? 's' : '') . ' — renouvelez ou terminez le contrat',
+                'action_url'   => \App\Filament\Resources\EmployeeResource::getUrl('index'),
+                'action_label' => 'Voir les employés',
+                'time'         => 'Échéance proche',
+            ];
+        }
+
         // ── INFO: Inactive employees with classrooms ────────────────────────
         $inactiveTeachers = Employee::where('is_active', false)
             ->where('is_teacher', true)

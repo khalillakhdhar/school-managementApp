@@ -25,6 +25,17 @@ class PayrollResource extends Resource
     public static function getModelLabel(): string        { return __('Pay Slip'); }
     public static function getPluralModelLabel(): string  { return __('Pay Slips'); }
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = Payroll::whereIn('status', ['draft', 'finalized'])->count();
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return Payroll::where('status', 'finalized')->exists() ? 'warning' : 'gray';
+    }
+
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
     private static function months(): array

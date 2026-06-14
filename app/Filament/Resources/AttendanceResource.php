@@ -3,8 +3,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AttendanceResource\Pages;
 use App\Models\Attendance;
+use App\Models\Employee;
 use Filament\Actions;
 use Filament\Forms;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -25,6 +27,21 @@ class AttendanceResource extends Resource
     public static function getNavigationLabel(): string
     {
         return __('Attendance');
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        $today   = now()->toDateString();
+        $total   = Employee::where('is_active', true)->count();
+        $present = Attendance::whereDate('date', $today)->count();
+
+        if ($total === 0) return null;
+        return $present < $total ? ($total - $present) . ' manquants' : null;
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'warning';
     }
 
     public static function getModelLabel(): string
@@ -122,6 +139,42 @@ class AttendanceResource extends Resource
             ->emptyStateIcon('heroicon-o-calendar-days')
             ->emptyStateHeading('Aucune présence enregistrée')
             ->emptyStateDescription('Les pointages des employés apparaîtront ici.')
+            ->headerActions([
+                Tables\Actions\Action::make('mark_all_present_today')
+                    ->label('Marquer tous présents aujourd\'hui')
+                    ->icon('heroicon-o-user-group')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Pointage global — ' . now()->translatedFormat('d/m/Y'))
+                    ->modalDescription('Crée un enregistrement "Présent" pour chaque employé actif sans pointage aujourd\'hui.')
+                    ->action(function (): void {
+                        $today     = now()->toDateString();
+                        $employees = Employee::where('is_active', true)->get();
+                        $existing  = Attendance::whereDate('date', $today)->pluck('employee_id');
+                        $created   = 0;
+
+                        foreach ($employees as $employee) {
+                            if ($existing->contains($employee->id)) continue;
+                            Attendance::create([
+                                'employee_id' => $employee->id,
+                                'date'        => $today,
+                                'status'      => 'present',
+                                'time_in'     => '08:00',
+                            ]);
+                            $created++;
+                        }
+
+                        if ($created > 0) {
+                            Notification::make()
+                                ->title("{$created} employé(s) marqués présents aujourd'hui")
+                                ->success()->send();
+                        } else {
+                            Notification::make()
+                                ->title('Tous les employés sont déjà pointés aujourd\'hui')
+                                ->info()->send();
+                        }
+                    }),
+            ])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

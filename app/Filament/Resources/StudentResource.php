@@ -2,6 +2,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\StudentResource\Pages;
+use App\Filament\Resources\StudentResource\RelationManagers;
 use App\Models\Classroom;
 use App\Models\Student;
 use Filament\Actions;
@@ -190,6 +191,15 @@ class StudentResource extends Resource
             ->emptyStateActions([Actions\CreateAction::make()->label('Inscrire un élève')])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
+    }
+
+    public static function getRelationManagers(): array
+    {
+        return [
+            RelationManagers\PaymentsRelationManager::class,
+            RelationManagers\ServicesRelationManager::class,
+            RelationManagers\IncidentsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

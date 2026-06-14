@@ -2,6 +2,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\EmployeeResource\Pages;
+use App\Filament\Resources\EmployeeResource\RelationManagers;
 use App\Models\Classroom;
 use App\Models\Employee;
 use Filament\Actions;
@@ -291,6 +292,14 @@ class EmployeeResource extends Resource
             ->emptyStateDescription('Ajoutez les membres du personnel de l\'établissement.')
             ->emptyStateActions([Actions\CreateAction::make()->label('Ajouter un employé')])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
+    }
+
+    public static function getRelationManagers(): array
+    {
+        return [
+            RelationManagers\PayrollsRelationManager::class,
+            RelationManagers\AttendancesRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

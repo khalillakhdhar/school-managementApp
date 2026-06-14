@@ -12,7 +12,7 @@ class SchoolStructureWidget extends StatsOverviewWidget
     protected static bool $isLazy = true;
     protected static ?int $sort = 3;
 
-    public static function canView(): bool { return false; }
+    public static function canView(): bool { return true; }
 
     protected function getStats(): array
     {
