@@ -251,6 +251,16 @@ html:not(.dark) .fi-badge{
 .fi-sidebar-header{border-bottom:1px solid rgba(255,255,255,.07)!important}
 .fi-sidebar-footer{border-top:1px solid rgba(255,255,255,.06)!important}
 
+/* ── Kill the light gap/scrollbar strip between sidebar & content ── */
+.fi-sidebar-nav{scrollbar-gutter:auto!important;scrollbar-width:thin!important;scrollbar-color:#334155 #0f172a!important}
+.fi-sidebar-nav::-webkit-scrollbar{width:6px!important}
+.fi-sidebar-nav::-webkit-scrollbar-track{background:#0f172a!important}
+.fi-sidebar-nav::-webkit-scrollbar-thumb{background:#334155!important;border-radius:3px!important}
+.fi-sidebar-nav::-webkit-scrollbar-thumb:hover{background:#475569!important}
+/* Main content sits flush against the sidebar */
+html:not(.dark) .fi-main-ctn{border-left:none!important}
+.fi-main{margin-inline-start:0!important}
+
 /* ── Nav padding ──────────────────────────────────────────────── */
 .fi-sidebar-nav{padding:10px 14px 20px!important;gap:0!important}
 .fi-sidebar-nav-groups{margin-left:0!important;margin-right:0!important;gap:6px!important}
@@ -350,6 +360,15 @@ html:not(.dark) .fi-badge{
 /* Topbar toggle buttons */
 .fi-topbar-open-sidebar-btn{color:#64748b!important}
 </style>'
+                       . '<script>
+/* Force a fresh load when the page is restored from the browser back-forward
+   cache — guarantees the latest design/CSS is always shown, never a stale snapshot. */
+window.addEventListener("pageshow", function (e) {
+    if (e.persisted || (window.performance && performance.getEntriesByType("navigation")[0] && performance.getEntriesByType("navigation")[0].type === "back_forward")) {
+        location.reload();
+    }
+});
+</script>'
             )
 
             ->renderHook(

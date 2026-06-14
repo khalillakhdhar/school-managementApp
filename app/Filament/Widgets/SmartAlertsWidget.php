@@ -10,7 +10,7 @@ use Filament\Widgets\Widget;
 
 class SmartAlertsWidget extends Widget
 {
-    protected static bool $isLazy = true;
+    protected static bool $isLazy = false;
     protected static ?int $sort = 4;
     protected string $view = 'filament.widgets.smart-alerts-widget';
 

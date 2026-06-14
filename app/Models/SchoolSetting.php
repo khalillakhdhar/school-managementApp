@@ -10,7 +10,11 @@ class SchoolSetting extends Model
         'school_name', 'slogan', 'description', 'logo', 'favicon',
         'address', 'city', 'country', 'phone', 'mobile', 'email', 'website',
         'facebook', 'instagram', 'linkedin', 'youtube',
-        'academic_year', 'school_type',
+        'academic_year', 'school_type', 'demo_mode',
+    ];
+
+    protected $casts = [
+        'demo_mode' => 'boolean',
     ];
 
     public static function getInstance(): static

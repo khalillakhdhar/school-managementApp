@@ -2,12 +2,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Employee extends Model
 {
     protected $fillable = [
+        'user_id',
         'first_name', 'last_name', 'position', 'phone', 'email',
         'address', 'salary_base', 'hourly_rate', 'contract_type',
         'start_date', 'end_date', 'photo_path', 'is_active',
@@ -16,6 +18,16 @@ class Employee extends Model
         'situation_familiale', 'nb_enfants',
         'indemnite_transport', 'indemnite_logement', 'autres_indemnites',
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function hasAccount(): bool
+    {
+        return $this->user_id !== null;
+    }
 
     protected $casts = [
         'start_date'           => 'date',

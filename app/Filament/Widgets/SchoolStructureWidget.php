@@ -9,7 +9,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class SchoolStructureWidget extends StatsOverviewWidget
 {
-    protected static bool $isLazy = true;
+    protected static bool $isLazy = false;
     protected static ?int $sort = 3;
 
     public static function canView(): bool { return true; }

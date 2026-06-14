@@ -13,7 +13,7 @@ use Filament\Widgets\Widget;
 
 class MainDashboardWidget extends Widget
 {
-    protected static bool $isLazy = true;
+    protected static bool $isLazy = false;
     protected static ?int $sort = 0;
     protected string $view = 'filament.widgets.main-dashboard-widget';
     protected int|string|array $columnSpan = 'full';

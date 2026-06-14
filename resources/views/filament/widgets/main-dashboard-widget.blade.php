@@ -4,7 +4,7 @@
 
 <x-filament-widgets::widget>
 @php
-    $chartColors = ['#1d4ed8','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#f97316'];
+    $chartColors = ['#2563eb','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#f97316'];
     $maxEvo = max(max($evolution['counts'] ?: [1]), 1);
 @endphp
 
@@ -20,7 +20,7 @@
         <div style="display:flex;align-items:center;justify-content:space-between;">
             <span style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;">Élèves actifs</span>
             <div style="width:34px;height:34px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
                     <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
                 </svg>
@@ -142,7 +142,7 @@
             </div>
             <div style="display:flex;align-items:center;gap:12px;font-size:11px;color:#64748b;">
                 <span style="display:flex;align-items:center;gap:4px;">
-                    <span style="width:12px;height:3px;background:#1d4ed8;border-radius:2px;display:inline-block;"></span>Élèves
+                    <span style="width:12px;height:3px;background:#2563eb;border-radius:2px;display:inline-block;"></span>Élèves
                 </span>
             </div>
         </div>
@@ -195,9 +195,9 @@
             </div>
             @if($overdueCount > 0)
             <a href="{{ \App\Filament\Resources\PaymentResource::getUrl('index') }}"
-               style="font-size:12px;font-weight:600;color:#1d4ed8;text-decoration:none;display:flex;align-items:center;gap:3px;">
+               style="font-size:12px;font-weight:600;color:#2563eb;text-decoration:none;display:flex;align-items:center;gap:3px;">
                 Voir tout
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
             </a>
             @endif
         </div>
@@ -320,12 +320,12 @@ if (evoEl) {
             datasets: [{
                 label: 'Élèves',
                 data: @json($evolution['counts']),
-                borderColor: '#1d4ed8',
+                borderColor: '#2563eb',
                 backgroundColor: 'rgba(29,78,216,0.08)',
                 borderWidth: 2.5,
                 fill: true,
                 tension: 0.4,
-                pointBackgroundColor: '#1d4ed8',
+                pointBackgroundColor: '#2563eb',
                 pointRadius: 4,
                 pointHoverRadius: 6,
             }]

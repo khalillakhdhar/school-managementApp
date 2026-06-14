@@ -19,8 +19,8 @@ html.dark .ct-summary-val{color:#f1f5f9}
 .ct-summary-lbl{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
 html.dark .ct-summary-lbl{color:#94a3b8}
 
-.ct-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
-@media(max-width:640px){.ct-cards-grid{grid-template-columns:1fr 1fr}}
+.ct-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+@media(max-width:640px){.ct-cards-grid{grid-template-columns:1fr}}
 
 .ct-card{background:#ffffff;border:1.5px solid #e2e8f0;border-radius:14px;padding:20px;
   cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;position:relative;overflow:hidden}
