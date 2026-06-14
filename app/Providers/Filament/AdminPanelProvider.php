@@ -215,6 +215,10 @@ html:not(.dark) .fi-modal-header-heading{
    Source: vendor/filament/filament/resources/views/components/sidebar/
    ════════════════════════════════════════════════════════════════ */
 
+/* ── Width — wider, more premium ──────────────────────────────── */
+:root{--sidebar-width:17.5rem!important}
+.fi-main-ctn{--sidebar-width:17.5rem!important}
+
 /* ── Base background — override Filament\'s bg-white / bg-gray-900 ── */
 .fi-sidebar,html.dark .fi-sidebar{
   background:#0f172a!important;
@@ -240,9 +244,9 @@ html:not(.dark) .fi-modal-header-heading{
 
 /* GROUP SECTION LABEL — "Académique", "RH", etc. */
 .fi-sidebar-group-label{
-  color:#4a6480!important;
-  font-size:10.5px!important;font-weight:700!important;
-  letter-spacing:0.3px!important;          /* Reduced — no more SPACED OUT text */
+  color:#5a7896!important;
+  font-size:11px!important;font-weight:700!important;
+  letter-spacing:0.4px!important;          /* Reduced — no more SPACED OUT text */
   text-transform:uppercase!important;
 }
 /* Group icon */
@@ -259,20 +263,20 @@ html:not(.dark) .fi-modal-header-heading{
 
 /* ── NAV ITEM BUTTON (the <a class="fi-sidebar-item-btn">) ────── */
 .fi-sidebar-item-btn{
-  display:flex!important;align-items:center!important;gap:8px!important;
-  width:100%!important;padding:7px 10px!important;border-radius:7px!important;
-  color:#8dafc8!important;background:transparent!important;
+  display:flex!important;align-items:center!important;gap:11px!important;
+  width:100%!important;padding:9px 12px!important;border-radius:8px!important;
+  color:#aac2d8!important;background:transparent!important;
   text-decoration:none!important;border:none!important;cursor:pointer!important;
   transition:background .1s,color .1s!important;justify-content:flex-start!important;
 }
 .fi-sidebar-item-has-url .fi-sidebar-item-btn:hover{
-  background:rgba(255,255,255,.07)!important;color:#c4d8ea!important;
+  background:rgba(255,255,255,.08)!important;color:#ffffff!important;
 }
 
 /* ── NAV ITEM LABEL — CRITICAL: fix uppercase + letter-spacing ── */
 .fi-sidebar-item-label{
   flex:1!important;min-width:0!important;
-  font-size:13.5px!important;font-weight:500!important;
+  font-size:14.5px!important;font-weight:500!important;
   color:inherit!important;
   text-transform:none!important;          /* FIX: was inheriting uppercase from group selector */
   letter-spacing:0!important;            /* FIX: remove expanded letter spacing */
@@ -282,7 +286,7 @@ html:not(.dark) .fi-modal-header-heading{
 /* ── ICON in nav items ────────────────────────────────────────── */
 .fi-sidebar-item-btn .fi-icon{
   color:inherit!important;flex-shrink:0!important;
-  width:16px!important;height:16px!important;opacity:.75!important;
+  width:18px!important;height:18px!important;opacity:.8!important;
 }
 
 /* ── ACTIVE ITEM (fi-active on <li>, NOT on <a>) ─────────────── */

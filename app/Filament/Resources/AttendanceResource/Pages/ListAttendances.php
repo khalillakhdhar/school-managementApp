@@ -2,6 +2,7 @@
 namespace App\Filament\Resources\AttendanceResource\Pages;
 
 use App\Filament\Resources\AttendanceResource;
+use App\Filament\Widgets\AttendancesListStatsWidget;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -11,6 +12,11 @@ class ListAttendances extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()];
+        return [CreateAction::make()->label('Pointer un employé')];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [AttendancesListStatsWidget::class];
     }
 }

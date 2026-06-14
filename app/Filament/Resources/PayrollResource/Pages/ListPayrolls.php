@@ -2,6 +2,7 @@
 namespace App\Filament\Resources\PayrollResource\Pages;
 
 use App\Filament\Resources\PayrollResource;
+use App\Filament\Widgets\PayrollsListStatsWidget;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -11,6 +12,11 @@ class ListPayrolls extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()];
+        return [CreateAction::make()->label('Générer une fiche de paie')];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [PayrollsListStatsWidget::class];
     }
 }

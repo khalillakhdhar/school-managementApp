@@ -2,6 +2,7 @@
 namespace App\Filament\Resources\ParentResource\Pages;
 
 use App\Filament\Resources\ParentResource;
+use App\Filament\Widgets\ParentsListStatsWidget;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -11,6 +12,11 @@ class ListParents extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()];
+        return [CreateAction::make()->label('Ajouter un parent')];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [ParentsListStatsWidget::class];
     }
 }
