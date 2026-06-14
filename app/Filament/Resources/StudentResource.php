@@ -2,6 +2,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\StudentResource\Pages;
+use App\Models\Classroom;
 use App\Models\Student;
 use Filament\Actions;
 use Filament\Forms;
@@ -19,7 +20,25 @@ class StudentResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('Students');
+        return 'Académique';
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['first_name', 'last_name', 'id_number'];
+    }
+
+    public static function getGlobalSearchResultTitle(\Illuminate\Database\Eloquent\Model $record): string
+    {
+        return $record->full_name;
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Classe'  => $record->classroom?->name ?? '—',
+            'Statut'  => $record->status,
+        ];
     }
 
     public static function getNavigationLabel(): string
