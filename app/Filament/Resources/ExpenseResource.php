@@ -66,13 +66,18 @@ class ExpenseResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('date')->label(__('Date'))->date()->sortable(),
-                Tables\Columns\TextColumn::make('category.name')->label(__('Category'))->searchable()->sortable()->badge()->color('warning'),
-                Tables\Columns\TextColumn::make('description')->label(__('Description'))->limit(40)->searchable(),
-                Tables\Columns\TextColumn::make('supplier')->label(__('Supplier'))->toggleable(),
-                Tables\Columns\TextColumn::make('invoice_number')->label(__('Invoice #'))->toggleable(),
+                Tables\Columns\TextColumn::make('date')
+                    ->label('Date')->date('d/m/Y')->sortable(),
+                Tables\Columns\TextColumn::make('category.name')
+                    ->label('Catégorie')->searchable()->sortable()->badge()->color('warning'),
+                Tables\Columns\TextColumn::make('description')
+                    ->label('Description')->limit(45)->searchable(),
+                Tables\Columns\TextColumn::make('supplier')
+                    ->label('Fournisseur')->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('invoice_number')
+                    ->label('N° facture')->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('payment_method')
-                    ->label(__('Method'))
+                    ->label('Mode')
                     ->badge()
                     ->color(fn ($state) => match($state) {
                         'cash'   => 'success',
@@ -81,39 +86,44 @@ class ExpenseResource extends Resource
                         default  => 'gray',
                     })
                     ->formatStateUsing(fn ($state) => match($state) {
-                        'cash'   => __('Cash'),
-                        'bank'   => __('Bank Transfer'),
-                        'cheque' => __('Cheque'),
+                        'cash'   => 'Espèces',
+                        'bank'   => 'Virement',
+                        'cheque' => 'Chèque',
                         default  => $state,
                     }),
                 Tables\Columns\TextColumn::make('amount')
-                    ->label(__('Amount'))
+                    ->label('Montant')
                     ->money('TND')->sortable()
                     ->color('danger')
-                    ->summarize(Tables\Columns\Summarizers\Sum::make()->label(__('Total'))->money('TND')),
+                    ->weight(\Filament\Support\Enums\FontWeight::Bold)
+                    ->summarize(Tables\Columns\Summarizers\Sum::make()->label('Total')->money('TND')),
             ])
             ->defaultSort('date', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('category_id')
-                    ->label(__('Category'))
+                    ->label('Catégorie')
                     ->relationship('category', 'name'),
                 Tables\Filters\SelectFilter::make('payment_method')
-                    ->label(__('Method'))
+                    ->label('Mode de paiement')
                     ->options([
-                        'cash'   => __('Cash'),
-                        'bank'   => __('Bank Transfer'),
-                        'cheque' => __('Cheque'),
+                        'cash'   => 'Espèces',
+                        'bank'   => 'Virement',
+                        'cheque' => 'Chèque',
                     ]),
                 Tables\Filters\Filter::make('date')
                     ->form([
-                        Forms\Components\DatePicker::make('from')->label(__('From')),
-                        Forms\Components\DatePicker::make('until')->label(__('Until')),
+                        Forms\Components\DatePicker::make('from')->label('Du'),
+                        Forms\Components\DatePicker::make('until')->label('Au'),
                     ])
                     ->query(fn ($query, array $data) => $query
                         ->when($data['from'],  fn ($q) => $q->whereDate('date', '>=', $data['from']))
                         ->when($data['until'], fn ($q) => $q->whereDate('date', '<=', $data['until']))
                     ),
             ])
+            ->emptyStateIcon('heroicon-o-arrow-trending-down')
+            ->emptyStateHeading('Aucune dépense enregistrée')
+            ->emptyStateDescription('Enregistrez les dépenses de l\'établissement pour suivre les charges.')
+            ->emptyStateActions([Actions\CreateAction::make()->label('Ajouter une dépense')])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

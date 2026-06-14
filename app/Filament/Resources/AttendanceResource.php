@@ -66,10 +66,15 @@ class AttendanceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('employee.first_name')->label(__('Employee'))->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('date')->label(__('Date'))->date()->sortable(),
+                Tables\Columns\TextColumn::make('employee.first_name')
+                    ->label('Employé')
+                    ->formatStateUsing(fn ($state, $record) => $record->employee?->full_name ?? '—')
+                    ->searchable()->sortable()
+                    ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
+                Tables\Columns\TextColumn::make('date')
+                    ->label('Date')->date('d/m/Y')->sortable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->label(__('Status'))
+                    ->label('Statut')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'present' => 'success',
@@ -79,31 +84,37 @@ class AttendanceResource extends Resource
                         default   => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'present' => __('Present'),
-                        'absent'  => __('Absent'),
-                        'late'    => __('Late'),
-                        'leave'   => __('Leave'),
+                        'present' => 'Présent',
+                        'absent'  => 'Absent',
+                        'late'    => 'En retard',
+                        'leave'   => 'Congé',
                         default   => $state,
                     }),
-                Tables\Columns\TextColumn::make('time_in')->label(__('Arrival Time')),
-                Tables\Columns\TextColumn::make('time_out')->label(__('Departure Time')),
-                Tables\Columns\TextColumn::make('total_hours')->label(__('Hours'))->suffix(' h'),
-                Tables\Columns\TextColumn::make('overtime_hours')->label(__('Overtime'))->suffix(' h')->toggleable(),
+                Tables\Columns\TextColumn::make('time_in')->label('Arrivée'),
+                Tables\Columns\TextColumn::make('time_out')->label('Départ'),
+                Tables\Columns\TextColumn::make('total_hours')
+                    ->label('Heures')->suffix(' h')
+                    ->weight(\Filament\Support\Enums\FontWeight::Bold),
+                Tables\Columns\TextColumn::make('overtime_hours')
+                    ->label('Heures sup.')->suffix(' h')->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('date', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
-                    ->label(__('Status'))
+                    ->label('Statut')
                     ->options([
-                        'present' => __('Present'),
-                        'absent'  => __('Absent'),
-                        'late'    => __('Late'),
-                        'leave'   => __('Leave'),
+                        'present' => 'Présent',
+                        'absent'  => 'Absent',
+                        'late'    => 'En retard',
+                        'leave'   => 'Congé',
                     ]),
                 Tables\Filters\SelectFilter::make('employee')
-                    ->label(__('Employee'))
+                    ->label('Employé')
                     ->relationship('employee', 'first_name'),
             ])
+            ->emptyStateIcon('heroicon-o-calendar-days')
+            ->emptyStateHeading('Aucune présence enregistrée')
+            ->emptyStateDescription('Les pointages des employés apparaîtront ici.')
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

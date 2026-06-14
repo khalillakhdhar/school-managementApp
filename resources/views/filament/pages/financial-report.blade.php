@@ -25,7 +25,7 @@
     <div class="space-y-6">
 
         {{-- ══ PERIOD SELECTOR ══════════════════════════════════════════════ --}}
-        <div class="rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-700 p-5 shadow-xl">
+        <div class="rounded-2xl bg-gradient-to-br from-blue-900 via-blue-700 to-blue-600 p-5 shadow-xl">
             <div class="flex flex-wrap items-center justify-between gap-4">
                 <div>
                     <h2 class="text-white font-bold text-xl tracking-tight">{{ __('Financial Report') }}</h2>

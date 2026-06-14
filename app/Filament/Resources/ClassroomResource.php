@@ -60,30 +60,39 @@ class ClassroomResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('level.code')
-                    ->label(__('Level'))->badge()->color('primary')->sortable(),
+                    ->label('Niveau')->badge()->color('primary')->sortable(),
                 Tables\Columns\TextColumn::make('name')
-                    ->label(__('Classroom'))->searchable()->sortable(),
+                    ->label('Classe')->searchable()->sortable()
+                    ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('teacher.first_name')
-                    ->label(__('Class Teacher'))
+                    ->label('Enseignant titulaire')
                     ->formatStateUsing(fn ($state, $record) => $record->teacher
-                        ? $record->teacher->full_name . ($record->teacher->specialite ? " ({$record->teacher->specialite})" : '')
-                        : '—'),
-                Tables\Columns\TextColumn::make('capacity')
-                    ->label(__('Capacity'))->sortable(),
+                        ? $record->teacher->full_name . ($record->teacher->specialite ? " · {$record->teacher->specialite}" : '')
+                        : '—')
+                    ->color(fn ($state, $record) => $record->teacher_id ? null : 'danger'),
                 Tables\Columns\TextColumn::make('students_count')
-                    ->label(__('Students'))
+                    ->label('Élèves')
                     ->counts('students')
                     ->badge()->color('success'),
+                Tables\Columns\TextColumn::make('capacity')
+                    ->label('Capacité')->sortable()
+                    ->formatStateUsing(fn ($state, $record) =>
+                        ($record->students_count ?? 0) . ' / ' . $state
+                    ),
             ])
             ->defaultSort('level_id')
             ->filters([
                 Tables\Filters\SelectFilter::make('level_id')
-                    ->label(__('Level'))
+                    ->label('Niveau')
                     ->relationship('level', 'name'),
                 Tables\Filters\Filter::make('no_teacher')
-                    ->label(__('Without Teacher'))
+                    ->label('Sans enseignant')
                     ->query(fn ($query) => $query->whereNull('teacher_id')),
             ])
+            ->emptyStateIcon('heroicon-o-building-office')
+            ->emptyStateHeading('Aucune classe créée')
+            ->emptyStateDescription('Créez les classes de l\'établissement et assignez-leur un enseignant.')
+            ->emptyStateActions([Actions\CreateAction::make()->label('Créer une classe')])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

@@ -55,14 +55,23 @@ class ParentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('first_name')->label(__('First Name'))->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('last_name')->label(__('Last Name'))->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('phone')->label(__('Phone'))->searchable(),
-                Tables\Columns\TextColumn::make('email')->label(__('Email'))->searchable()->toggleable(),
-                Tables\Columns\IconColumn::make('is_payer')->label(__('Payer'))->boolean(),
-                Tables\Columns\TextColumn::make('students_count')->counts('students')->label(__('Children'))->badge()->color('info'),
+                Tables\Columns\TextColumn::make('first_name')
+                    ->label('Parent')
+                    ->formatStateUsing(fn ($state, SchoolParent $record): string => $record->full_name)
+                    ->searchable(['first_name', 'last_name'])
+                    ->sortable()
+                    ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
+                Tables\Columns\TextColumn::make('phone')
+                    ->label('Téléphone')->searchable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->label('Email')->searchable()->toggleable(),
+                Tables\Columns\IconColumn::make('is_payer')
+                    ->label('Payeur principal')->boolean(),
+                Tables\Columns\TextColumn::make('students_count')
+                    ->counts('students')->label('Enfants')
+                    ->badge()->color('info'),
                 Tables\Columns\IconColumn::make('user_id')
-                    ->label(__('Portal Account'))
+                    ->label('Accès portail')
                     ->boolean()
                     ->getStateUsing(fn ($record) => $record->user_id !== null)
                     ->trueColor('success')
@@ -71,8 +80,12 @@ class ParentResource extends Resource
                     ->falseIcon('heroicon-o-x-circle'),
             ])
             ->filters([
-                Tables\Filters\TernaryFilter::make('is_payer')->label(__('Primary Payer')),
+                Tables\Filters\TernaryFilter::make('is_payer')->label('Payeur principal'),
             ])
+            ->emptyStateIcon('heroicon-o-users')
+            ->emptyStateHeading('Aucun parent enregistré')
+            ->emptyStateDescription('Ajoutez les parents des élèves pour activer le portail parents.')
+            ->emptyStateActions([Actions\CreateAction::make()->label('Ajouter un parent')])
             ->actions([
                 Actions\Action::make('create_account')
                     ->label(__('Create Portal Account'))

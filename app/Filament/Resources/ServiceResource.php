@@ -59,10 +59,11 @@ class ServiceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable(),
-                Tables\Columns\TextColumn::make('name')->label(__('Name'))->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Service')->searchable()->sortable()
+                    ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('type')
-                    ->label(__('Type'))
+                    ->label('Type')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'annual'  => 'primary',
@@ -72,27 +73,35 @@ class ServiceResource extends Resource
                         default   => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'annual'  => __('Annual'),
-                        'monthly' => __('Monthly'),
-                        'daily'   => __('Daily'),
-                        'custom'  => __('Custom'),
+                        'annual'  => 'Annuel',
+                        'monthly' => 'Mensuel',
+                        'daily'   => 'Quotidien',
+                        'custom'  => 'Personnalisé',
                         default   => $state,
                     }),
-                Tables\Columns\TextColumn::make('amount')->label(__('Amount'))->money('TND')->sortable(),
-                Tables\Columns\IconColumn::make('is_active')->label(__('Active'))->boolean(),
-                Tables\Columns\TextColumn::make('students_count')->counts('students')->label(__('Students')),
+                Tables\Columns\TextColumn::make('amount')
+                    ->label('Montant')->money('TND')->sortable()
+                    ->weight(\Filament\Support\Enums\FontWeight::Bold),
+                Tables\Columns\IconColumn::make('is_active')->label('Actif')->boolean(),
+                Tables\Columns\TextColumn::make('students_count')
+                    ->counts('students')->label('Élèves inscrits')
+                    ->badge()->color('info'),
             ])
             ->filters([
-                Tables\Filters\TernaryFilter::make('is_active')->label(__('Active')),
+                Tables\Filters\TernaryFilter::make('is_active')->label('Actif'),
                 Tables\Filters\SelectFilter::make('type')
-                    ->label(__('Type'))
+                    ->label('Type')
                     ->options([
-                        'annual'  => __('Annual'),
-                        'monthly' => __('Monthly'),
-                        'daily'   => __('Daily'),
-                        'custom'  => __('Custom'),
+                        'annual'  => 'Annuel',
+                        'monthly' => 'Mensuel',
+                        'daily'   => 'Quotidien',
+                        'custom'  => 'Personnalisé',
                     ]),
             ])
+            ->emptyStateIcon('heroicon-o-clipboard-document-list')
+            ->emptyStateHeading('Aucun service configuré')
+            ->emptyStateDescription('Créez les services proposés aux élèves (scolarité, transport, etc.).')
+            ->emptyStateActions([Actions\CreateAction::make()->label('Créer un service')])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

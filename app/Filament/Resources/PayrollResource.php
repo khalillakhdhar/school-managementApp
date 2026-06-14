@@ -322,16 +322,17 @@ class PayrollResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('employee.first_name')
-                    ->label(__('Employee'))
+                    ->label('Employé')
                     ->formatStateUsing(fn ($state, $record) => $record->employee?->full_name ?? '—')
-                    ->searchable()->sortable(),
+                    ->searchable()->sortable()
+                    ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('employee.contract_type')
-                    ->label(__('Type'))
+                    ->label('Type')
                     ->badge()
                     ->formatStateUsing(fn ($state) => match ($state) {
-                        'permanent' => __('Permanent'),
-                        'temporary' => __('Fixed-term'),
-                        'contract'  => __('Contractor'),
+                        'permanent' => 'Permanent',
+                        'temporary' => 'CDD',
+                        'contract'  => 'Vacataire',
                         default     => $state ?? '—',
                     })
                     ->color(fn ($state) => match ($state) {
@@ -341,28 +342,29 @@ class PayrollResource extends Resource
                         default     => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('month')
-                    ->label(__('Month'))
+                    ->label('Mois')
                     ->formatStateUsing(fn ($state) => static::months()[$state] ?? $state)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('year')
-                    ->label(__('Year'))->sortable(),
+                    ->label('Année')->sortable(),
                 Tables\Columns\TextColumn::make('period_from')
-                    ->label(__('Period'))
+                    ->label('Période')
                     ->formatStateUsing(fn ($state, $record) => $record->period_from
                         ? $record->period_from->format('d/m') . ' → ' . ($record->period_to?->format('d/m') ?? '?')
                         : '—')
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('total_hours_worked')
-                    ->label(__('Hours'))
+                    ->label('Heures')
                     ->formatStateUsing(fn ($state) => $state > 0 ? "{$state}h" : '—')
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('gross_salary')
-                    ->label(__('Gross'))->money('TND')->sortable(),
+                    ->label('Brut')->money('TND')->sortable(),
                 Tables\Columns\TextColumn::make('net_salary')
-                    ->label(__('Net Salary'))->money('TND')->sortable()
-                    ->color('success'),
+                    ->label('Net')->money('TND')->sortable()
+                    ->color('success')
+                    ->weight(\Filament\Support\Enums\FontWeight::Bold),
                 Tables\Columns\TextColumn::make('status')
-                    ->label(__('Status'))
+                    ->label('Statut')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'draft'     => 'gray',
@@ -372,13 +374,16 @@ class PayrollResource extends Resource
                         default     => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'draft'     => __('Draft'),
-                        'finalized' => __('Finalized'),
-                        'paid'      => __('Paid'),
-                        'rejected'  => __('Rejected'),
+                        'draft'     => 'Brouillon',
+                        'finalized' => 'Finalisé',
+                        'paid'      => 'Payé',
+                        'rejected'  => 'Rejeté',
                         default     => $state,
                     }),
             ])
+            ->emptyStateIcon('heroicon-o-banknotes')
+            ->emptyStateHeading('Aucune fiche de paie')
+            ->emptyStateDescription('Générez les fiches de paie du personnel ici.')
             ->defaultSort('year', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')

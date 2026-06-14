@@ -90,14 +90,17 @@ class IncidentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('incident_date')->label(__('Date'))->date()->sortable(),
+                Tables\Columns\TextColumn::make('incident_date')
+                    ->label('Date')->date('d/m/Y')->sortable(),
                 Tables\Columns\TextColumn::make('student.first_name')
-                    ->label(__('Student'))
+                    ->label('Élève')
                     ->formatStateUsing(fn ($state, $record) => $record->student?->full_name ?? '—')
-                    ->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('title')->label(__('Title'))->limit(40)->searchable(),
+                    ->searchable()->sortable()
+                    ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
+                Tables\Columns\TextColumn::make('title')
+                    ->label('Titre')->limit(45)->searchable(),
                 Tables\Columns\TextColumn::make('type')
-                    ->label(__('Type'))
+                    ->label('Type')
                     ->badge()
                     ->color(fn ($state) => match($state) {
                         'accident'     => 'danger',
@@ -108,15 +111,15 @@ class IncidentResource extends Resource
                         default        => 'gray',
                     })
                     ->formatStateUsing(fn ($state) => match($state) {
-                        'accident'     => __('Accident'),
-                        'health'       => __('Health'),
-                        'disciplinary' => __('Disciplinary'),
-                        'absence'      => __('Absence'),
-                        'behavioral'   => __('Behavioral'),
-                        default        => __('Other'),
+                        'accident'     => 'Accident',
+                        'health'       => 'Santé',
+                        'disciplinary' => 'Discipline',
+                        'absence'      => 'Absence',
+                        'behavioral'   => 'Comportement',
+                        default        => 'Autre',
                     }),
                 Tables\Columns\TextColumn::make('severity')
-                    ->label(__('Severity'))
+                    ->label('Gravité')
                     ->badge()
                     ->color(fn ($state) => match($state) {
                         'high'   => 'danger',
@@ -124,17 +127,20 @@ class IncidentResource extends Resource
                         default  => 'success',
                     })
                     ->formatStateUsing(fn ($state) => match($state) {
-                        'high'   => __('High'),
-                        'medium' => __('Medium'),
-                        default  => __('Low'),
+                        'high'   => 'Élevée',
+                        'medium' => 'Moyenne',
+                        default  => 'Faible',
                     }),
                 Tables\Columns\IconColumn::make('parent_notified')
-                    ->label(__('Notified'))
+                    ->label('Parent notifié')
                     ->boolean()
                     ->trueColor('success')
                     ->falseColor('danger'),
             ])
             ->defaultSort('incident_date', 'desc')
+            ->emptyStateIcon('heroicon-o-exclamation-triangle')
+            ->emptyStateHeading('Aucun incident enregistré')
+            ->emptyStateDescription('Les incidents signalés apparaîtront ici.')
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
                     ->label(__('Type'))

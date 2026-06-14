@@ -89,32 +89,43 @@ class PaymentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable(),
-                Tables\Columns\TextColumn::make('student.first_name')->label(__('Student'))->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('amount')->label(__('Amount'))->money('TND')->sortable(),
-                Tables\Columns\TextColumn::make('payment_date')->label(__('Payment Date'))->date()->sortable(),
-                Tables\Columns\TextColumn::make('due_date')->label(__('Due Date'))->date()->sortable()
-                    ->color(fn ($state, $record) => $record->status === 'pending' && $state && $state < now() ? 'danger' : null)
+                Tables\Columns\TextColumn::make('id')
+                    ->label('#')->sortable()->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('student.first_name')
+                    ->label('Élève')
+                    ->formatStateUsing(fn ($state, Payment $record): string => $record->student?->full_name ?? '—')
+                    ->searchable(['students.first_name', 'students.last_name'])
+                    ->sortable()
+                    ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
+                Tables\Columns\TextColumn::make('amount')
+                    ->label('Montant')
+                    ->money('TND')->sortable()
+                    ->weight(\Filament\Support\Enums\FontWeight::Bold),
+                Tables\Columns\TextColumn::make('payment_date')
+                    ->label('Date paiement')->date('d/m/Y')->sortable(),
+                Tables\Columns\TextColumn::make('due_date')
+                    ->label('Échéance')->date('d/m/Y')->sortable()
+                    ->color(fn ($state, Payment $record) => $record->status === 'pending' && $state && $state < now() ? 'danger' : null)
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('payment_method')
-                    ->label(__('Method'))
+                    ->label('Mode')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'cash'          => 'success',
                         'bank_transfer' => 'primary',
                         'cheque'        => 'warning',
-                        'app'           => 'gray',
+                        'app'           => 'info',
                         default         => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'cash'          => __('Cash'),
-                        'bank_transfer' => __('Bank Transfer'),
-                        'cheque'        => __('Cheque'),
-                        'app'           => __('App'),
+                        'cash'          => 'Espèces',
+                        'bank_transfer' => 'Virement',
+                        'cheque'        => 'Chèque',
+                        'app'           => 'Application',
                         default         => $state,
                     }),
                 Tables\Columns\TextColumn::make('status')
-                    ->label(__('Status'))
+                    ->label('Statut')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'paid'      => 'success',
@@ -124,33 +135,37 @@ class PaymentResource extends Resource
                         default     => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'paid'      => __('Paid'),
-                        'pending'   => __('Pending'),
-                        'failed'    => __('Failed'),
-                        'cancelled' => __('Cancelled'),
+                        'paid'      => 'Payé',
+                        'pending'   => 'En attente',
+                        'failed'    => 'Échoué',
+                        'cancelled' => 'Annulé',
                         default     => $state,
                     }),
-                Tables\Columns\TextColumn::make('reference_number')->label(__('Reference'))->toggleable(),
+                Tables\Columns\TextColumn::make('reference_number')
+                    ->label('Référence')->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('payment_date', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
-                    ->label(__('Status'))
+                    ->label('Statut')
                     ->options([
-                        'paid'      => __('Paid'),
-                        'pending'   => __('Pending'),
-                        'failed'    => __('Failed'),
-                        'cancelled' => __('Cancelled'),
+                        'paid'      => 'Payé',
+                        'pending'   => 'En attente',
+                        'failed'    => 'Échoué',
+                        'cancelled' => 'Annulé',
                     ]),
                 Tables\Filters\SelectFilter::make('payment_method')
-                    ->label(__('Method'))
+                    ->label('Mode de paiement')
                     ->options([
-                        'cash'          => __('Cash'),
-                        'bank_transfer' => __('Bank Transfer'),
-                        'cheque'        => __('Cheque'),
-                        'app'           => __('App'),
+                        'cash'          => 'Espèces',
+                        'bank_transfer' => 'Virement',
+                        'cheque'        => 'Chèque',
+                        'app'           => 'Application',
                     ]),
             ])
+            ->emptyStateIcon('heroicon-o-banknotes')
+            ->emptyStateHeading('Aucun paiement enregistré')
+            ->emptyStateDescription('Les paiements des élèves apparaîtront ici une fois enregistrés.')
             ->actions([
                 Actions\Action::make('mark_paid')
                     ->label(__('Mark Paid'))

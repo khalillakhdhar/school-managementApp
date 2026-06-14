@@ -37,13 +37,20 @@ class ExpenseCategoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label(__('Name'))->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('description')->label(__('Description'))->limit(60)->toggleable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Catégorie')->searchable()->sortable()
+                    ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
+                Tables\Columns\TextColumn::make('description')
+                    ->label('Description')->limit(60)->toggleable(),
                 Tables\Columns\TextColumn::make('expenses_count')
-                    ->label(__('Expenses'))
+                    ->label('Dépenses')
                     ->counts('expenses')
                     ->badge()->color('warning'),
             ])
+            ->emptyStateIcon('heroicon-o-tag')
+            ->emptyStateHeading('Aucune catégorie de dépense')
+            ->emptyStateDescription('Créez des catégories pour organiser les dépenses (salaires, matériel, etc.).')
+            ->emptyStateActions([Actions\CreateAction::make()->label('Créer une catégorie')])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

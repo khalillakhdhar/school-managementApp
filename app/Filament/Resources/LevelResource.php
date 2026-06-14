@@ -45,15 +45,22 @@ class LevelResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('order')->label('#')->sortable(),
-                Tables\Columns\TextColumn::make('code')->label(__('Code'))->searchable()->badge()->color('primary'),
-                Tables\Columns\TextColumn::make('name')->label(__('Name'))->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('order')->label('Ordre')->sortable(),
+                Tables\Columns\TextColumn::make('code')
+                    ->label('Code')->searchable()->badge()->color('primary'),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Niveau')->searchable()->sortable()
+                    ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('classrooms_count')
-                    ->label(__('Classrooms'))
+                    ->label('Classes')
                     ->counts('classrooms')
                     ->badge()->color('info'),
             ])
             ->defaultSort('order')
+            ->emptyStateIcon('heroicon-o-academic-cap')
+            ->emptyStateHeading('Aucun niveau créé')
+            ->emptyStateDescription('Créez les niveaux scolaires (CP, CE1, etc.) pour organiser les classes.')
+            ->emptyStateActions([Actions\CreateAction::make()->label('Créer un niveau')])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

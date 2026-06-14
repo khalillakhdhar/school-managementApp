@@ -71,26 +71,30 @@ class BlogPostResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('cover_image_path')
-                    ->label('')
-                    ->circular()->size(40),
-                Tables\Columns\TextColumn::make('title')->label(__('Title'))->searchable()->sortable()->limit(50),
-                Tables\Columns\TextColumn::make('author.name')->label(__('Author'))->toggleable(),
+                    ->label('')->circular()->size(40),
+                Tables\Columns\TextColumn::make('title')
+                    ->label('Titre')->searchable()->sortable()->limit(55)
+                    ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\IconColumn::make('is_published')
-                    ->label(__('Published'))
+                    ->label('Publié')
                     ->boolean()
                     ->trueColor('success')
                     ->falseColor('gray'),
                 Tables\Columns\TextColumn::make('published_at')
-                    ->label(__('Published At'))
-                    ->dateTime()->sortable()->toggleable(),
+                    ->label('Publié le')
+                    ->date('d/m/Y')->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('Created'))
-                    ->date()->sortable()->toggleable(),
+                    ->label('Créé le')
+                    ->date('d/m/Y')->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
-                Tables\Filters\TernaryFilter::make('is_published')->label(__('Published')),
+                Tables\Filters\TernaryFilter::make('is_published')->label('Publié'),
             ])
+            ->emptyStateIcon('heroicon-o-newspaper')
+            ->emptyStateHeading('Aucun article publié')
+            ->emptyStateDescription('Rédigez des annonces et actualités pour le portail parents.')
+            ->emptyStateActions([Actions\CreateAction::make()->label('Rédiger un article')])
             ->actions([
                 Actions\Action::make('publish')
                     ->label(__('Publish'))

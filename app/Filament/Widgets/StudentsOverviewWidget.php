@@ -10,6 +10,8 @@ class StudentsOverviewWidget extends StatsOverviewWidget
     protected static bool $isLazy = true;
     protected static ?int $sort = 1;
 
+    public static function canView(): bool { return false; }
+
     protected function getStats(): array
     {
         $total   = Student::count();

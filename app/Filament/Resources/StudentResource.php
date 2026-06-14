@@ -103,16 +103,19 @@ class StudentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable(),
-                Tables\Columns\TextColumn::make('first_name')->label(__('First Name'))->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('last_name')->label(__('Last Name'))->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('class')->label(__('Class'))->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('level')->label(__('Level'))->sortable(),
+                Tables\Columns\TextColumn::make('id')
+                    ->label('#')->sortable()->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('first_name')
+                    ->label('Élève')
+                    ->formatStateUsing(fn ($state, Student $record): string => $record->full_name)
+                    ->searchable(['first_name', 'last_name'])
+                    ->sortable()
+                    ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('classroom.name')
-                    ->label(__('Classroom'))
-                    ->badge()->color('info')->sortable(),
+                    ->label('Classe')
+                    ->badge()->color('primary')->sortable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->label(__('Status'))
+                    ->label('Statut')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'active'    => 'success',
@@ -122,14 +125,14 @@ class StudentResource extends Resource
                         default     => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'active'    => __('Active'),
-                        'inactive'  => __('Inactive'),
-                        'suspended' => __('Suspended'),
-                        'graduated' => __('Graduated'),
+                        'active'    => 'Actif',
+                        'inactive'  => 'Inactif',
+                        'suspended' => 'Suspendu',
+                        'graduated' => 'Diplômé',
                         default     => $state,
                     }),
                 Tables\Columns\TextColumn::make('pending_balance')
-                    ->label(__('Balance'))
+                    ->label('Solde dû')
                     ->getStateUsing(fn (Student $record): float =>
                         $record->payments()->where('status', 'pending')->sum('amount')
                     )
@@ -141,26 +144,34 @@ class StudentResource extends Resource
                             : ($record->payments()->where('status', 'pending')->exists() ? 'warning' : 'success')
                     )
                     ->sortable(false),
-                Tables\Columns\TextColumn::make('date_of_birth')->label(__('Birth Date'))->date()->sortable(),
-                Tables\Columns\TextColumn::make('created_at')->label('Créé le')->dateTime()->sortable()
+                Tables\Columns\TextColumn::make('date_of_birth')
+                    ->label('Date de naissance')->date('d/m/Y')->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('enrollment_date')
+                    ->label('Inscription')->date('d/m/Y')->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Créé le')->dateTime('d/m/Y H:i')->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('last_name')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
-                    ->label(__('Status'))
+                    ->label('Statut')
                     ->options([
-                        'active'    => __('Active'),
-                        'inactive'  => __('Inactive'),
-                        'suspended' => __('Suspended'),
-                        'graduated' => __('Graduated'),
+                        'active'    => 'Actif',
+                        'inactive'  => 'Inactif',
+                        'suspended' => 'Suspendu',
+                        'graduated' => 'Diplômé',
                     ]),
                 Tables\Filters\SelectFilter::make('classroom_id')
-                    ->label(__('Classroom'))
+                    ->label('Classe')
                     ->relationship('classroom', 'name'),
-                Tables\Filters\SelectFilter::make('class')
-                    ->label(__('Class'))
-                    ->options(fn () => Student::distinct()->pluck('class', 'class')),
             ])
+            ->emptyStateIcon('heroicon-o-academic-cap')
+            ->emptyStateHeading('Aucun élève inscrit')
+            ->emptyStateDescription('Commencez par inscrire le premier élève de l\'établissement.')
+            ->emptyStateActions([Actions\CreateAction::make()->label('Inscrire un élève')])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

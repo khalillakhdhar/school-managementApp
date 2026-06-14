@@ -147,13 +147,16 @@ class EmployeeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable()->toggleable(),
+                Tables\Columns\TextColumn::make('id')
+                    ->label('#')->sortable()->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('first_name')
-                    ->label(__('First Name'))->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('last_name')
-                    ->label(__('Last Name'))->searchable()->sortable(),
+                    ->label('Employé')
+                    ->formatStateUsing(fn ($state, Employee $record): string => $record->full_name)
+                    ->searchable(['first_name', 'last_name'])
+                    ->sortable()
+                    ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('position')
-                    ->label(__('Position'))->searchable()->sortable(),
+                    ->label('Poste')->searchable()->sortable(),
                 Tables\Columns\IconColumn::make('is_teacher')
                     ->label(__('Teacher'))->boolean()
                     ->trueColor('primary')->falseColor('gray'),
@@ -273,6 +276,10 @@ class EmployeeResource extends Resource
                 Actions\EditAction::make(),
                 Actions\DeleteAction::make(),
             ])
+            ->emptyStateIcon('heroicon-o-identification')
+            ->emptyStateHeading('Aucun employé enregistré')
+            ->emptyStateDescription('Ajoutez les membres du personnel de l\'établissement.')
+            ->emptyStateActions([Actions\CreateAction::make()->label('Ajouter un employé')])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }
 
