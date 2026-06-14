@@ -52,7 +52,7 @@ class EmployeeResource extends Resource
                         'temporary' => __('Fixed-term'),
                         'contract'  => __('Contractor'),
                     ])
-                    ->required()->default('permanent'),
+                    ->required()->default('permanent')->live(),
                 Forms\Components\TextInput::make('position')
                     ->label(__('Position'))->required()->maxLength(255),
                 Forms\Components\DatePicker::make('start_date')
@@ -93,16 +93,27 @@ class EmployeeResource extends Resource
             Section::make(__('Salary & Allowances'))->schema([
                 Forms\Components\TextInput::make('salary_base')
                     ->label(__('Base Salary'))
-                    ->required()->numeric()->minValue(0)->prefix('TND'),
+                    ->numeric()->minValue(0)->prefix('TND')
+                    ->required(fn (callable $get) => $get('contract_type') !== 'contract')
+                    ->visible(fn (callable $get) => $get('contract_type') !== 'contract'),
+                Forms\Components\TextInput::make('hourly_rate')
+                    ->label(__('Hourly Rate'))
+                    ->numeric()->minValue(0)->prefix('TND')
+                    ->required(fn (callable $get) => $get('contract_type') === 'contract')
+                    ->visible(fn (callable $get) => $get('contract_type') === 'contract')
+                    ->helperText(__('Rate per hour billed to the school')),
                 Forms\Components\TextInput::make('indemnite_transport')
                     ->label(__('Transport Allowance'))
-                    ->numeric()->default(0)->minValue(0)->prefix('TND'),
+                    ->numeric()->default(0)->minValue(0)->prefix('TND')
+                    ->visible(fn (callable $get) => $get('contract_type') !== 'contract'),
                 Forms\Components\TextInput::make('indemnite_logement')
                     ->label(__('Housing Allowance'))
-                    ->numeric()->default(0)->minValue(0)->prefix('TND'),
+                    ->numeric()->default(0)->minValue(0)->prefix('TND')
+                    ->visible(fn (callable $get) => $get('contract_type') !== 'contract'),
                 Forms\Components\TextInput::make('autres_indemnites')
                     ->label(__('Other Allowances'))
-                    ->numeric()->default(0)->minValue(0)->prefix('TND'),
+                    ->numeric()->default(0)->minValue(0)->prefix('TND')
+                    ->visible(fn (callable $get) => $get('contract_type') !== 'contract'),
             ])->columns(2),
         ]);
     }

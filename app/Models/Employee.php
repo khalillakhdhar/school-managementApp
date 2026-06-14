@@ -8,8 +8,8 @@ class Employee extends Model
 {
     protected $fillable = [
         'first_name', 'last_name', 'position', 'phone', 'email',
-        'address', 'salary_base', 'contract_type', 'start_date',
-        'end_date', 'photo_path', 'is_active',
+        'address', 'salary_base', 'hourly_rate', 'contract_type',
+        'start_date', 'end_date', 'photo_path', 'is_active',
         // Teacher & payroll fields
         'is_teacher', 'cin', 'matricule_cnss', 'rib', 'specialite',
         'situation_familiale', 'nb_enfants',
@@ -20,6 +20,7 @@ class Employee extends Model
         'start_date'           => 'date',
         'end_date'             => 'date',
         'salary_base'          => 'decimal:3',
+        'hourly_rate'          => 'decimal:3',
         'indemnite_transport'  => 'decimal:3',
         'indemnite_logement'   => 'decimal:3',
         'autres_indemnites'    => 'decimal:3',
@@ -55,6 +56,11 @@ class Employee extends Model
              + (float)$this->autres_indemnites;
     }
 
+    public function isContractor(): bool
+    {
+        return $this->contract_type === 'contract';
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
@@ -63,6 +69,11 @@ class Employee extends Model
     public function scopeTeachers($query)
     {
         return $query->where('is_teacher', true);
+    }
+
+    public function scopeContractors($query)
+    {
+        return $query->where('contract_type', 'contract');
     }
 
     public function scopeByPosition($query, $position)

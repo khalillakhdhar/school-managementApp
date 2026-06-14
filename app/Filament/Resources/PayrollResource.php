@@ -2,6 +2,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PayrollResource\Pages;
+use App\Models\Attendance;
 use App\Models\Employee;
 use App\Models\Payroll;
 use Filament\Actions;
@@ -24,7 +25,7 @@ class PayrollResource extends Resource
     public static function getModelLabel(): string        { return __('Pay Slip'); }
     public static function getPluralModelLabel(): string  { return __('Pay Slips'); }
 
-    // ─── Months helper ────────────────────────────────────────────────────────
+    // ─── Helpers ──────────────────────────────────────────────────────────────
 
     private static function months(): array
     {
@@ -36,13 +37,15 @@ class PayrollResource extends Resource
         ];
     }
 
-    // ─── Live auto-calculation helper ─────────────────────────────────────────
+    private static function isContractor(?int $employeeId): bool
+    {
+        if (!$employeeId) return false;
+        return Employee::find($employeeId)?->isContractor() ?? false;
+    }
 
-    /**
-     * Recalculates all derived payroll fields (gross, CNSS, IRPP, net, charges patronales)
-     * from the current form state. Called on every live field change.
-     */
-    protected static function recalculate(callable $set, callable $get): void
+    // ─── Recalculate for fixed-salary employees ────────────────────────────────
+
+    protected static function recalculateFixed(callable $set, callable $get): void
     {
         $base      = (float)($get('salary_base')         ?? 0);
         $overtime  = (float)($get('overtime_pay')        ?? 0);
@@ -51,28 +54,15 @@ class PayrollResource extends Resource
         $logement  = (float)($get('indemnite_logement')  ?? 0);
         $autres    = (float)($get('autres_indemnites')   ?? 0);
 
-        // Gross = all earnings
-        $gross = round($base + $overtime + $bonuses + $transport + $logement + $autres, 3);
-        $set('gross_salary', $gross);
-
-        // CNSS base: salaire de base + heures sup + primes (indemnités exonérées)
+        $gross    = round($base + $overtime + $bonuses + $transport + $logement + $autres, 3);
         $cnssBase = $base + $overtime + $bonuses;
 
-        // CNSS salariale 9,18%
         $cnss = round($cnssBase * 0.0918, 3);
-        $set('cnss_deduction', $cnss);
 
-        // Abattement frais professionnels : 10%, plafonné à 2 000 TND/an → 166,667/mois
-        $abattement = min($cnssBase * 0.10, 166.667);
+        $abattement    = min($cnssBase * 0.10, 166.667);
+        $baseAnnuelle  = max(0, $cnssBase - $cnss - $abattement) * 12;
+        $irppAnnuel    = Payroll::irppBarem($baseAnnuelle);
 
-        // Base imposable mensuelle, annualisée
-        $baseMensuelle  = max(0, $cnssBase - $cnss - $abattement);
-        $baseAnnuelle   = $baseMensuelle * 12;
-
-        // IRPP annuel (barème 2024)
-        $irppAnnuel = Payroll::irppBarem($baseAnnuelle);
-
-        // Déductions chef de famille
         $employeeId = $get('employee_id');
         if ($employeeId) {
             $employee = Employee::find($employeeId);
@@ -84,62 +74,95 @@ class PayrollResource extends Resource
             }
         }
 
-        $irpp = round(max(0, $irppAnnuel) / 12, 3);
-        $set('irpp_deduction', $irpp);
-
+        $irpp            = round(max(0, $irppAnnuel) / 12, 3);
         $otherDeductions = (float)($get('other_deductions') ?? 0);
-        $net = round(max(0, $gross - $cnss - $irpp - $otherDeductions), 3);
-        $set('net_salary', $net);
+        $net             = round(max(0, $gross - $cnss - $irpp - $otherDeductions), 3);
 
-        // Charges patronales
-        $cnssPatronale = round($cnssBase * 0.1657, 3);
-        $foprolos      = round($cnssBase * 0.01, 3);
-        $set('cnss_patronale', $cnssPatronale);
-        $set('foprolos', $foprolos);
+        $cnssPatronale  = round($cnssBase * 0.1657, 3);
+        $foprolos       = round($cnssBase * 0.01, 3);
+
+        $set('gross_salary',          $gross);
+        $set('cnss_deduction',        $cnss);
+        $set('irpp_deduction',        $irpp);
+        $set('net_salary',            $net);
+        $set('cnss_patronale',        $cnssPatronale);
+        $set('foprolos',              $foprolos);
         $set('total_charge_patronale', round($cnssPatronale + $foprolos, 3));
+    }
+
+    // ─── Recalculate for contractor employees ─────────────────────────────────
+
+    protected static function recalculateContractor(callable $set, callable $get): void
+    {
+        $rate  = (float)($get('hourly_rate_used')    ?? 0);
+        $hours = (float)($get('total_hours_worked')  ?? 0);
+        $rs    = (float)($get('retenue_source')      ?? 0);
+
+        $gross = round($rate * $hours, 3);
+        $net   = round(max(0, $gross - $rs), 3);
+
+        $set('gross_salary', $gross);
+        $set('net_salary',   $net);
+        // Contractors: no CNSS/IRPP/charges patronales
+        $set('cnss_deduction',         0);
+        $set('irpp_deduction',         0);
+        $set('cnss_patronale',         0);
+        $set('foprolos',               0);
+        $set('total_charge_patronale', 0);
     }
 
     // ─── Form ─────────────────────────────────────────────────────────────────
 
     public static function form(Schema $schema): Schema
     {
-        $liveUpdate = fn (callable $set, callable $get) => static::recalculate($set, $get);
+        $fixedLiveUpdate      = fn (callable $set, callable $get) => static::recalculateFixed($set, $get);
+        $contractorLiveUpdate = fn (callable $set, callable $get) => static::recalculateContractor($set, $get);
 
         return $schema->components([
 
+            // ── Employee & Period ──────────────────────────────────────────────
             Section::make(__('Employee & Period'))->schema([
                 Forms\Components\Select::make('employee_id')
                     ->label(__('Employee'))
                     ->options(
-                        Employee::active()
-                            ->orderBy('last_name')
-                            ->get()
+                        Employee::active()->orderBy('last_name')->get()
                             ->mapWithKeys(fn ($e) => [
-                                $e->id => $e->full_name . ($e->is_teacher ? ' ★' : ''),
+                                $e->id => $e->full_name
+                                    . ($e->is_teacher  ? ' ★' : '')
+                                    . ($e->isContractor() ? ' [' . __('Contractor') . ']' : ''),
                             ])
                     )
                     ->searchable()->required()
                     ->live()
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                        if ($state) {
-                            $e = Employee::find($state);
-                            if ($e) {
-                                $set('salary_base',          $e->salary_base);
-                                $set('indemnite_transport',  $e->indemnite_transport);
-                                $set('indemnite_logement',   $e->indemnite_logement);
-                                $set('autres_indemnites',    $e->autres_indemnites);
-                            }
+                        if (!$state) return;
+                        $e = Employee::find($state);
+                        if (!$e) return;
+
+                        if ($e->isContractor()) {
+                            $set('hourly_rate_used', $e->hourly_rate);
+                            $set('salary_base', 0);
+                            static::recalculateContractor($set, $get);
+                        } else {
+                            $set('salary_base',         $e->salary_base);
+                            $set('indemnite_transport', $e->indemnite_transport);
+                            $set('indemnite_logement',  $e->indemnite_logement);
+                            $set('autres_indemnites',   $e->autres_indemnites);
+                            $set('hourly_rate_used', 0);
+                            static::recalculateFixed($set, $get);
                         }
-                        static::recalculate($set, $get);
                     }),
+
                 Forms\Components\Select::make('month')
                     ->label(__('Month'))
                     ->options(static::months())
                     ->required()->default((int)date('m')),
+
                 Forms\Components\TextInput::make('year')
                     ->label(__('Year'))
                     ->required()->numeric()->default((int)date('Y'))
                     ->minValue(2000)->maxValue(2100),
+
                 Forms\Components\Select::make('status')
                     ->label(__('Status'))
                     ->options([
@@ -151,76 +174,130 @@ class PayrollResource extends Resource
                     ->required()->default('draft'),
             ])->columns(2),
 
-            Section::make(__('Earnings'))->schema([
-                Forms\Components\TextInput::make('salary_base')
-                    ->label(__('Base Salary'))
-                    ->required()->numeric()->minValue(0)->prefix('TND')
-                    ->live(onBlur: true)->afterStateUpdated($liveUpdate),
-                Forms\Components\TextInput::make('overtime_pay')
-                    ->label(__('Overtime Pay'))
-                    ->numeric()->default(0)->minValue(0)->prefix('TND')
-                    ->live(onBlur: true)->afterStateUpdated($liveUpdate),
-                Forms\Components\TextInput::make('bonuses')
-                    ->label(__('Bonuses / Premiums'))
-                    ->numeric()->default(0)->minValue(0)->prefix('TND')
-                    ->live(onBlur: true)->afterStateUpdated($liveUpdate),
-                Forms\Components\TextInput::make('indemnite_transport')
-                    ->label(__('Transport Allowance'))
-                    ->numeric()->default(0)->minValue(0)->prefix('TND')
-                    ->live(onBlur: true)->afterStateUpdated($liveUpdate),
-                Forms\Components\TextInput::make('indemnite_logement')
-                    ->label(__('Housing Allowance'))
-                    ->numeric()->default(0)->minValue(0)->prefix('TND')
-                    ->live(onBlur: true)->afterStateUpdated($liveUpdate),
-                Forms\Components\TextInput::make('autres_indemnites')
-                    ->label(__('Other Allowances'))
-                    ->numeric()->default(0)->minValue(0)->prefix('TND')
-                    ->live(onBlur: true)->afterStateUpdated($liveUpdate),
-                Forms\Components\TextInput::make('gross_salary')
-                    ->label(__('Gross Salary'))
-                    ->prefix('TND')->disabled()->dehydrated()
-                    ->extraAttributes(['class' => 'font-bold']),
-            ])->columns(2),
+            // ── Contractor Mode ────────────────────────────────────────────────
+            Section::make(__('Contractor Billing'))
+                ->description(__('Billing based on hours worked × hourly rate'))
+                ->schema([
+                    Forms\Components\DatePicker::make('period_from')
+                        ->label(__('Period From'))
+                        ->required(fn (callable $get) => static::isContractor($get('employee_id')))
+                        ->default(fn () => now()->startOfMonth()),
+                    Forms\Components\DatePicker::make('period_to')
+                        ->label(__('Period To'))
+                        ->required(fn (callable $get) => static::isContractor($get('employee_id')))
+                        ->default(fn () => now()->endOfMonth()),
+                    Forms\Components\TextInput::make('hourly_rate_used')
+                        ->label(__('Hourly Rate (TND/h)'))
+                        ->required()->numeric()->minValue(0)->prefix('TND')
+                        ->live(onBlur: true)->afterStateUpdated($contractorLiveUpdate),
+                    Forms\Components\TextInput::make('total_hours_worked')
+                        ->label(__('Hours Worked'))
+                        ->required()->numeric()->default(0)->minValue(0)->suffix('h')
+                        ->live(onBlur: true)->afterStateUpdated($contractorLiveUpdate)
+                        ->helperText(__('Edit manually or use "Load from Attendance" action in the table.')),
+                    Forms\Components\TextInput::make('gross_salary')
+                        ->label(__('Gross Amount'))
+                        ->prefix('TND')->disabled()->dehydrated(),
+                    Forms\Components\TextInput::make('retenue_source')
+                        ->label(__('Retenue à la source (RS 15%)'))
+                        ->numeric()->default(0)->minValue(0)->prefix('TND')
+                        ->live(onBlur: true)->afterStateUpdated($contractorLiveUpdate)
+                        ->helperText(__('Applies to professional fees paid to individuals (Art. 52 CIRPPIS)')),
+                    Forms\Components\TextInput::make('other_deductions')
+                        ->label(__('Other Deductions'))
+                        ->numeric()->default(0)->minValue(0)->prefix('TND')
+                        ->live(onBlur: true)
+                        ->afterStateUpdated($contractorLiveUpdate),
+                    Forms\Components\TextInput::make('net_salary')
+                        ->label(__('Amount to Pay'))
+                        ->prefix('TND')->disabled()->dehydrated()
+                        ->extraAttributes(['class' => 'font-bold']),
+                ])
+                ->columns(2)
+                ->visible(fn (callable $get) => static::isContractor($get('employee_id'))),
 
-            Section::make(__('Employee Deductions (Retenues salariales)'))->schema([
-                Forms\Components\TextInput::make('cnss_deduction')
-                    ->label(__('CNSS Employee (9.18%)'))
-                    ->prefix('TND')->numeric()->minValue(0)
-                    ->live(onBlur: true)->afterStateUpdated($liveUpdate)
-                    ->helperText(__('Auto-calculated. Editable for manual correction.')),
-                Forms\Components\TextInput::make('irpp_deduction')
-                    ->label(__('IRPP (Tunisian 2024 scale)'))
-                    ->prefix('TND')->numeric()->minValue(0)
-                    ->live(onBlur: true)->afterStateUpdated($liveUpdate)
-                    ->helperText(__('After professional expenses allowance and family deductions.')),
-                Forms\Components\TextInput::make('other_deductions')
-                    ->label(__('Other Deductions'))
-                    ->prefix('TND')->numeric()->default(0)->minValue(0)
-                    ->live(onBlur: true)->afterStateUpdated($liveUpdate),
-                Forms\Components\TextInput::make('net_salary')
-                    ->label(__('Net Salary'))
-                    ->prefix('TND')->disabled()->dehydrated()
-                    ->extraAttributes(['class' => 'font-bold text-success-600']),
-            ])->columns(2),
+            // ── Fixed Salary Mode — Earnings ───────────────────────────────────
+            Section::make(__('Earnings'))
+                ->schema([
+                    Forms\Components\TextInput::make('salary_base')
+                        ->label(__('Base Salary'))
+                        ->required()->numeric()->minValue(0)->prefix('TND')
+                        ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate),
+                    Forms\Components\TextInput::make('overtime_pay')
+                        ->label(__('Overtime Pay'))
+                        ->numeric()->default(0)->minValue(0)->prefix('TND')
+                        ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate),
+                    Forms\Components\TextInput::make('bonuses')
+                        ->label(__('Bonuses / Premiums'))
+                        ->numeric()->default(0)->minValue(0)->prefix('TND')
+                        ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate),
+                    Forms\Components\TextInput::make('indemnite_transport')
+                        ->label(__('Transport Allowance'))
+                        ->numeric()->default(0)->minValue(0)->prefix('TND')
+                        ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate),
+                    Forms\Components\TextInput::make('indemnite_logement')
+                        ->label(__('Housing Allowance'))
+                        ->numeric()->default(0)->minValue(0)->prefix('TND')
+                        ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate),
+                    Forms\Components\TextInput::make('autres_indemnites')
+                        ->label(__('Other Allowances'))
+                        ->numeric()->default(0)->minValue(0)->prefix('TND')
+                        ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate),
+                    Forms\Components\TextInput::make('gross_salary')
+                        ->label(__('Gross Salary'))
+                        ->prefix('TND')->disabled()->dehydrated()
+                        ->extraAttributes(['class' => 'font-bold']),
+                ])
+                ->columns(2)
+                ->visible(fn (callable $get) => !static::isContractor($get('employee_id'))),
 
-            Section::make(__('Employer Charges (Charges patronales)'))->schema([
-                Forms\Components\TextInput::make('cnss_patronale')
-                    ->label(__('CNSS Employer (16.57%)'))
-                    ->prefix('TND')->disabled()->dehydrated(),
-                Forms\Components\TextInput::make('foprolos')
-                    ->label(__('FOPROLOS (1%)'))
-                    ->prefix('TND')->disabled()->dehydrated()
-                    ->helperText(__('Fonds de Promotion du Logement Social')),
-                Forms\Components\TextInput::make('total_charge_patronale')
-                    ->label(__('Total Employer Charge'))
-                    ->prefix('TND')->disabled()->dehydrated()
-                    ->extraAttributes(['class' => 'font-bold']),
-            ])->columns(3),
+            // ── Fixed Salary Mode — Employee Deductions ────────────────────────
+            Section::make(__('Employee Deductions (Retenues salariales)'))
+                ->schema([
+                    Forms\Components\TextInput::make('cnss_deduction')
+                        ->label(__('CNSS Employee (9.18%)'))
+                        ->prefix('TND')->numeric()->minValue(0)
+                        ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate)
+                        ->helperText(__('Auto-calculated. Editable for manual correction.')),
+                    Forms\Components\TextInput::make('irpp_deduction')
+                        ->label(__('IRPP (Tunisian 2024 scale)'))
+                        ->prefix('TND')->numeric()->minValue(0)
+                        ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate)
+                        ->helperText(__('After professional expenses allowance and family deductions.')),
+                    Forms\Components\TextInput::make('other_deductions')
+                        ->label(__('Other Deductions'))
+                        ->prefix('TND')->numeric()->default(0)->minValue(0)
+                        ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate),
+                    Forms\Components\TextInput::make('net_salary')
+                        ->label(__('Net Salary'))
+                        ->prefix('TND')->disabled()->dehydrated()
+                        ->extraAttributes(['class' => 'font-bold']),
+                ])
+                ->columns(2)
+                ->visible(fn (callable $get) => !static::isContractor($get('employee_id'))),
 
+            // ── Fixed Salary Mode — Employer Charges ──────────────────────────
+            Section::make(__('Employer Charges (Charges patronales)'))
+                ->schema([
+                    Forms\Components\TextInput::make('cnss_patronale')
+                        ->label(__('CNSS Employer (16.57%)'))
+                        ->prefix('TND')->disabled()->dehydrated(),
+                    Forms\Components\TextInput::make('foprolos')
+                        ->label(__('FOPROLOS (1%)'))
+                        ->prefix('TND')->disabled()->dehydrated()
+                        ->helperText(__('Fonds de Promotion du Logement Social')),
+                    Forms\Components\TextInput::make('total_charge_patronale')
+                        ->label(__('Total Employer Charge'))
+                        ->prefix('TND')->disabled()->dehydrated()
+                        ->extraAttributes(['class' => 'font-bold']),
+                ])
+                ->columns(3)
+                ->visible(fn (callable $get) => !static::isContractor($get('employee_id'))),
+
+            // ── Notes ─────────────────────────────────────────────────────────
             Section::make(__('Notes'))->schema([
                 Forms\Components\Textarea::make('notes')
-                    ->label(__('Notes'))
-                    ->rows(3)->columnSpanFull(),
+                    ->label(__('Notes'))->rows(3)->columnSpanFull(),
             ]),
 
         ]);
@@ -236,23 +313,42 @@ class PayrollResource extends Resource
                     ->label(__('Employee'))
                     ->formatStateUsing(fn ($state, $record) => $record->employee?->full_name ?? '—')
                     ->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('employee.contract_type')
+                    ->label(__('Type'))
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'permanent' => __('Permanent'),
+                        'temporary' => __('Fixed-term'),
+                        'contract'  => __('Contractor'),
+                        default     => $state ?? '—',
+                    })
+                    ->color(fn ($state) => match ($state) {
+                        'permanent' => 'success',
+                        'temporary' => 'warning',
+                        'contract'  => 'primary',
+                        default     => 'gray',
+                    }),
                 Tables\Columns\TextColumn::make('month')
                     ->label(__('Month'))
                     ->formatStateUsing(fn ($state) => static::months()[$state] ?? $state)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('year')
                     ->label(__('Year'))->sortable(),
+                Tables\Columns\TextColumn::make('period_from')
+                    ->label(__('Period'))
+                    ->formatStateUsing(fn ($state, $record) => $record->period_from
+                        ? $record->period_from->format('d/m') . ' → ' . ($record->period_to?->format('d/m') ?? '?')
+                        : '—')
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('total_hours_worked')
+                    ->label(__('Hours'))
+                    ->formatStateUsing(fn ($state) => $state > 0 ? "{$state}h" : '—')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('gross_salary')
-                    ->label(__('Gross Salary'))->money('TND')->sortable(),
-                Tables\Columns\TextColumn::make('cnss_deduction')
-                    ->label(__('CNSS'))->money('TND')->toggleable(),
-                Tables\Columns\TextColumn::make('irpp_deduction')
-                    ->label(__('IRPP'))->money('TND')->toggleable(),
+                    ->label(__('Gross'))->money('TND')->sortable(),
                 Tables\Columns\TextColumn::make('net_salary')
                     ->label(__('Net Salary'))->money('TND')->sortable()
                     ->color('success'),
-                Tables\Columns\TextColumn::make('total_charge_patronale')
-                    ->label(__('Employer Charge'))->money('TND')->toggleable(),
                 Tables\Columns\TextColumn::make('status')
                     ->label(__('Status'))
                     ->badge()
@@ -296,7 +392,143 @@ class PayrollResource extends Resource
                     ->getOptionLabelFromRecordUsing(fn ($r) => $r->full_name)
                     ->searchable(),
             ])
+            ->headerActions([
+                // ── Generate contractor payslip from attendance ────────────────
+                Actions\Action::make('generate_contractor')
+                    ->label(__('Generate Contractor Payslip'))
+                    ->icon('heroicon-o-clock')
+                    ->color('primary')
+                    ->form([
+                        Forms\Components\Select::make('employee_id')
+                            ->label(__('Contractor'))
+                            ->options(
+                                Employee::active()->contractors()->orderBy('last_name')->get()
+                                    ->mapWithKeys(fn ($e) => [
+                                        $e->id => "{$e->full_name} ({$e->hourly_rate} TND/h)",
+                                    ])
+                            )
+                            ->searchable()->required(),
+                        Forms\Components\DatePicker::make('period_from')
+                            ->label(__('Period From'))
+                            ->required()
+                            ->default(fn () => now()->startOfMonth()),
+                        Forms\Components\DatePicker::make('period_to')
+                            ->label(__('Period To'))
+                            ->required()
+                            ->default(fn () => now()->endOfMonth()),
+                        Forms\Components\TextInput::make('hourly_rate_override')
+                            ->label(__('Override Hourly Rate (leave empty to use employee rate)'))
+                            ->numeric()->minValue(0)->prefix('TND'),
+                    ])
+                    ->action(function (array $data): void {
+                        $employee = Employee::findOrFail($data['employee_id']);
+                        $from     = $data['period_from'];
+                        $to       = $data['period_to'];
+
+                        // Query attendance for the period
+                        $attendance = Attendance::where('employee_id', $employee->id)
+                            ->whereBetween('date', [$from, $to])
+                            ->whereIn('status', ['present', 'late'])
+                            ->whereNotNull('total_hours')
+                            ->get();
+
+                        $totalHours = round($attendance->sum('total_hours'), 2);
+                        $rate       = (float)($data['hourly_rate_override'] ?: $employee->hourly_rate);
+                        $gross      = round($rate * $totalHours, 3);
+                        $rs         = round($gross * 0.15, 3); // RS 15% par défaut
+
+                        $fromDate = \Carbon\Carbon::parse($from);
+
+                        $existing = Payroll::where('employee_id', $employee->id)
+                            ->where('month', $fromDate->month)
+                            ->where('year', $fromDate->year)
+                            ->first();
+
+                        if ($existing) {
+                            Notification::make()
+                                ->title(__('A payslip already exists for :name for this period.', ['name' => $employee->full_name]))
+                                ->warning()->send();
+                            return;
+                        }
+
+                        Payroll::create([
+                            'employee_id'        => $employee->id,
+                            'month'              => $fromDate->month,
+                            'year'               => $fromDate->year,
+                            'period_from'        => $from,
+                            'period_to'          => $to,
+                            'total_hours_worked' => $totalHours,
+                            'hourly_rate_used'   => $rate,
+                            'salary_base'        => 0,
+                            'gross_salary'       => $gross,
+                            'retenue_source'     => $rs,
+                            'net_salary'         => round(max(0, $gross - $rs), 3),
+                            'status'             => 'draft',
+                            'notes'              => __(':hours h worked from :from to :to (:days days with attendance)', [
+                                'hours' => $totalHours,
+                                'from'  => \Carbon\Carbon::parse($from)->format('d/m/Y'),
+                                'to'    => \Carbon\Carbon::parse($to)->format('d/m/Y'),
+                                'days'  => $attendance->count(),
+                            ]),
+                        ]);
+
+                        Notification::make()
+                            ->title(__('Contractor payslip generated: :hours h × :rate TND = :gross TND', [
+                                'hours' => $totalHours,
+                                'rate'  => $rate,
+                                'gross' => number_format($gross, 3),
+                            ]))
+                            ->success()->send();
+                    }),
+            ])
             ->actions([
+                // ── Load hours from attendance (contractor only) ───────────────
+                Actions\Action::make('load_hours')
+                    ->label(__('Load Hours from Attendance'))
+                    ->icon('heroicon-o-clock')
+                    ->color('info')
+                    ->form([
+                        Forms\Components\DatePicker::make('period_from')
+                            ->label(__('Period From'))
+                            ->required(),
+                        Forms\Components\DatePicker::make('period_to')
+                            ->label(__('Period To'))
+                            ->required(),
+                    ])
+                    ->action(function (Payroll $record, array $data): void {
+                        $attendance = Attendance::where('employee_id', $record->employee_id)
+                            ->whereBetween('date', [$data['period_from'], $data['period_to']])
+                            ->whereIn('status', ['present', 'late'])
+                            ->whereNotNull('total_hours')
+                            ->get();
+
+                        $totalHours = round($attendance->sum('total_hours'), 2);
+                        $rate       = (float)$record->hourly_rate_used;
+                        $gross      = round($rate * $totalHours, 3);
+                        $rs         = (float)$record->retenue_source;
+
+                        $record->update([
+                            'period_from'        => $data['period_from'],
+                            'period_to'          => $data['period_to'],
+                            'total_hours_worked' => $totalHours,
+                            'gross_salary'       => $gross,
+                            'net_salary'         => round(max(0, $gross - $rs), 3),
+                            'notes'              => ($record->notes ? $record->notes . "\n" : '')
+                                . __(':hours h worked (:days days) — loaded from attendance', [
+                                    'hours' => $totalHours,
+                                    'days'  => $attendance->count(),
+                                ]),
+                        ]);
+
+                        Notification::make()
+                            ->title(__(':hours hours loaded — :days days with attendance', [
+                                'hours' => $totalHours,
+                                'days'  => $attendance->count(),
+                            ]))
+                            ->success()->send();
+                    })
+                    ->visible(fn (Payroll $record) => $record->isContractorPayroll() && $record->status === 'draft'),
+
                 Actions\Action::make('finalize')
                     ->label(__('Finalize'))
                     ->icon('heroicon-o-check-badge')
