@@ -74,7 +74,7 @@ class ParentResource extends Resource
                 Tables\Filters\TernaryFilter::make('is_payer')->label(__('Primary Payer')),
             ])
             ->actions([
-                Tables\Actions\Action::make('create_account')
+                Actions\Action::make('create_account')
                     ->label(__('Create Portal Account'))
                     ->icon('heroicon-o-key')
                     ->color('success')
@@ -115,7 +115,7 @@ class ParentResource extends Resource
                         }
                     })
                     ->visible(fn ($record) => $record->user_id === null && $record->email),
-                Tables\Actions\Action::make('reset_password')
+                Actions\Action::make('reset_password')
                     ->label(__('Reset Password'))
                     ->icon('heroicon-o-arrow-path')
                     ->color('warning')

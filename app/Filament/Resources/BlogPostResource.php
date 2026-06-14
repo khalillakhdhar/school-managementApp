@@ -92,7 +92,7 @@ class BlogPostResource extends Resource
                 Tables\Filters\TernaryFilter::make('is_published')->label(__('Published')),
             ])
             ->actions([
-                Tables\Actions\Action::make('publish')
+                Actions\Action::make('publish')
                     ->label(__('Publish'))
                     ->icon('heroicon-o-check-circle')
                     ->color('success')

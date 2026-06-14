@@ -46,6 +46,7 @@ class PaymentResource extends Resource
                 ->searchable()->preload()->required(),
             Forms\Components\TextInput::make('amount')->label(__('Amount'))->required()->numeric()->prefix('TND'),
             Forms\Components\DatePicker::make('payment_date')->label(__('Payment Date'))->required()->default(now()),
+            Forms\Components\DatePicker::make('due_date')->label(__('Due Date'))->nullable(),
             Forms\Components\Select::make('payment_method')
                 ->label(__('Payment Method'))
                 ->options([
@@ -77,6 +78,9 @@ class PaymentResource extends Resource
                 Tables\Columns\TextColumn::make('student.first_name')->label(__('Student'))->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('amount')->label(__('Amount'))->money('TND')->sortable(),
                 Tables\Columns\TextColumn::make('payment_date')->label(__('Payment Date'))->date()->sortable(),
+                Tables\Columns\TextColumn::make('due_date')->label(__('Due Date'))->date()->sortable()
+                    ->color(fn ($state, $record) => $record->status === 'pending' && $state && $state < now() ? 'danger' : null)
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('payment_method')
                     ->label(__('Method'))
                     ->badge()

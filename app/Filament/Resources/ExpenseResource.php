@@ -89,7 +89,8 @@ class ExpenseResource extends Resource
                 Tables\Columns\TextColumn::make('amount')
                     ->label(__('Amount'))
                     ->money('TND')->sortable()
-                    ->color('danger'),
+                    ->color('danger')
+                    ->summarize(Tables\Columns\Summarizers\Sum::make()->label(__('Total'))->money('TND')),
             ])
             ->defaultSort('date', 'desc')
             ->filters([
@@ -114,10 +115,7 @@ class ExpenseResource extends Resource
                     ),
             ])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
-            ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])])
-            ->summary([
-                Tables\Columns\Summarizers\Sum::make()->label(__('Total'))->money('TND'),
-            ]);
+            ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }
 
     public static function getPages(): array

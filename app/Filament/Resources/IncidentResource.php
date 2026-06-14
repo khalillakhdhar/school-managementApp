@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\IncidentResource\Pages;
 use App\Mail\IncidentNotificationMail;
 use App\Models\Incident;
-use Filament\Actions\Action;
+use Filament\Actions;
 use Filament\Forms;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -13,7 +13,6 @@ use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Mail;
-use Filament\Actions;
 
 class IncidentResource extends Resource
 {
@@ -142,7 +141,7 @@ class IncidentResource extends Resource
                     ->label(__('Parent Notified')),
             ])
             ->actions([
-                Tables\Actions\Action::make('notify_parent')
+                Actions\Action::make('notify_parent')
                     ->label(__('Notify Parent'))
                     ->icon('heroicon-o-envelope')
                     ->color('warning')

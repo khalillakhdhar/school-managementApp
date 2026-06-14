@@ -112,7 +112,15 @@ class StudentResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->label(__('Status'))
-                    ->options(['active' => __('Active'), 'inactive' => __('Inactive')]),
+                    ->options([
+                        'active'    => __('Active'),
+                        'inactive'  => __('Inactive'),
+                        'suspended' => __('Suspended'),
+                        'graduated' => __('Graduated'),
+                    ]),
+                Tables\Filters\SelectFilter::make('classroom_id')
+                    ->label(__('Classroom'))
+                    ->relationship('classroom', 'name'),
                 Tables\Filters\SelectFilter::make('class')
                     ->label(__('Class'))
                     ->options(fn () => Student::distinct()->pluck('class', 'class')),
