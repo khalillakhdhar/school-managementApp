@@ -3,11 +3,11 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StudentResource\Pages;
 use App\Models\Student;
-use Filament\Forms;
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Resources\Resource;
 use Filament\Actions;
+use Filament\Forms;
+use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -15,36 +15,55 @@ class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-academic-cap';
-    protected static string|\UnitEnum|null $navigationGroup = 'Élèves';
-    protected static ?string $navigationLabel = 'Élèves';
-    protected static ?string $modelLabel = 'Élève';
-    protected static ?string $pluralModelLabel = 'Élèves';
     protected static ?int $navigationSort = 1;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Students');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Students');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Student');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Students');
+    }
 
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Informations personnelles')->schema([
-                Forms\Components\TextInput::make('first_name')->label('Prénom')->required()->maxLength(255),
-                Forms\Components\TextInput::make('last_name')->label('Nom')->required()->maxLength(255),
-                Forms\Components\DatePicker::make('date_of_birth')->label('Date de naissance')->required(),
-                Forms\Components\TextInput::make('id_number')->label('N° identifiant')->maxLength(255),
+            Section::make(__('Personal Information'))->schema([
+                Forms\Components\TextInput::make('first_name')->label(__('First Name'))->required()->maxLength(255),
+                Forms\Components\TextInput::make('last_name')->label(__('Last Name'))->required()->maxLength(255),
+                Forms\Components\DatePicker::make('date_of_birth')->label(__('Birth Date'))->required(),
+                Forms\Components\TextInput::make('id_number')->label(__('ID Number'))->maxLength(255),
             ])->columns(2),
 
-            Section::make('Informations scolaires')->schema([
-                Forms\Components\TextInput::make('class')->label('Classe')->required()->maxLength(255),
-                Forms\Components\TextInput::make('level')->label('Niveau')->required()->maxLength(255),
+            Section::make(__('School Information'))->schema([
+                Forms\Components\TextInput::make('class')->label(__('Class'))->required()->maxLength(255),
+                Forms\Components\TextInput::make('level')->label(__('Level'))->required()->maxLength(255),
                 Forms\Components\Select::make('status')
-                    ->label('Statut')
-                    ->options(['active' => 'Actif', 'inactive' => 'Inactif'])
+                    ->label(__('Status'))
+                    ->options([
+                        'active'   => __('Active'),
+                        'inactive' => __('Inactive'),
+                    ])
                     ->default('active')->required(),
-                Forms\Components\Textarea::make('address')->label('Adresse')->columnSpanFull(),
+                Forms\Components\Textarea::make('address')->label(__('Address'))->columnSpanFull(),
             ])->columns(2),
 
-            Section::make('Informations de santé')->schema([
-                Forms\Components\Textarea::make('health_info')->label('Infos santé'),
-                Forms\Components\Textarea::make('allergies')->label('Allergies'),
-                Forms\Components\Textarea::make('medications')->label('Médicaments'),
+            Section::make(__('Health Information'))->schema([
+                Forms\Components\Textarea::make('health_info')->label(__('Health Info')),
+                Forms\Components\Textarea::make('allergies')->label(__('Allergies')),
+                Forms\Components\Textarea::make('medications')->label(__('Medications')),
             ])->columns(3)->collapsed(),
         ]);
     }
@@ -54,32 +73,33 @@ class StudentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')->sortable(),
-                Tables\Columns\TextColumn::make('first_name')->label('Prénom')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('last_name')->label('Nom')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('class')->label('Classe')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('level')->label('Niveau')->sortable(),
+                Tables\Columns\TextColumn::make('first_name')->label(__('First Name'))->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('last_name')->label(__('Last Name'))->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('class')->label(__('Class'))->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('level')->label(__('Level'))->sortable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->label('Statut')
+                    ->label(__('Status'))
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'active' => 'success',
+                        'active'   => 'success',
                         'inactive' => 'danger',
-                        default => 'gray',
+                        default    => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'active' => 'Actif',
-                        'inactive' => 'Inactif',
-                        default => $state,
+                        'active'   => __('Active'),
+                        'inactive' => __('Inactive'),
+                        default    => $state,
                     }),
-                Tables\Columns\TextColumn::make('date_of_birth')->label('Naissance')->date()->sortable(),
-                Tables\Columns\TextColumn::make('created_at')->label('Créé le')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('date_of_birth')->label(__('Birth Date'))->date()->sortable(),
+                Tables\Columns\TextColumn::make('created_at')->label('Créé le')->dateTime()->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
-                    ->label('Statut')
-                    ->options(['active' => 'Actif', 'inactive' => 'Inactif']),
+                    ->label(__('Status'))
+                    ->options(['active' => __('Active'), 'inactive' => __('Inactive')]),
                 Tables\Filters\SelectFilter::make('class')
-                    ->label('Classe')
+                    ->label(__('Class'))
                     ->options(fn () => Student::distinct()->pluck('class', 'class')),
             ])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
@@ -89,9 +109,9 @@ class StudentResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListStudents::route('/'),
+            'index'  => Pages\ListStudents::route('/'),
             'create' => Pages\CreateStudent::route('/create'),
-            'edit' => Pages\EditStudent::route('/{record}/edit'),
+            'edit'   => Pages\EditStudent::route('/{record}/edit'),
         ];
     }
 }
