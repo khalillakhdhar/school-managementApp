@@ -45,7 +45,7 @@ class ParentResource extends Resource
                 Forms\Components\Select::make('students')
                     ->label(__('Assigned Students'))
                     ->relationship('students', 'first_name')
-                    ->getOptionLabelFromRecordUsing(fn ($r) => $r->full_name)
+                    ->getOptionLabelFromRecordUsing(fn ($r) => $r?->full_name ?? '—')
                     ->multiple()->preload()->searchable()->columnSpanFull(),
             ]),
         ]);

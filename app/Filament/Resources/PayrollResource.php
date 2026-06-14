@@ -389,7 +389,7 @@ class PayrollResource extends Resource
                 Tables\Filters\SelectFilter::make('employee_id')
                     ->label(__('Employee'))
                     ->relationship('employee', 'first_name')
-                    ->getOptionLabelFromRecordUsing(fn ($r) => $r->full_name)
+                    ->getOptionLabelFromRecordUsing(fn ($r) => $r?->full_name ?? '—')
                     ->searchable(),
             ])
             ->headerActions([
