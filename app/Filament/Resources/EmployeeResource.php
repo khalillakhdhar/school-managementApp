@@ -28,93 +28,103 @@ class EmployeeResource extends Resource
     {
         return $schema->components([
 
-            Section::make(__('Personal Information'))->schema([
-                Forms\Components\TextInput::make('first_name')
-                    ->label(__('First Name'))->required()->maxLength(255),
-                Forms\Components\TextInput::make('last_name')
-                    ->label(__('Last Name'))->required()->maxLength(255),
-                Forms\Components\TextInput::make('cin')
-                    ->label(__('CIN'))->maxLength(20)->placeholder('00000000'),
-                Forms\Components\TextInput::make('phone')
-                    ->label(__('Phone'))->required()->tel()->maxLength(20),
-                Forms\Components\TextInput::make('email')
-                    ->label(__('Email'))->email()->maxLength(255),
-                Forms\Components\TextInput::make('rib')
-                    ->label(__('RIB'))->maxLength(24)->placeholder('00 000 0000000000000 00'),
-                Forms\Components\Textarea::make('address')
-                    ->label(__('Address'))->columnSpanFull(),
-            ])->columns(2),
+            Section::make('Informations personnelles')
+                ->description('Identité et coordonnées du membre du personnel')
+                ->icon('heroicon-o-user')
+                ->schema([
+                    Forms\Components\TextInput::make('first_name')
+                        ->label('Prénom')->required()->maxLength(255),
+                    Forms\Components\TextInput::make('last_name')
+                        ->label('Nom de famille')->required()->maxLength(255),
+                    Forms\Components\TextInput::make('cin')
+                        ->label('CIN')->maxLength(20)->placeholder('00000000'),
+                    Forms\Components\TextInput::make('phone')
+                        ->label('Téléphone')->required()->tel()->maxLength(20),
+                    Forms\Components\TextInput::make('email')
+                        ->label('Email professionnel')->email()->maxLength(255),
+                    Forms\Components\TextInput::make('rib')
+                        ->label('RIB bancaire')->maxLength(24)->placeholder('00 000 0000000000000 00'),
+                    Forms\Components\Textarea::make('address')
+                        ->label('Adresse')->columnSpanFull(),
+                ])->columns(2),
 
-            Section::make(__('Employment Details'))->schema([
-                Forms\Components\Select::make('contract_type')
-                    ->label(__('Contract Type'))
-                    ->options([
-                        'permanent' => __('Permanent'),
-                        'temporary' => __('Fixed-term'),
-                        'contract'  => __('Contractor'),
-                    ])
-                    ->required()->default('permanent')->live(),
-                Forms\Components\TextInput::make('position')
-                    ->label(__('Position'))->required()->maxLength(255),
-                Forms\Components\DatePicker::make('start_date')
-                    ->label(__('Start Date'))->required(),
-                Forms\Components\DatePicker::make('end_date')
-                    ->label(__('End Date')),
-                Forms\Components\Toggle::make('is_active')
-                    ->label(__('Active'))->default(true)->inline(false),
-                Forms\Components\Toggle::make('is_teacher')
-                    ->label(__('Is Teacher'))
-                    ->helperText(__('Enables classroom assignment and teaching-specific fields'))
-                    ->default(false)->inline(false)->live(),
-            ])->columns(2),
+            Section::make('Détails du poste')
+                ->description('Type de contrat, poste occupé et dates d\'emploi')
+                ->icon('heroicon-o-briefcase')
+                ->schema([
+                    Forms\Components\Select::make('contract_type')
+                        ->label('Type de contrat')
+                        ->options([
+                            'permanent' => 'CDI (Permanent)',
+                            'temporary' => 'CDD (Durée déterminée)',
+                            'contract'  => 'Vacataire / Prestataire',
+                        ])
+                        ->required()->default('permanent')->live(),
+                    Forms\Components\TextInput::make('position')
+                        ->label('Intitulé du poste')->required()->maxLength(255),
+                    Forms\Components\DatePicker::make('start_date')
+                        ->label('Date de prise de poste')->required()->displayFormat('d/m/Y'),
+                    Forms\Components\DatePicker::make('end_date')
+                        ->label('Date de fin de contrat')->displayFormat('d/m/Y'),
+                    Forms\Components\Toggle::make('is_active')
+                        ->label('Employé actif')->default(true)->inline(false),
+                    Forms\Components\Toggle::make('is_teacher')
+                        ->label('Est enseignant')
+                        ->helperText('Active les champs spécifiques aux enseignants et l\'affectation aux classes')
+                        ->default(false)->inline(false)->live(),
+                ])->columns(2),
 
-            // ── Teacher profile (visible when is_teacher) ─────────────────────
-            Section::make(__('Teacher Information'))
+            Section::make('Profil enseignant')
+                ->description('Matière enseignée, numéro CNSS et situation familiale')
+                ->icon('heroicon-o-academic-cap')
                 ->schema([
                     Forms\Components\TextInput::make('specialite')
-                        ->label(__('Subject / Speciality'))->maxLength(255),
+                        ->label('Matière / Spécialité')->maxLength(255),
                     Forms\Components\TextInput::make('matricule_cnss')
-                        ->label(__('CNSS Number'))->maxLength(30),
+                        ->label('Matricule CNSS')->maxLength(30),
                     Forms\Components\Select::make('situation_familiale')
-                        ->label(__('Marital Status'))
+                        ->label('Situation familiale')
                         ->options([
-                            'celibataire' => __('Single'),
-                            'marie'       => __('Married'),
-                            'divorce'     => __('Divorced'),
-                            'veuf'        => __('Widowed'),
+                            'celibataire' => 'Célibataire',
+                            'marie'       => 'Marié(e)',
+                            'divorce'     => 'Divorcé(e)',
+                            'veuf'        => 'Veuf/Veuve',
                         ])
                         ->default('celibataire')->required(),
                     Forms\Components\TextInput::make('nb_enfants')
-                        ->label(__('Number of Children'))
+                        ->label('Nombre d\'enfants')
                         ->numeric()->default(0)->minValue(0)->maxValue(20),
                 ])
                 ->columns(2)
                 ->visible(fn (callable $get) => (bool) $get('is_teacher')),
 
-            // ── Classroom assignment (visible when is_teacher) ─────────────────
-            Section::make(__('Assigned Classes'))
+            Section::make('Classes assignées')
+                ->description('Sélectionnez les classes dont cet enseignant est responsable')
+                ->icon('heroicon-o-building-office-2')
                 ->schema([
                     Forms\Components\Select::make('classroom_ids')
-                        ->label(__('Classes'))
+                        ->label('Classes')
                         ->options(function () {
                             return Classroom::with(['level', 'teacher'])
                                 ->get()
                                 ->mapWithKeys(fn ($c) => [
                                     $c->id => $c->full_name
                                         . ($c->teacher
-                                            ? ' — (' . __('current') . ': ' . $c->teacher->full_name . ')'
+                                            ? ' — (actuel: ' . $c->teacher->full_name . ')'
                                             : ''),
                                 ]);
                         })
                         ->multiple()
                         ->searchable()
                         ->columnSpanFull()
-                        ->helperText(__('Classes with a teacher already assigned are shown with that teacher\'s name.')),
+                        ->helperText('Les classes ayant déjà un enseignant l\'affichent entre parenthèses.'),
                 ])
                 ->visible(fn (callable $get) => (bool) $get('is_teacher')),
 
-            // ── Salary & Allowances ───────────────────────────────────────────
-            Section::make(__('Salary & Allowances'))->schema([
+            Section::make('Rémunération et indemnités')
+                ->description('Salaire de base, indemnités et taux horaire pour les vacataires')
+                ->icon('heroicon-o-currency-dollar')
+                ->schema([
                 Forms\Components\TextInput::make('salary_base')
                     ->label(__('Base Salary'))
                     ->numeric()->minValue(0)->prefix('TND')

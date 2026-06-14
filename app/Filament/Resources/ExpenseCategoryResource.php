@@ -6,6 +6,7 @@ use App\Models\ExpenseCategory;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -24,13 +25,18 @@ class ExpenseCategoryResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Forms\Components\TextInput::make('name')
-                ->label(__('Name'))
-                ->required()->maxLength(100),
-            Forms\Components\Textarea::make('description')
-                ->label(__('Description'))
-                ->columnSpanFull(),
-        ])->columns(1);
+            Section::make('Catégorie de dépense')
+                ->description('Créez une catégorie pour regrouper et analyser les dépenses de l\'établissement')
+                ->icon('heroicon-o-tag')
+                ->schema([
+                    Forms\Components\TextInput::make('name')
+                        ->label('Nom de la catégorie')
+                        ->required()->maxLength(100)->placeholder('ex: Fournitures scolaires'),
+                    Forms\Components\Textarea::make('description')
+                        ->label('Description')
+                        ->columnSpanFull(),
+                ])->columns(1),
+        ]);
     }
 
     public static function table(Table $table): Table

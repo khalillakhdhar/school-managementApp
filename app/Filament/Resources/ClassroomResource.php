@@ -26,32 +26,36 @@ class ClassroomResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make(__('Classroom Information'))->schema([
-                Forms\Components\Select::make('level_id')
-                    ->label(__('Level'))
-                    ->relationship('level', 'name')
-                    ->required()->searchable()->preload(),
-                Forms\Components\TextInput::make('name')
-                    ->label(__('Classroom Name'))
-                    ->required()->maxLength(50)
-                    ->placeholder('1A'),
-                Forms\Components\TextInput::make('capacity')
-                    ->label(__('Capacity'))
-                    ->numeric()->required()->default(30)->minValue(1)->maxValue(100),
-                Forms\Components\Select::make('teacher_id')
-                    ->label(__('Class Teacher'))
-                    ->options(
-                        Employee::active()
-                            ->teachers()
-                            ->orderBy('last_name')
-                            ->get()
-                            ->mapWithKeys(fn ($e) => [$e->id => "{$e->full_name}" . ($e->specialite ? " — {$e->specialite}" : '')])
-                    )
-                    ->nullable()->searchable(),
-                Forms\Components\Textarea::make('notes')
-                    ->label(__('Notes'))
-                    ->columnSpanFull(),
-            ])->columns(2),
+            Section::make('Informations de la classe')
+                ->description('Niveau, nom, capacité d\'accueil et enseignant titulaire')
+                ->icon('heroicon-o-building-office')
+                ->schema([
+                    Forms\Components\Select::make('level_id')
+                        ->label('Niveau scolaire')
+                        ->relationship('level', 'name')
+                        ->required()->searchable()->preload(),
+                    Forms\Components\TextInput::make('name')
+                        ->label('Nom de la classe')
+                        ->required()->maxLength(50)
+                        ->placeholder('1A'),
+                    Forms\Components\TextInput::make('capacity')
+                        ->label('Capacité maximale')
+                        ->numeric()->required()->default(30)->minValue(1)->maxValue(100)
+                        ->suffix('élèves'),
+                    Forms\Components\Select::make('teacher_id')
+                        ->label('Enseignant titulaire')
+                        ->options(
+                            Employee::active()
+                                ->teachers()
+                                ->orderBy('last_name')
+                                ->get()
+                                ->mapWithKeys(fn ($e) => [$e->id => "{$e->full_name}" . ($e->specialite ? " — {$e->specialite}" : '')])
+                        )
+                        ->nullable()->searchable()->placeholder('Aucun enseignant assigné'),
+                    Forms\Components\Textarea::make('notes')
+                        ->label('Notes')
+                        ->columnSpanFull(),
+                ])->columns(2),
         ]);
     }
 

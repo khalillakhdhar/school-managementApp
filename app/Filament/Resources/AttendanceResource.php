@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -39,27 +40,33 @@ class AttendanceResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Forms\Components\Select::make('employee_id')
-                ->label(__('Employee'))
-                ->relationship('employee', 'first_name')
-                ->getOptionLabelFromRecordUsing(fn ($record) => $record->full_name)
-                ->searchable()->preload()->required(),
-            Forms\Components\DatePicker::make('date')->label(__('Date'))->required()->default(now()),
-            Forms\Components\Select::make('status')
-                ->label(__('Status'))
-                ->options([
-                    'present' => __('Present'),
-                    'absent'  => __('Absent'),
-                    'late'    => __('Late'),
-                    'leave'   => __('Leave'),
-                ])
-                ->required()->default('present'),
-            Forms\Components\TimePicker::make('time_in')->label(__('Arrival Time')),
-            Forms\Components\TimePicker::make('time_out')->label(__('Departure Time')),
-            Forms\Components\TextInput::make('total_hours')->label(__('Total Hours'))->numeric(),
-            Forms\Components\TextInput::make('overtime_hours')->label(__('Overtime'))->numeric()->default(0),
-            Forms\Components\Textarea::make('notes')->label(__('Notes'))->columnSpanFull(),
-        ])->columns(2);
+            Section::make('Pointage de présence')
+                ->description('Enregistrez la présence ou l\'absence d\'un employé pour une journée donnée')
+                ->icon('heroicon-o-calendar-days')
+                ->schema([
+                    Forms\Components\Select::make('employee_id')
+                        ->label('Employé')
+                        ->relationship('employee', 'first_name')
+                        ->getOptionLabelFromRecordUsing(fn ($record) => $record->full_name)
+                        ->searchable()->preload()->required()->placeholder('Rechercher un employé...'),
+                    Forms\Components\DatePicker::make('date')
+                        ->label('Date')->required()->default(now())->displayFormat('d/m/Y'),
+                    Forms\Components\Select::make('status')
+                        ->label('Statut de présence')
+                        ->options([
+                            'present' => 'Présent',
+                            'absent'  => 'Absent',
+                            'late'    => 'En retard',
+                            'leave'   => 'Congé',
+                        ])
+                        ->required()->default('present'),
+                    Forms\Components\TimePicker::make('time_in')->label('Heure d\'arrivée'),
+                    Forms\Components\TimePicker::make('time_out')->label('Heure de départ'),
+                    Forms\Components\TextInput::make('total_hours')->label('Heures travaillées')->numeric()->suffix('h'),
+                    Forms\Components\TextInput::make('overtime_hours')->label('Heures supplémentaires')->numeric()->default(0)->suffix('h'),
+                    Forms\Components\Textarea::make('notes')->label('Remarques')->columnSpanFull(),
+                ])->columns(2),
+        ]);
     }
 
     public static function table(Table $table): Table

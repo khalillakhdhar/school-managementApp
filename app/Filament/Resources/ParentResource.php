@@ -31,23 +31,30 @@ class ParentResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make(__('Parent Information'))->schema([
-                Forms\Components\TextInput::make('first_name')->label(__('First Name'))->required()->maxLength(255),
-                Forms\Components\TextInput::make('last_name')->label(__('Last Name'))->required()->maxLength(255),
-                Forms\Components\TextInput::make('phone')->label(__('Phone'))->required()->tel()->maxLength(20),
-                Forms\Components\TextInput::make('email')->label(__('Email'))->email()->maxLength(255),
-                Forms\Components\TextInput::make('occupation')->label(__('Occupation'))->maxLength(255),
-                Forms\Components\Toggle::make('is_payer')->label(__('Primary Payer'))->default(false),
-                Forms\Components\Textarea::make('address')->label(__('Address'))->columnSpanFull(),
-            ])->columns(2),
+            Section::make('Informations du parent')
+                ->description('Identité, coordonnées et profession du responsable légal')
+                ->icon('heroicon-o-user-circle')
+                ->schema([
+                    Forms\Components\TextInput::make('first_name')->label('Prénom')->required()->maxLength(255),
+                    Forms\Components\TextInput::make('last_name')->label('Nom de famille')->required()->maxLength(255),
+                    Forms\Components\TextInput::make('phone')->label('Téléphone')->required()->tel()->maxLength(20),
+                    Forms\Components\TextInput::make('email')->label('Adresse email')->email()->maxLength(255),
+                    Forms\Components\TextInput::make('occupation')->label('Profession')->maxLength(255),
+                    Forms\Components\Toggle::make('is_payer')->label('Payeur principal des frais de scolarité')->default(false)->inline(false),
+                    Forms\Components\Textarea::make('address')->label('Adresse')->columnSpanFull(),
+                ])->columns(2),
 
-            Section::make(__('Assigned Students'))->schema([
-                Forms\Components\Select::make('students')
-                    ->label(__('Assigned Students'))
-                    ->relationship('students', 'first_name')
-                    ->getOptionLabelFromRecordUsing(fn ($r) => $r?->full_name ?? '—')
-                    ->multiple()->preload()->searchable()->columnSpanFull(),
-            ]),
+            Section::make('Élèves rattachés')
+                ->description('Associez ce parent aux enfants scolarisés dans l\'établissement')
+                ->icon('heroicon-o-academic-cap')
+                ->schema([
+                    Forms\Components\Select::make('students')
+                        ->label('Enfants inscrits')
+                        ->relationship('students', 'first_name')
+                        ->getOptionLabelFromRecordUsing(fn ($r) => $r?->full_name ?? '—')
+                        ->multiple()->preload()->searchable()->columnSpanFull()
+                        ->placeholder('Rechercher un élève...'),
+                ]),
         ]);
     }
 

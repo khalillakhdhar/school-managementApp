@@ -26,43 +26,49 @@ class BlogPostResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make(__('Post Content'))->schema([
-                Forms\Components\TextInput::make('title')
-                    ->label(__('Title'))
-                    ->required()->maxLength(255)
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
-                Forms\Components\TextInput::make('slug')
-                    ->label(__('Slug'))
-                    ->required()->maxLength(255)->unique(ignoreRecord: true),
-                Forms\Components\Textarea::make('excerpt')
-                    ->label(__('Excerpt'))
-                    ->rows(2)->columnSpanFull(),
-                Forms\Components\RichEditor::make('content')
-                    ->label(__('Content'))
-                    ->required()->columnSpanFull()
-                    ->toolbarButtons([
-                        'bold', 'italic', 'underline', 'strike',
-                        'h2', 'h3', 'bulletList', 'orderedList',
-                        'blockquote', 'link', 'undo', 'redo',
-                    ]),
-            ])->columns(2),
-            Section::make(__('Publication'))->schema([
-                Forms\Components\FileUpload::make('cover_image_path')
-                    ->label(__('Cover Image'))
-                    ->image()->directory('blog/covers')
-                    ->columnSpanFull(),
-                Forms\Components\Toggle::make('is_published')
-                    ->label(__('Published'))
-                    ->live()
-                    ->afterStateUpdated(fn ($state, callable $set) => $state
-                        ? $set('published_at', now())
-                        : $set('published_at', null)
-                    ),
-                Forms\Components\DateTimePicker::make('published_at')
-                    ->label(__('Publication Date'))
-                    ->nullable(),
-            ])->columns(2),
+            Section::make('Contenu de l\'article')
+                ->description('Titre, résumé et corps du texte de l\'article')
+                ->icon('heroicon-o-document-text')
+                ->schema([
+                    Forms\Components\TextInput::make('title')
+                        ->label('Titre de l\'article')
+                        ->required()->maxLength(255)
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
+                    Forms\Components\TextInput::make('slug')
+                        ->label('Slug (URL)')
+                        ->required()->maxLength(255)->unique(ignoreRecord: true),
+                    Forms\Components\Textarea::make('excerpt')
+                        ->label('Résumé / Introduction')
+                        ->rows(2)->columnSpanFull(),
+                    Forms\Components\RichEditor::make('content')
+                        ->label('Corps de l\'article')
+                        ->required()->columnSpanFull()
+                        ->toolbarButtons([
+                            'bold', 'italic', 'underline', 'strike',
+                            'h2', 'h3', 'bulletList', 'orderedList',
+                            'blockquote', 'link', 'undo', 'redo',
+                        ]),
+                ])->columns(2),
+            Section::make('Publication')
+                ->description('Image de couverture, statut et date de publication')
+                ->icon('heroicon-o-globe-alt')
+                ->schema([
+                    Forms\Components\FileUpload::make('cover_image_path')
+                        ->label('Image de couverture')
+                        ->image()->directory('blog/covers')
+                        ->columnSpanFull(),
+                    Forms\Components\Toggle::make('is_published')
+                        ->label('Publier l\'article')
+                        ->live()
+                        ->afterStateUpdated(fn ($state, callable $set) => $state
+                            ? $set('published_at', now())
+                            : $set('published_at', null)
+                        ),
+                    Forms\Components\DateTimePicker::make('published_at')
+                        ->label('Date et heure de publication')
+                        ->nullable()->displayFormat('d/m/Y H:i'),
+                ])->columns(2),
         ]);
     }
 

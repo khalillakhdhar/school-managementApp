@@ -362,6 +362,10 @@ nav.fi-sidebar-nav,nav.fi-sidebar-nav>*,div.fi-sidebar-nav,
 </style>'
             )
             ->renderHook(
+                'panels::topbar.end',
+                fn () => view('filament.notification-bell')
+            )
+            ->renderHook(
                 'panels::auth.login.form.before',
                 fn () => view('filament.auth.login-branding')
             )

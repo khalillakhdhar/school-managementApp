@@ -25,40 +25,43 @@ class ExpenseResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make(__('Expense Details'))->schema([
-                Forms\Components\Select::make('category_id')
-                    ->label(__('Category'))
-                    ->relationship('category', 'name')
-                    ->required()->searchable()->preload()->createOptionForm([
-                        Forms\Components\TextInput::make('name')->label(__('Name'))->required(),
-                    ]),
-                Forms\Components\DatePicker::make('date')
-                    ->label(__('Date'))
-                    ->required()->default(now()),
-                Forms\Components\TextInput::make('amount')
-                    ->label(__('Amount'))
-                    ->required()->numeric()->minValue(0)->prefix('TND'),
-                Forms\Components\Select::make('payment_method')
-                    ->label(__('Payment Method'))
-                    ->options([
-                        'cash'  => __('Cash'),
-                        'bank'  => __('Bank Transfer'),
-                        'cheque'=> __('Cheque'),
-                    ])
-                    ->required()->default('cash'),
-                Forms\Components\TextInput::make('supplier')
-                    ->label(__('Supplier'))
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('invoice_number')
-                    ->label(__('Invoice Number'))
-                    ->maxLength(100),
-                Forms\Components\Textarea::make('description')
-                    ->label(__('Description'))
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('notes')
-                    ->label(__('Notes'))
-                    ->columnSpanFull(),
-            ])->columns(2),
+            Section::make('Détails de la dépense')
+                ->description('Catégorie, montant, fournisseur et justificatif de la dépense')
+                ->icon('heroicon-o-arrow-trending-down')
+                ->schema([
+                    Forms\Components\Select::make('category_id')
+                        ->label('Catégorie')
+                        ->relationship('category', 'name')
+                        ->required()->searchable()->preload()->createOptionForm([
+                            Forms\Components\TextInput::make('name')->label('Nom de la catégorie')->required(),
+                        ]),
+                    Forms\Components\DatePicker::make('date')
+                        ->label('Date de la dépense')
+                        ->required()->default(now())->displayFormat('d/m/Y'),
+                    Forms\Components\TextInput::make('amount')
+                        ->label('Montant')
+                        ->required()->numeric()->minValue(0)->prefix('TND'),
+                    Forms\Components\Select::make('payment_method')
+                        ->label('Mode de règlement')
+                        ->options([
+                            'cash'   => 'Espèces',
+                            'bank'   => 'Virement bancaire',
+                            'cheque' => 'Chèque',
+                        ])
+                        ->required()->default('cash'),
+                    Forms\Components\TextInput::make('supplier')
+                        ->label('Fournisseur / Prestataire')
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('invoice_number')
+                        ->label('N° facture / Reçu')
+                        ->maxLength(100),
+                    Forms\Components\Textarea::make('description')
+                        ->label('Description')
+                        ->columnSpanFull(),
+                    Forms\Components\Textarea::make('notes')
+                        ->label('Notes internes')
+                        ->columnSpanFull(),
+                ])->columns(2),
         ]);
     }
 

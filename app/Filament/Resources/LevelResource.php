@@ -6,6 +6,7 @@ use App\Models\Level;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -24,21 +25,26 @@ class LevelResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Forms\Components\TextInput::make('code')
-                ->label(__('Code'))
-                ->required()->maxLength(10)->unique(ignoreRecord: true)
-                ->placeholder('1AP'),
-            Forms\Components\TextInput::make('name')
-                ->label(__('Name'))
-                ->required()->maxLength(100)
-                ->placeholder('1ère Année'),
-            Forms\Components\TextInput::make('order')
-                ->label(__('Order'))
-                ->numeric()->required()->default(1)->minValue(1)->maxValue(10),
-            Forms\Components\Textarea::make('description')
-                ->label(__('Description'))
-                ->columnSpanFull(),
-        ])->columns(2);
+            Section::make('Niveau scolaire')
+                ->description('Définissez un niveau d\'enseignement et son ordre d\'affichage')
+                ->icon('heroicon-o-academic-cap')
+                ->schema([
+                    Forms\Components\TextInput::make('code')
+                        ->label('Code abrégé')
+                        ->required()->maxLength(10)->unique(ignoreRecord: true)
+                        ->placeholder('1AP'),
+                    Forms\Components\TextInput::make('name')
+                        ->label('Intitulé du niveau')
+                        ->required()->maxLength(100)
+                        ->placeholder('1ère Année Primaire'),
+                    Forms\Components\TextInput::make('order')
+                        ->label('Ordre d\'affichage')
+                        ->numeric()->required()->default(1)->minValue(1)->maxValue(10),
+                    Forms\Components\Textarea::make('description')
+                        ->label('Description')
+                        ->columnSpanFull(),
+                ])->columns(2),
+        ]);
     }
 
     public static function table(Table $table): Table
