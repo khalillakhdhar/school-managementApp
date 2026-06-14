@@ -2,6 +2,7 @@
 namespace App\Filament\Resources\IncidentResource\Pages;
 
 use App\Filament\Resources\IncidentResource;
+use App\Filament\Widgets\IncidentsListStatsWidget;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -11,6 +12,11 @@ class ListIncidents extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()];
+        return [CreateAction::make()->label('Signaler un incident')];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [IncidentsListStatsWidget::class];
     }
 }

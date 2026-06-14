@@ -2,6 +2,7 @@
 namespace App\Filament\Resources\ExpenseResource\Pages;
 
 use App\Filament\Resources\ExpenseResource;
+use App\Filament\Widgets\ExpensesListStatsWidget;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -11,6 +12,11 @@ class ListExpenses extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()];
+        return [CreateAction::make()->label('Ajouter une dépense')];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [ExpensesListStatsWidget::class];
     }
 }

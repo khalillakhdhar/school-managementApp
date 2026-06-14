@@ -40,49 +40,52 @@ class IncidentResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make(__('Incident Details'))->schema([
-                Forms\Components\Select::make('student_id')
-                    ->label(__('Student'))
-                    ->options(
-                        Student::orderBy('last_name')->get()
-                            ->mapWithKeys(fn ($s) => [$s->id => $s->full_name])
-                    )
-                    ->required()->searchable(),
-                Forms\Components\DatePicker::make('incident_date')
-                    ->label(__('Date'))
-                    ->required()->default(now()),
-                Forms\Components\Select::make('type')
-                    ->label(__('Type'))
-                    ->options([
-                        'accident'     => __('Accident'),
-                        'health'       => __('Health'),
-                        'disciplinary' => __('Disciplinary'),
-                        'absence'      => __('Absence'),
-                        'behavioral'   => __('Behavioral'),
-                        'other'        => __('Other'),
-                    ])
-                    ->required()->default('other'),
-                Forms\Components\Select::make('severity')
-                    ->label(__('Severity'))
-                    ->options([
-                        'low'    => __('Low'),
-                        'medium' => __('Medium'),
-                        'high'   => __('High'),
-                    ])
-                    ->required()->default('low'),
-                Forms\Components\TextInput::make('title')
-                    ->label(__('Title'))
-                    ->required()->maxLength(255)->columnSpanFull(),
-                Forms\Components\Textarea::make('description')
-                    ->label(__('Description'))
-                    ->required()->rows(4)->columnSpanFull(),
-                Forms\Components\Textarea::make('action_taken')
-                    ->label(__('Action Taken'))
-                    ->rows(3)->columnSpanFull(),
-                Forms\Components\Toggle::make('parent_notified')
-                    ->label(__('Parent Notified'))
-                    ->disabled(),
-            ])->columns(2),
+            Section::make('Signalement de l\'incident')
+                ->description('Renseignez les détails de l\'événement pour le dossier de l\'élève')
+                ->icon('heroicon-o-exclamation-triangle')
+                ->schema([
+                    Forms\Components\Select::make('student_id')
+                        ->label('Élève concerné')
+                        ->options(
+                            Student::orderBy('last_name')->get()
+                                ->mapWithKeys(fn ($s) => [$s->id => $s->full_name])
+                        )
+                        ->required()->searchable()->placeholder('Rechercher un élève...'),
+                    Forms\Components\DatePicker::make('incident_date')
+                        ->label('Date de l\'incident')
+                        ->required()->default(now())->displayFormat('d/m/Y'),
+                    Forms\Components\Select::make('type')
+                        ->label('Type d\'incident')
+                        ->options([
+                            'accident'     => 'Accident',
+                            'health'       => 'Santé',
+                            'disciplinary' => 'Disciplinaire',
+                            'absence'      => 'Absence',
+                            'behavioral'   => 'Comportement',
+                            'other'        => 'Autre',
+                        ])
+                        ->required()->default('other'),
+                    Forms\Components\Select::make('severity')
+                        ->label('Gravité')
+                        ->options([
+                            'low'    => '🟢 Faible',
+                            'medium' => '🟡 Moyenne',
+                            'high'   => '🔴 Élevée',
+                        ])
+                        ->required()->default('low'),
+                    Forms\Components\TextInput::make('title')
+                        ->label('Titre de l\'incident')
+                        ->required()->maxLength(255)->columnSpanFull(),
+                    Forms\Components\Textarea::make('description')
+                        ->label('Description détaillée')
+                        ->required()->rows(4)->columnSpanFull(),
+                    Forms\Components\Textarea::make('action_taken')
+                        ->label('Mesures prises')
+                        ->rows(3)->columnSpanFull(),
+                    Forms\Components\Toggle::make('parent_notified')
+                        ->label('Parents notifiés')
+                        ->disabled()->helperText('Géré automatiquement par l\'envoi d\'email'),
+                ])->columns(2),
         ]);
     }
 

@@ -2,6 +2,7 @@
 namespace App\Filament\Resources\ClassroomResource\Pages;
 
 use App\Filament\Resources\ClassroomResource;
+use App\Filament\Widgets\ClassroomsListStatsWidget;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -11,6 +12,11 @@ class ListClassrooms extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()];
+        return [CreateAction::make()->label('Créer une classe')];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [ClassroomsListStatsWidget::class];
     }
 }

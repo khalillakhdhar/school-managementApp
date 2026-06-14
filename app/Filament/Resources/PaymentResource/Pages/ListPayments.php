@@ -2,6 +2,7 @@
 namespace App\Filament\Resources\PaymentResource\Pages;
 
 use App\Filament\Resources\PaymentResource;
+use App\Filament\Widgets\PaymentsListStatsWidget;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -11,6 +12,11 @@ class ListPayments extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()];
+        return [CreateAction::make()->label('Enregistrer un paiement')];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [PaymentsListStatsWidget::class];
     }
 }

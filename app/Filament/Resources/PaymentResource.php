@@ -7,6 +7,7 @@ use App\Models\Student;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -52,37 +53,48 @@ class PaymentResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Forms\Components\Select::make('student_id')
-                ->label(__('Student'))
-                ->options(
-                    Student::orderBy('last_name')->get()
-                        ->mapWithKeys(fn ($s) => [$s->id => $s->full_name])
-                )
-                ->searchable()->required(),
-            Forms\Components\TextInput::make('amount')->label(__('Amount'))->required()->numeric()->prefix('TND'),
-            Forms\Components\DatePicker::make('payment_date')->label(__('Payment Date'))->required()->default(now()),
-            Forms\Components\DatePicker::make('due_date')->label(__('Due Date'))->nullable(),
-            Forms\Components\Select::make('payment_method')
-                ->label(__('Payment Method'))
-                ->options([
-                    'cash'          => __('Cash'),
-                    'bank_transfer' => __('Bank Transfer'),
-                    'cheque'        => __('Cheque'),
-                    'app'           => __('App'),
-                ])
-                ->required()->default('cash'),
-            Forms\Components\Select::make('status')
-                ->label(__('Status'))
-                ->options([
-                    'paid'      => __('Paid'),
-                    'pending'   => __('Pending'),
-                    'failed'    => __('Failed'),
-                    'cancelled' => __('Cancelled'),
-                ])
-                ->required()->default('paid'),
-            Forms\Components\TextInput::make('reference_number')->label(__('Reference'))->maxLength(255),
-            Forms\Components\Textarea::make('notes')->label(__('Notes'))->columnSpanFull(),
-        ])->columns(2);
+            Section::make('Paiement')
+                ->description('Informations du paiement à enregistrer')
+                ->icon('heroicon-o-banknotes')
+                ->schema([
+                    Forms\Components\Select::make('student_id')
+                        ->label('Élève')
+                        ->options(
+                            Student::orderBy('last_name')->get()
+                                ->mapWithKeys(fn ($s) => [$s->id => $s->full_name])
+                        )
+                        ->searchable()->required()->placeholder('Rechercher un élève...'),
+                    Forms\Components\TextInput::make('amount')
+                        ->label('Montant')->required()->numeric()->prefix('TND')
+                        ->minValue(0),
+                    Forms\Components\DatePicker::make('payment_date')
+                        ->label('Date du paiement')->required()->default(now())->displayFormat('d/m/Y'),
+                    Forms\Components\DatePicker::make('due_date')
+                        ->label('Date d\'échéance')->nullable()->displayFormat('d/m/Y'),
+                    Forms\Components\Select::make('payment_method')
+                        ->label('Mode de paiement')
+                        ->options([
+                            'cash'          => 'Espèces',
+                            'bank_transfer' => 'Virement bancaire',
+                            'cheque'        => 'Chèque',
+                            'app'           => 'Application',
+                        ])
+                        ->required()->default('cash'),
+                    Forms\Components\Select::make('status')
+                        ->label('Statut')
+                        ->options([
+                            'paid'      => 'Payé',
+                            'pending'   => 'En attente',
+                            'failed'    => 'Échoué',
+                            'cancelled' => 'Annulé',
+                        ])
+                        ->required()->default('paid'),
+                    Forms\Components\TextInput::make('reference_number')
+                        ->label('Référence / N° reçu')->maxLength(255),
+                    Forms\Components\Textarea::make('notes')
+                        ->label('Notes')->columnSpanFull()->rows(2),
+                ])->columns(2),
+        ]);
     }
 
     public static function table(Table $table): Table

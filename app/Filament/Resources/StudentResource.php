@@ -59,43 +59,59 @@ class StudentResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make(__('Personal Information'))->schema([
-                Forms\Components\TextInput::make('first_name')->label(__('First Name'))->required()->maxLength(255),
-                Forms\Components\TextInput::make('last_name')->label(__('Last Name'))->required()->maxLength(255),
-                Forms\Components\DatePicker::make('date_of_birth')->label(__('Birth Date'))->required(),
-                Forms\Components\TextInput::make('id_number')->label(__('ID Number'))->maxLength(255),
-            ])->columns(2),
+            Section::make('Informations personnelles')
+                ->description('Identité civile de l\'élève')
+                ->icon('heroicon-o-user')
+                ->schema([
+                    Forms\Components\TextInput::make('first_name')
+                        ->label('Prénom')->required()->maxLength(255),
+                    Forms\Components\TextInput::make('last_name')
+                        ->label('Nom de famille')->required()->maxLength(255),
+                    Forms\Components\DatePicker::make('date_of_birth')
+                        ->label('Date de naissance')->required()->displayFormat('d/m/Y'),
+                    Forms\Components\TextInput::make('id_number')
+                        ->label('N° identité (CIN/passeport)')->maxLength(255),
+                ])->columns(2),
 
-            Section::make(__('School Information'))->schema([
-                Forms\Components\Select::make('classroom_id')
-                    ->label(__('Classroom'))
-                    ->options(
-                        Classroom::with('level')->orderBy('name')->get()
-                            ->mapWithKeys(fn ($c) => [
-                                $c->id => ($c->level?->code ? "{$c->level->code} — {$c->name}" : $c->name),
-                            ])
-                    )
-                    ->nullable()->searchable(),
-                Forms\Components\TextInput::make('class')->label(__('Class'))->maxLength(255),
-                Forms\Components\TextInput::make('level')->label(__('Level'))->maxLength(255),
-                Forms\Components\DatePicker::make('enrollment_date')->label(__('Enrollment Date')),
-                Forms\Components\Select::make('status')
-                    ->label(__('Status'))
-                    ->options([
-                        'active'    => __('Active'),
-                        'inactive'  => __('Inactive'),
-                        'suspended' => __('Suspended'),
-                        'graduated' => __('Graduated'),
-                    ])
-                    ->default('active')->required(),
-                Forms\Components\Textarea::make('address')->label(__('Address'))->columnSpanFull(),
-            ])->columns(2),
+            Section::make('Scolarité')
+                ->description('Classe, niveau et statut de l\'élève')
+                ->icon('heroicon-o-academic-cap')
+                ->schema([
+                    Forms\Components\Select::make('classroom_id')
+                        ->label('Classe assignée')
+                        ->options(
+                            Classroom::with('level')->orderBy('name')->get()
+                                ->mapWithKeys(fn ($c) => [
+                                    $c->id => ($c->level?->code ? "{$c->level->code} — {$c->name}" : $c->name),
+                                ])
+                        )
+                        ->nullable()->searchable()->placeholder('Sélectionner une classe'),
+                    Forms\Components\DatePicker::make('enrollment_date')
+                        ->label('Date d\'inscription')->displayFormat('d/m/Y'),
+                    Forms\Components\Select::make('status')
+                        ->label('Statut')
+                        ->options([
+                            'active'    => 'Actif',
+                            'inactive'  => 'Inactif',
+                            'suspended' => 'Suspendu',
+                            'graduated' => 'Diplômé',
+                        ])
+                        ->default('active')->required(),
+                    Forms\Components\Textarea::make('address')
+                        ->label('Adresse')->columnSpanFull()->rows(2),
+                ])->columns(2),
 
-            Section::make(__('Health Information'))->schema([
-                Forms\Components\Textarea::make('health_info')->label(__('Health Info')),
-                Forms\Components\Textarea::make('allergies')->label(__('Allergies')),
-                Forms\Components\Textarea::make('medications')->label(__('Medications')),
-            ])->columns(3)->collapsed(),
+            Section::make('Informations médicales')
+                ->description('Données de santé confidentielles')
+                ->icon('heroicon-o-heart')
+                ->schema([
+                    Forms\Components\Textarea::make('health_info')
+                        ->label('Informations santé')->rows(3),
+                    Forms\Components\Textarea::make('allergies')
+                        ->label('Allergies connues')->rows(3),
+                    Forms\Components\Textarea::make('medications')
+                        ->label('Médicaments')->rows(3),
+                ])->columns(3)->collapsed(),
         ]);
     }
 
