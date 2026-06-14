@@ -1,7 +1,9 @@
 <x-filament-panels::page>
 
-    {{-- Chart.js CDN --}}
+    {{-- Chart.js — @assets ensures it loads before @script runs --}}
+    @assets
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    @endassets
 
     @php
         $revenue   = $this->getRevenue();

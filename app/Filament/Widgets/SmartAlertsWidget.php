@@ -11,7 +11,19 @@ class SmartAlertsWidget extends Widget
     protected static bool $isLazy = true;
     protected static ?int $sort = 4;
     protected string $view = 'filament.widgets.smart-alerts-widget';
-    protected int|string|array $columnSpan = 'full';
+
+    public function getColumnSpan(\Filament\Support\Enums\MaxWidth|int|string|null $maxWidth = null): int|string
+    {
+        return $this->hasAlerts() ? 'full' : 1;
+    }
+
+    private function hasAlerts(): bool
+    {
+        return Payment::where('status', 'pending')
+                ->whereNotNull('due_date')->whereDate('due_date', '<', now())->exists()
+            || Incident::where('parent_notified', false)->exists()
+            || Classroom::whereNull('teacher_id')->exists();
+    }
 
     protected function getViewData(): array
     {
@@ -27,15 +39,19 @@ class SmartAlertsWidget extends Widget
             ->orderByDesc('incident_date')
             ->take(5)->get();
 
+        $overdueCount     = Payment::where('status', 'pending')
+            ->whereNotNull('due_date')->whereDate('due_date', '<', now())->count();
+        $unnotifiedCount  = Incident::where('parent_notified', false)->count();
+        $classesNoTeacher = Classroom::whereNull('teacher_id')->count();
+
         return [
             'overduePayments'     => $overduePayments,
-            'overdueCount'        => Payment::where('status', 'pending')
-                ->whereNotNull('due_date')->whereDate('due_date', '<', now())->count(),
+            'overdueCount'        => $overdueCount,
             'overdueTotal'        => (float) Payment::where('status', 'pending')
                 ->whereNotNull('due_date')->whereDate('due_date', '<', now())->sum('amount'),
             'unnotifiedIncidents' => $unnotifiedIncidents,
-            'unnotifiedCount'     => Incident::where('parent_notified', false)->count(),
-            'classesNoTeacher'    => Classroom::whereNull('teacher_id')->count(),
+            'unnotifiedCount'     => $unnotifiedCount,
+            'classesNoTeacher'    => $classesNoTeacher,
         ];
     }
 }
