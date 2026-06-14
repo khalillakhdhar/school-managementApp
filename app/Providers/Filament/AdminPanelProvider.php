@@ -6,6 +6,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -30,13 +31,27 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->brandName('EduManage')
             ->colors([
-                'primary'   => Color::Blue,
-                'gray'      => Color::Slate,
-                'info'      => Color::Sky,
-                'success'   => Color::Emerald,
-                'warning'   => Color::Amber,
-                'danger'    => Color::Rose,
+                'primary' => Color::hex('#4f46e5'),
+                'gray'    => Color::Zinc,
+                'info'    => Color::Sky,
+                'success' => Color::Emerald,
+                'warning' => Color::Amber,
+                'danger'  => Color::Rose,
             ])
+            ->navigationGroups([
+                NavigationGroup::make('Académique')
+                    ->icon('heroicon-o-academic-cap'),
+                NavigationGroup::make('RH')
+                    ->icon('heroicon-o-users'),
+                NavigationGroup::make('Finances')
+                    ->icon('heroicon-o-banknotes'),
+                NavigationGroup::make('Communication')
+                    ->icon('heroicon-o-chat-bubble-left-right'),
+                NavigationGroup::make('Paramètres')
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->collapsed(),
+            ])
+            ->globalSearch(true)
             ->sidebarCollapsibleOnDesktop()
             ->spa()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
