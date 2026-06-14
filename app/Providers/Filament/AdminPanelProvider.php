@@ -73,34 +73,32 @@ class AdminPanelProvider extends PanelProvider
                        . '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
                        . '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">'
                        . '<style>
-/* ═══════════════════════════════════════════════════════
-   ELITECAMPUS — Professional ERP Design System v4
-   ═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   ELITECAMPUS — Professional ERP Design System v5
+   All selectors verified against Filament v5 blade templates
+   ═══════════════════════════════════════════════════════════════ */
 
 *{font-family:\'Inter\',-apple-system,system-ui,sans-serif!important}
 
-/* ── SHELL ───────────────────────────────────────────── */
+/* ── SHELL ───────────────────────────────────────────────────── */
 html:not(.dark) body,
-html:not(.dark) .fi-main-ctn,
-html:not(.dark) .fi-simple-main-ctn{background:#eef2f7!important}
+html:not(.dark) .fi-main-ctn{background:#eef2f7!important}
 
-html:not(.dark) .fi-topbar,html:not(.dark) nav.fi-topbar{
-  background:#ffffff!important;height:52px!important;
-  border-bottom:1px solid #dde3ea!important;
+html:not(.dark) .fi-topbar{
+  background:#ffffff!important;border-bottom:1px solid #dde3ea!important;
   box-shadow:0 1px 0 rgba(0,0,0,.04)!important;
 }
 
-/* ── PAGE LAYOUT — kill all extra whitespace ─────────── */
-html:not(.dark) .fi-page,html:not(.dark) .fi-page-ctn{gap:0!important}
+/* ── PAGE LAYOUT ─────────────────────────────────────────────── */
+html:not(.dark) .fi-page,.fi-page-ctn{gap:0!important}
 html:not(.dark) .fi-page-content{
   padding:12px 16px 20px!important;
   display:flex!important;flex-direction:column!important;gap:12px!important;
 }
 
-/* ── PAGE HEADER ─────────────────────────────────────── */
+/* ── PAGE HEADER ─────────────────────────────────────────────── */
 html:not(.dark) .fi-page-header{
-  background:#ffffff!important;
-  border-bottom:1px solid #dde3ea!important;
+  background:#ffffff!important;border-bottom:1px solid #dde3ea!important;
   padding:10px 18px!important;margin:0!important;
 }
 html:not(.dark) .fi-page-header-heading{
@@ -112,8 +110,8 @@ html:not(.dark) .fi-breadcrumbs-item:last-child .fi-breadcrumbs-item-label{
   color:#111827!important;font-weight:600!important;
 }
 
-/* ── CARDS / SECTIONS ───────────────────────────────── */
-html:not(.dark) .fi-section,html:not(.dark) .fi-card{
+/* ── CARDS / SECTIONS ────────────────────────────────────────── */
+html:not(.dark) .fi-section{
   background:#ffffff!important;border:1px solid #dde3ea!important;
   border-radius:10px!important;box-shadow:0 1px 3px rgba(0,0,0,.05)!important;
 }
@@ -127,7 +125,7 @@ html:not(.dark) .fi-section-content,html:not(.dark) .fi-section-content-ctn{
   padding:14px 16px!important;
 }
 
-/* ── STATS WIDGETS ──────────────────────────────────── */
+/* ── STATS WIDGETS ───────────────────────────────────────────── */
 html:not(.dark) .fi-wi-stats-overview{gap:10px!important}
 html:not(.dark) .fi-wi-stats-overview-stat{
   border-radius:10px!important;border:1px solid #dde3ea!important;
@@ -148,33 +146,29 @@ html:not(.dark) .fi-wi-stats-overview-stat-description{
 .fi-wi-stats-overview{gap:10px!important}
 .fi-wi-stats-overview-stat-description{font-size:11.5px!important}
 
-/* ── WIDGET GRID ─────────────────────────────────────── */
-.fi-dashboard-widgets,.fi-page-widgets,.fi-wi-ctn{gap:12px!important}
+/* ── WIDGET GRID ─────────────────────────────────────────────── */
+.fi-dashboard-widgets,.fi-page-widgets{gap:12px!important}
 .fi-wi{margin:0!important}
 
-/* ── TABLES — Professional dense design ─────────────── */
+/* ── TABLES ──────────────────────────────────────────────────── */
 html:not(.dark) .fi-ta-ctn{
   background:#ffffff!important;border:1px solid #dde3ea!important;
   border-radius:10px!important;box-shadow:0 1px 3px rgba(0,0,0,.05)!important;
   overflow:hidden!important;
 }
-/* Header */
 html:not(.dark) .fi-ta-header-row>th,html:not(.dark) .fi-ta-header-row th{
-  background:#f7f9fc!important;
-  font-size:10px!important;font-weight:700!important;
-  text-transform:uppercase!important;letter-spacing:.7px!important;
+  background:#f7f9fc!important;font-size:10px!important;font-weight:700!important;
+  text-transform:uppercase!important;letter-spacing:.6px!important;
   color:#6b7280!important;padding:9px 14px!important;
-  border-bottom:2px solid #e5eaf0!important;white-space:nowrap!important;
+  border-bottom:2px solid #e5eaf0!important;
 }
-/* Rows */
-html:not(.dark) .fi-ta-row>td,html:not(.dark) .fi-ta-row td{
+html:not(.dark) .fi-ta-row>td{
   padding:9px 14px!important;border-bottom:1px solid #f3f4f6!important;
   font-size:13px!important;color:#1f2937!important;background:transparent!important;
   vertical-align:middle!important;
 }
 html:not(.dark) .fi-ta-row:last-child>td{border-bottom:none!important}
 html:not(.dark) .fi-ta-row:hover>td{background:#f7f9fc!important}
-/* Toolbar */
 html:not(.dark) .fi-ta-header{
   padding:10px 14px!important;border-bottom:1px solid #f3f4f6!important;
   background:#ffffff!important;
@@ -185,17 +179,13 @@ html:not(.dark) .fi-ta-empty-state-heading{
 }
 html:not(.dark) .fi-ta-empty-state-description{font-size:12.5px!important;color:#9ca3af!important}
 
-/* ── FORMS ──────────────────────────────────────────── */
-html:not(.dark) .fi-input,html:not(.dark) .fi-select,html:not(.dark) .fi-textarea{
-  border-radius:7px!important;border-color:#dde3ea!important;
-  font-size:13px!important;background:#ffffff!important;color:#111827!important;
-}
+/* ── FORMS ───────────────────────────────────────────────────── */
 html:not(.dark) .fi-fo-field-wrp-label label{
   font-size:12px!important;font-weight:600!important;color:#374151!important;
 }
 html:not(.dark) .fi-fo-helper-text{font-size:11px!important;color:#9ca3af!important}
 
-/* ── DROPDOWN / MODAL ───────────────────────────────── */
+/* ── DROPDOWN / MODAL ────────────────────────────────────────── */
 html:not(.dark) .fi-dropdown-list,html:not(.dark) .fi-dropdown-panel{
   border-radius:9px!important;background:#ffffff!important;
   border:1px solid #dde3ea!important;padding:4px!important;
@@ -209,137 +199,134 @@ html:not(.dark) .fi-modal-header-heading{
   font-size:14px!important;font-weight:700!important;color:#111827!important;
 }
 
-/* ── GLOBAL ELEMENTS ─────────────────────────────────── */
+/* ── GLOBAL COMPONENTS ───────────────────────────────────────── */
 .fi-btn{border-radius:7px!important;font-weight:600!important;font-size:12.5px!important}
 .fi-btn-color-primary{
   background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%)!important;
   border:none!important;color:#fff!important;
 }
 .fi-btn-color-primary:hover{background:linear-gradient(135deg,#1d4ed8,#1e40af)!important}
-.fi-badge{border-radius:4px!important;font-weight:600!important;font-size:10.5px!important}
 .fi-no{border-radius:10px!important;box-shadow:0 6px 24px rgba(0,0,0,.12)!important}
 .fi-dropdown-item{font-size:12.5px!important;border-radius:5px!important;margin:1px!important}
 .fi-pagination{font-size:12.5px!important}
 
-/* ════════════════════════════════════════════════════════
-   SIDEBAR — Professional dark navy, always
-   ════════════════════════════════════════════════════════ */
-.fi-sidebar,html.dark .fi-sidebar{background:#0f172a!important;border-right:1px solid rgba(255,255,255,.05)!important}
-.fi-sidebar nav,.fi-sidebar header,.fi-sidebar footer,
-.fi-sidebar ul,.fi-sidebar li,
-.fi-sidebar [class*="fi-sidebar-"]{background:#0f172a!important;border-color:transparent!important}
-html.dark .fi-sidebar nav,html.dark .fi-sidebar header,html.dark .fi-sidebar footer,
-html.dark .fi-sidebar ul,html.dark .fi-sidebar li,
-html.dark .fi-sidebar [class*="fi-sidebar-"]{background:#0f172a!important}
+/* ════════════════════════════════════════════════════════════════
+   SIDEBAR — Dark navy, Filament v5 exact class names
+   Source: vendor/filament/filament/resources/views/components/sidebar/
+   ════════════════════════════════════════════════════════════════ */
 
-.fi-sidebar header{border-bottom:1px solid rgba(255,255,255,.06)!important;padding:10px 12px!important}
-.fi-sidebar footer{border-top:1px solid rgba(255,255,255,.06)!important;padding:8px 10px!important}
+/* ── Base background — override Filament\'s bg-white / bg-gray-900 ── */
+.fi-sidebar,html.dark .fi-sidebar{
+  background:#0f172a!important;
+  border-right:1px solid rgba(255,255,255,.05)!important;
+}
+/* Transparent children so parent dark bg shows through */
+.fi-sidebar-header,.fi-sidebar-nav,.fi-sidebar-footer,
+.fi-sidebar-group,.fi-sidebar-group-btn,.fi-sidebar-group-items,
+.fi-sidebar-item,.fi-sidebar-item-btn,.fi-sidebar-nav-groups{
+  background:transparent!important;
+}
+.fi-sidebar-header{border-bottom:1px solid rgba(255,255,255,.07)!important}
+.fi-sidebar-footer{border-top:1px solid rgba(255,255,255,.06)!important}
 
-/* Kill timeline pseudo-elements */
-.fi-sidebar *::before,.fi-sidebar *::after{
-  display:none!important;content:\'\'!important;border:none!important;
-  background:none!important;width:0!important;height:0!important;position:static!important;
+/* ── Nav padding ──────────────────────────────────────────────── */
+.fi-sidebar-nav{padding:6px 8px 16px!important;gap:0!important}
+.fi-sidebar-nav-groups{margin-left:0!important;margin-right:0!important;gap:2px!important}
+
+/* ── Groups ───────────────────────────────────────────────────── */
+.fi-sidebar-group{gap:1px!important}
+.fi-sidebar-group-btn{padding:10px 8px 4px!important;gap:6px!important}
+.fi-sidebar-group-items{gap:1px!important}
+
+/* GROUP SECTION LABEL — "Académique", "RH", etc. */
+.fi-sidebar-group-label{
+  color:#4a6480!important;
+  font-size:10.5px!important;font-weight:700!important;
+  letter-spacing:0.3px!important;          /* Reduced — no more SPACED OUT text */
+  text-transform:uppercase!important;
 }
-.fi-sidebar ul,.fi-sidebar li,.fi-sidebar nav,
-.fi-sidebar [class*="fi-sidebar-group"],
-.fi-sidebar [class*="fi-sidebar-item"],
-.fi-sidebar [class*="fi-nav-group"],
-.fi-sidebar [class*="fi-sidebar-nav"]{
-  border-left:0!important;padding-left:0!important;margin-left:0!important;
-  list-style:none!important;
+/* Group icon */
+.fi-sidebar-group-btn .fi-icon{color:#3a5268!important;width:15px!important;height:15px!important}
+.fi-sidebar-group-collapse-btn{color:#3a5268!important}
+
+/* ── KILL TIMELINE BORDER LINES ───────────────────────────────── */
+.fi-sidebar-item-grouped-border,
+.fi-sidebar-item-grouped-border-part,
+.fi-sidebar-item-grouped-border-part-not-first,
+.fi-sidebar-item-grouped-border-part-not-last{
+  display:none!important;width:0!important;height:0!important;
 }
 
-/* Nav groups container */
-.fi-sidebar [class*="fi-sidebar-nav-groups"],
-.fi-sidebar [class*="fi-nav-groups"]{padding:4px 8px 14px!important;gap:0!important}
-.fi-sidebar [class*="fi-sidebar-group"]{padding:0!important;margin:0!important}
-.fi-sidebar [class*="fi-sidebar-group"]+[class*="fi-sidebar-group"]{
-  border-top:1px solid rgba(255,255,255,.04)!important;
-  margin-top:4px!important;padding-top:4px!important;
+/* ── NAV ITEM BUTTON (the <a class="fi-sidebar-item-btn">) ────── */
+.fi-sidebar-item-btn{
+  display:flex!important;align-items:center!important;gap:8px!important;
+  width:100%!important;padding:7px 10px!important;border-radius:7px!important;
+  color:#8dafc8!important;background:transparent!important;
+  text-decoration:none!important;border:none!important;cursor:pointer!important;
+  transition:background .1s,color .1s!important;justify-content:flex-start!important;
+}
+.fi-sidebar-item-has-url .fi-sidebar-item-btn:hover{
+  background:rgba(255,255,255,.07)!important;color:#c4d8ea!important;
 }
 
-/* Group labels */
-.fi-sidebar [class*="fi-sidebar-group-label"],
-.fi-sidebar [class*="fi-sidebar-group"] span[class*="label"]{
-  color:#46607a!important;font-size:9px!important;font-weight:700!important;
-  letter-spacing:1.8px!important;text-transform:uppercase!important;
-  padding:8px 8px 2px!important;display:block!important;
-}
-.fi-sidebar [class*="fi-sidebar-group"]>button,
-.fi-sidebar [class*="fi-sidebar-group-btn"]{
-  background:transparent!important;border:none!important;
-  padding:0!important;width:100%!important;cursor:pointer!important;
-}
-.fi-sidebar [class*="fi-sidebar-group"]>button:hover,
-.fi-sidebar [class*="fi-sidebar-group-btn"]:hover{background:transparent!important}
-.fi-sidebar [class*="fi-sidebar-group"]>button svg{color:#2d3e53!important}
-
-/* Nav items */
-.fi-sidebar a,.fi-sidebar [class*="fi-sidebar-item-button"]{
-  display:flex!important;align-items:center!important;gap:7px!important;
-  width:100%!important;padding:6px 8px!important;border-radius:6px!important;
-  margin:1px 0!important;color:#8fa8c0!important;
-  font-size:12.5px!important;font-weight:500!important;
-  text-decoration:none!important;background:transparent!important;
-  border:none!important;cursor:pointer!important;
-  transition:background .1s,color .1s!important;
-  overflow:hidden!important;min-width:0!important;
-}
-.fi-sidebar a:hover,.fi-sidebar [class*="fi-sidebar-item-button"]:hover{
-  background:rgba(255,255,255,.06)!important;color:#cbd5e1!important;
-}
-/* Text spans inside nav items — prevent overflow breaking layout */
-.fi-sidebar a span,.fi-sidebar [class*="fi-sidebar-item-button"] span{
-  color:inherit!important;white-space:nowrap!important;
-  overflow:hidden!important;text-overflow:ellipsis!important;
+/* ── NAV ITEM LABEL — CRITICAL: fix uppercase + letter-spacing ── */
+.fi-sidebar-item-label{
   flex:1!important;min-width:0!important;
+  font-size:13.5px!important;font-weight:500!important;
+  color:inherit!important;
+  text-transform:none!important;          /* FIX: was inheriting uppercase from group selector */
+  letter-spacing:0!important;            /* FIX: remove expanded letter spacing */
+  white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
 }
 
-/* Active state */
-.fi-sidebar [aria-current="page"],
-.fi-sidebar [class*="fi-sidebar-item-active"]>a,
-.fi-sidebar [class*="fi-sidebar-item-active"] [class*="fi-sidebar-item-button"],
-.fi-sidebar [class*="fi-sidebar-item-button-active"]{
+/* ── ICON in nav items ────────────────────────────────────────── */
+.fi-sidebar-item-btn .fi-icon{
+  color:inherit!important;flex-shrink:0!important;
+  width:16px!important;height:16px!important;opacity:.75!important;
+}
+
+/* ── ACTIVE ITEM (fi-active on <li>, NOT on <a>) ─────────────── */
+.fi-sidebar-item.fi-active .fi-sidebar-item-btn{
   background:#1d4ed8!important;color:#ffffff!important;font-weight:600!important;
-  box-shadow:0 1px 5px rgba(29,78,216,.4)!important;
+  box-shadow:0 2px 8px rgba(29,78,216,.35)!important;
 }
-.fi-sidebar [aria-current="page"] span,
-.fi-sidebar [class*="fi-sidebar-item-active"]>a span,
-.fi-sidebar [class*="fi-sidebar-item-active"] [class*="fi-sidebar-item-button"] span{
-  color:#ffffff!important;
+.fi-sidebar-item.fi-active .fi-sidebar-item-btn .fi-icon{
+  color:#ffffff!important;opacity:1!important;
 }
+.fi-sidebar-item.fi-active .fi-sidebar-item-label{color:#ffffff!important}
+.fi-sidebar-item.fi-active .fi-sidebar-item-btn:hover{background:#1e40af!important}
 
-/* Icons */
-.fi-sidebar a svg,.fi-sidebar [class*="fi-sidebar-item-button"] svg{
-  color:inherit!important;flex-shrink:0!important;width:15px!important;height:15px!important;opacity:.75!important;
-}
-.fi-sidebar [aria-current="page"] svg,
-.fi-sidebar [class*="fi-sidebar-item-active"]>a svg{opacity:1!important;color:#ffffff!important}
-
-/* Navigation badge — compact pill, never wraps */
-.fi-sidebar [class*="fi-sidebar-item-badge"],
-.fi-sidebar [class*="fi-nav-item-badge"]{
+/* ── NAVIGATION BADGE — compact pill ─────────────────────────── */
+/* Container */
+.fi-sidebar-item-badge-ctn{
   margin-left:auto!important;flex-shrink:0!important;
-  background:rgba(239,68,68,.18)!important;color:#fca5a5!important;
-  font-size:9px!important;font-weight:700!important;
-  padding:1px 6px!important;border-radius:8px!important;
-  line-height:1.6!important;white-space:nowrap!important;
-  min-width:18px!important;text-align:center!important;
+  display:flex!important;align-items:center!important;
 }
-.fi-sidebar [aria-current="page"] [class*="fi-sidebar-item-badge"],
-.fi-sidebar [class*="fi-sidebar-item-active"] [class*="fi-sidebar-item-badge"]{
+/* The actual <x-filament::badge> inside renders as .fi-badge */
+.fi-sidebar-item-badge-ctn .fi-badge{
+  /* Override ALL default badge styles */
+  background:rgba(239,68,68,.2)!important;color:#fca5a5!important;
+  font-size:10px!important;font-weight:700!important;line-height:1.4!important;
+  padding:2px 7px!important;border-radius:10px!important;
+  white-space:nowrap!important;min-width:18px!important;text-align:center!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  box-shadow:none!important;border:none!important;
+  --tw-ring-shadow:none!important;--tw-shadow:0 0 #0000!important;
+}
+/* Active item badge */
+.fi-sidebar-item.fi-active .fi-sidebar-item-badge-ctn .fi-badge{
   background:rgba(255,255,255,.2)!important;color:#ffffff!important;
 }
 
-/* Brand name */
-.fi-sidebar [class*="fi-brand-name"],.fi-sidebar header a span{color:#e2e8f0!important}
+/* ── Brand / logo text ────────────────────────────────────────── */
+.fi-logo span,.fi-brand-name{color:#e2e8f0!important}
 
-/* User menu footer */
-.fi-sidebar footer a,.fi-sidebar footer button{color:#46607a!important;font-size:12px!important}
-.fi-sidebar footer a:hover,.fi-sidebar footer button:hover{color:#7f96ae!important}
+/* ── User footer menu ─────────────────────────────────────────── */
+.fi-sidebar-footer a,.fi-sidebar-footer button{color:#4a6480!important;font-size:12.5px!important}
+.fi-sidebar-footer a:hover,.fi-sidebar-footer button:hover{color:#8dafc8!important}
 
-/* Topbar toggle */
-.fi-sidebar-close-overlay-btn,.fi-topbar-open-sidebar-btn{color:#64748b!important}
+/* Topbar toggle buttons */
+.fi-topbar-open-sidebar-btn{color:#64748b!important}
 </style>'
             )
 

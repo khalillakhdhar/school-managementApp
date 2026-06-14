@@ -7,6 +7,17 @@
 /* ── LIST VIEW ───────────────────────────────────────────────────────── */
 .ct-list-intro{color:#64748b;font-size:14px;margin:0 0 20px;line-height:1.5}
 html.dark .ct-list-intro{color:#94a3b8}
+.ct-summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:700px){.ct-summary-grid{grid-template-columns:repeat(2,1fr)}}
+.ct-summary-kpi{background:#ffffff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;
+  display:flex;align-items:center;gap:12px}
+html.dark .ct-summary-kpi{background:#1e293b;border-color:#334155}
+.ct-summary-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ct-summary-icon svg{width:18px;height:18px}
+.ct-summary-val{font-size:20px;font-weight:800;color:#0f172a;line-height:1}
+html.dark .ct-summary-val{color:#f1f5f9}
+.ct-summary-lbl{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+html.dark .ct-summary-lbl{color:#94a3b8}
 
 .ct-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
 @media(max-width:640px){.ct-cards-grid{grid-template-columns:1fr 1fr}}
@@ -140,8 +151,43 @@ html.dark .ct-empty-title{color:#cbd5e1}
 {{-- ══════════════════════════════════════════════════════════════════════
      STATE 1 — Class selection list
      ══════════════════════════════════════════════════════════════════════ --}}
+@php
+$cl = $this->classroomsList;
+$totalClasses   = $cl->count();
+$plannedClasses = $cl->filter(fn($c) => $c['hasData'])->count();
+$totalSessions  = $cl->sum('sessions');
+$totalHours     = $cl->sum(fn($c) => (float) str_replace(',', '.', $c['hours']));
+$totalSubjects  = $cl->sum('subjects');
+@endphp
+<div class="ct-summary-grid">
+    <div class="ct-summary-kpi">
+        <div class="ct-summary-icon" style="background:#eff6ff">
+            <svg fill="none" stroke="#1d4ed8" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+        </div>
+        <div><div class="ct-summary-val">{{ $totalClasses }}</div><div class="ct-summary-lbl">Classes</div></div>
+    </div>
+    <div class="ct-summary-kpi">
+        <div class="ct-summary-icon" style="background:#ecfdf5">
+            <svg fill="none" stroke="#059669" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+        </div>
+        <div><div class="ct-summary-val">{{ $plannedClasses }}<span style="font-size:13px;font-weight:500;color:#94a3b8">/{{ $totalClasses }}</span></div><div class="ct-summary-lbl">Planifiées</div></div>
+    </div>
+    <div class="ct-summary-kpi">
+        <div class="ct-summary-icon" style="background:#f0fdf4">
+            <svg fill="none" stroke="#059669" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M16 2v4M8 2v4M3 10h18"/></svg>
+        </div>
+        <div><div class="ct-summary-val">{{ $totalSessions }}</div><div class="ct-summary-lbl">Séances / sem.</div></div>
+    </div>
+    <div class="ct-summary-kpi">
+        <div class="ct-summary-icon" style="background:#fdf4ff">
+            <svg fill="none" stroke="#7c3aed" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        </div>
+        <div><div class="ct-summary-val">{{ $totalSubjects }}</div><div class="ct-summary-lbl">Matières</div></div>
+    </div>
+</div>
+
 <p class="ct-list-intro">
-    Sélectionnez une classe pour visualiser et gérer son emploi du temps hebdomadaire.
+    {{ $plannedClasses }} classe(s) sur {{ $totalClasses }} ont un emploi du temps planifié — {{ $totalSessions }} séances pour {{ number_format($totalHours, 1) }}h par semaine au total.
 </p>
 
 <div class="ct-cards-grid">
