@@ -1,8 +1,8 @@
 <?php
 namespace App\Filament\Widgets;
 
-use App\Models\Attendance;
 use App\Models\Student;
+use App\Models\StudentAttendance;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -27,8 +27,8 @@ class StudentsListStatsWidget extends StatsOverviewWidget
             ->count();
         $suspended = Student::where('status', 'suspended')->count();
 
-        $totalAtt   = Attendance::whereMonth('date', now()->month)->whereYear('date', now()->year)->count();
-        $presentAtt = Attendance::whereMonth('date', now()->month)->whereYear('date', now()->year)
+        $totalAtt   = StudentAttendance::whereMonth('date', now()->month)->whereYear('date', now()->year)->count();
+        $presentAtt = StudentAttendance::whereMonth('date', now()->month)->whereYear('date', now()->year)
             ->whereIn('status', ['present', 'late'])->count();
         $attendanceRate = $totalAtt > 0 ? round($presentAtt / $totalAtt * 100, 1) : 0;
 
@@ -56,7 +56,7 @@ class StudentsListStatsWidget extends StatsOverviewWidget
                 ->color('info'),
 
             Stat::make('Taux de présence', $attendanceRate.'%')
-                ->description($totalAtt.' pointages ce mois')
+                ->description($totalAtt.' présences saisies ce mois')
                 ->descriptionIcon('heroicon-m-chart-bar')
                 ->color($attendanceRate >= 80 ? 'success' : ($attendanceRate >= 60 ? 'warning' : 'danger')),
         ];

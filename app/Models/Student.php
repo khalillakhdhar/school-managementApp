@@ -42,6 +42,11 @@ class Student extends Model
         return $this->hasMany(Incident::class);
     }
 
+    public function studentAttendances(): HasMany
+    {
+        return $this->hasMany(StudentAttendance::class);
+    }
+
     public function getFullNameAttribute(): string
     {
         return "{$this->first_name} {$this->last_name}";

@@ -16,6 +16,7 @@ use App\Models\SchoolParent;
 use App\Models\SchoolSetting;
 use App\Models\Service;
 use App\Models\Student;
+use App\Models\StudentAttendance;
 use App\Models\Subject;
 use App\Models\TimetableEntry;
 use App\Models\User;
@@ -39,7 +40,7 @@ class DemoDataService
     protected static array $tables = [
         'payment_service', 'payments', 'service_student', 'services',
         'timetable_entries', 'employee_subject', 'classroom_subject',
-        'attendances', 'payrolls', 'incidents',
+        'student_attendances', 'attendances', 'payrolls', 'incidents',
         'parent_student', 'parents',
         'students', 'classrooms', 'subjects', 'levels',
         'expenses', 'expense_categories', 'blog_posts',
@@ -91,6 +92,7 @@ class DemoDataService
             self::seedPayments($students, $services);
             self::seedTimetable($classes, $subjects, $teachers);
             self::seedAttendance($employees);
+            self::seedStudentAttendance($classes);
             self::seedPayrolls($teachers);
             $cats = self::seedExpenseCategories();
             self::seedExpenses($cats);
@@ -479,6 +481,49 @@ class DemoDataService
                 $count++;
             }
             $day->subDay();
+        }
+    }
+
+    // ── Student attendance (last 15 working days, recorded by titulaire) ───
+    protected static function seedStudentAttendance($classes): void
+    {
+        // Build the list of working days (skip Sunday)
+        $days = [];
+        $cursor = now()->copy();
+        while (count($days) < 15) {
+            if (! $cursor->isSunday()) {
+                $days[] = $cursor->copy();
+            }
+            $cursor->subDay();
+        }
+
+        $rows = [];
+        $now = now();
+        foreach ($classes as $class) {
+            $students = Student::where('classroom_id', $class->id)->pluck('id');
+            $recorder = $class->teacher_id;
+            foreach ($days as $day) {
+                foreach ($students as $sid) {
+                    $r = rand(1, 1000);
+                    $status = $r > 950 ? ($r > 985 ? 'late' : 'absent') : 'present'; // ~95% present
+                    if ($r > 995) {
+                        $status = 'excused';
+                    }
+                    $rows[] = [
+                        'student_id'   => $sid,
+                        'classroom_id' => $class->id,
+                        'employee_id'  => $recorder,
+                        'date'         => $day->toDateString(),
+                        'status'       => $status,
+                        'created_at'   => $now,
+                        'updated_at'   => $now,
+                    ];
+                }
+            }
+        }
+        // Bulk insert in chunks for speed
+        foreach (array_chunk($rows, 500) as $chunk) {
+            StudentAttendance::insert($chunk);
         }
     }
 

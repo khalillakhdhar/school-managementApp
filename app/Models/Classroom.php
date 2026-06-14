@@ -37,6 +37,11 @@ class Classroom extends Model
         return $this->hasMany(TimetableEntry::class);
     }
 
+    public function studentAttendances(): HasMany
+    {
+        return $this->hasMany(StudentAttendance::class);
+    }
+
     public function getFullNameAttribute(): string
     {
         return $this->level ? "{$this->level->code} — {$this->name}" : $this->name;
