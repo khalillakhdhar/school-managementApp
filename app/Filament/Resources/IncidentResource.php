@@ -32,7 +32,7 @@ class IncidentResource extends Resource
                 Forms\Components\Select::make('student_id')
                     ->label(__('Student'))
                     ->relationship('student', 'first_name')
-                    ->getOptionLabelFromRecordUsing(fn ($r) => $r->full_name)
+                    ->getOptionLabelFromRecordUsing(fn ($r) => $r?->full_name ?? '—')
                     ->required()->searchable()->preload(),
                 Forms\Components\DatePicker::make('incident_date')
                     ->label(__('Date'))
