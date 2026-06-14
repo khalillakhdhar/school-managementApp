@@ -51,6 +51,33 @@
         </div>
     </div>
 
+    {{-- Demo login credentials (only when active) --}}
+    @if($active)
+    <div style="background:#fff;border:1px solid #e5e9f0;border-radius:14px;padding:22px 26px;box-shadow:0 1px 3px rgba(16,24,40,.05);">
+        <h3 style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 14px;">Comptes de démonstration</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;">
+            <div style="border:1px solid #eaeef3;border-radius:11px;padding:14px 16px;">
+                <div style="font-size:12px;font-weight:700;color:#2563eb;text-transform:uppercase;letter-spacing:.5px;">Enseignant</div>
+                <div style="font-size:13px;color:#1e293b;margin-top:6px;">URL : <code>/staff/login</code></div>
+                <div style="font-size:13px;color:#1e293b;">Email : <code>salimwhichi@elamana.tn</code></div>
+                <div style="font-size:13px;color:#1e293b;">Mot de passe : <code>demo1234</code></div>
+            </div>
+            <div style="border:1px solid #eaeef3;border-radius:11px;padding:14px 16px;">
+                <div style="font-size:12px;font-weight:700;color:#10b981;text-transform:uppercase;letter-spacing:.5px;">Parent</div>
+                <div style="font-size:13px;color:#1e293b;margin-top:6px;">URL : <code>/parent/login</code></div>
+                <div style="font-size:13px;color:#1e293b;">Email : <code>parent1@elamana.tn</code></div>
+                <div style="font-size:13px;color:#1e293b;">Mot de passe : <code>demo1234</code></div>
+            </div>
+            <div style="border:1px solid #eaeef3;border-radius:11px;padding:14px 16px;">
+                <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;">Administrateur</div>
+                <div style="font-size:13px;color:#1e293b;margin-top:6px;">URL : <code>/admin/login</code></div>
+                <div style="font-size:13px;color:#64748b;">Votre compte admin habituel.</div>
+            </div>
+        </div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:12px;">12 enseignants & 8 parents ont un accès (tous : mot de passe <code>demo1234</code>).</div>
+    </div>
+    @endif
+
     {{-- Hint --}}
     <div style="display:flex;gap:10px;align-items:flex-start;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px 18px;">
         <span style="font-size:16px;">💡</span>

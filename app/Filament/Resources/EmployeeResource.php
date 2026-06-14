@@ -249,6 +249,35 @@ class EmployeeResource extends Resource
                     ]),
             ])
             ->actions([
+                // ── Create a staff login account ───────────────────────────────
+                Actions\Action::make('create_account')
+                    ->label('Créer un compte')
+                    ->icon('heroicon-o-key')
+                    ->color('primary')
+                    ->requiresConfirmation()
+                    ->modalHeading(fn (Employee $record) => 'Créer un accès pour ' . $record->full_name)
+                    ->modalDescription('Un compte « Espace Personnel » sera créé. Le mot de passe temporaire devra être changé à la première connexion.')
+                    ->action(function (Employee $record): void {
+                        $result = \App\Services\AccountService::forEmployee($record, null, true);
+                        Notification::make()
+                            ->title('Compte créé pour ' . $record->full_name)
+                            ->body('Identifiant : ' . $result['email'] . ' — Mot de passe : ' . $result['password'])
+                            ->success()->persistent()->send();
+                    })
+                    ->visible(fn (Employee $record) => $record->user_id === null),
+                Actions\Action::make('reset_account_password')
+                    ->label('Réinitialiser mot de passe')
+                    ->icon('heroicon-o-arrow-path')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->action(function (Employee $record): void {
+                        $result = \App\Services\AccountService::forEmployee($record, null, true);
+                        Notification::make()
+                            ->title('Mot de passe réinitialisé')
+                            ->body('Nouveau mot de passe : ' . $result['password'])
+                            ->warning()->persistent()->send();
+                    })
+                    ->visible(fn (Employee $record) => $record->user_id !== null),
                 // ── Pay all pending payslips for a contractor ──────────────────
                 Actions\Action::make('pay_contractor')
                     ->label(__('Pay All Pending'))
