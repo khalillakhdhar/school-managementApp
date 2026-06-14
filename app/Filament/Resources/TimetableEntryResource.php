@@ -18,11 +18,11 @@ use Filament\Tables\Table;
 class TimetableEntryResource extends Resource
 {
     protected static ?string $model = TimetableEntry::class;
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-pencil-square';
     protected static ?int $navigationSort = 5;
 
     public static function getNavigationGroup(): ?string { return 'Académique'; }
-    public static function getNavigationLabel(): string  { return 'Emplois du temps'; }
+    public static function getNavigationLabel(): string  { return 'Saisie créneaux'; }
     public static function getModelLabel(): string       { return 'Séance'; }
     public static function getPluralModelLabel(): string { return 'Emplois du temps'; }
 

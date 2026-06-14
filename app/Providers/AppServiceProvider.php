@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use BezhanSalleh\LanguageSwitch\LanguageSwitch;
 use Filament\Support\Facades\FilamentView;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -12,6 +13,9 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // All authenticated users have full access — single-role admin ERP
+        Gate::before(fn ($user) => true);
+
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
             $switch
                 ->locales(['ar', 'en', 'fr'])

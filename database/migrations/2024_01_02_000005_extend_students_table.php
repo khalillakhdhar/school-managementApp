@@ -12,12 +12,16 @@ return new class extends Migration {
             $table->date('enrollment_date')->nullable()->after('classroom_id');
         });
 
-        // Extend status enum to add suspended and graduated
-        DB::statement("ALTER TABLE students MODIFY COLUMN status ENUM('active','inactive','suspended','graduated') DEFAULT 'active'");
+        // MySQL: extend enum values. SQLite uses TEXT and has no constraint to update.
+        if (DB::connection()->getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE students MODIFY COLUMN status ENUM('active','inactive','suspended','graduated') DEFAULT 'active'");
+        }
     }
 
     public function down(): void {
-        DB::statement("ALTER TABLE students MODIFY COLUMN status ENUM('active','inactive') DEFAULT 'active'");
+        if (DB::connection()->getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE students MODIFY COLUMN status ENUM('active','inactive') DEFAULT 'active'");
+        }
 
         Schema::table('students', function (Blueprint $table) {
             $table->dropForeign(['classroom_id']);

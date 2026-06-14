@@ -15,10 +15,16 @@ class SchoolSetting extends Model
 
     public static function getInstance(): static
     {
-        return static::firstOrCreate(
-            ['id' => 1],
-            ['school_name' => config('app.name', 'EliteCampus')]
-        );
+        try {
+            return static::firstOrCreate(
+                ['id' => 1],
+                ['school_name' => config('app.name', 'EliteCampus')]
+            );
+        } catch (\Throwable) {
+            $instance = new static();
+            $instance->school_name = config('app.name', 'EliteCampus');
+            return $instance;
+        }
     }
 
     public static function get(string $field, mixed $default = null): mixed

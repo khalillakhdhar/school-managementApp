@@ -36,7 +36,8 @@ class AttendanceResource extends Resource
         $present = Attendance::whereDate('date', $today)->count();
 
         if ($total === 0) return null;
-        return $present < $total ? ($total - $present) . ' manquants' : null;
+        $missing = $total - $present;
+        return $missing > 0 ? (string) $missing : null;
     }
 
     public static function getNavigationBadgeColor(): string|array|null
@@ -140,12 +141,12 @@ class AttendanceResource extends Resource
             ->emptyStateHeading('Aucune présence enregistrée')
             ->emptyStateDescription('Les pointages des employés apparaîtront ici.')
             ->headerActions([
-                Tables\Actions\Action::make('mark_all_present_today')
+                Actions\Action::make('mark_all_present_today')
                     ->label('Marquer tous présents aujourd\'hui')
                     ->icon('heroicon-o-user-group')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->modalHeading('Pointage global — ' . now()->translatedFormat('d/m/Y'))
+                    ->modalHeading('Pointage global — ' . now()->format('d/m/Y'))
                     ->modalDescription('Crée un enregistrement "Présent" pour chaque employé actif sans pointage aujourd\'hui.')
                     ->action(function (): void {
                         $today     = now()->toDateString();
