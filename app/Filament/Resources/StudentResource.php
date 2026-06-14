@@ -69,9 +69,13 @@ class StudentResource extends Resource
             Section::make(__('School Information'))->schema([
                 Forms\Components\Select::make('classroom_id')
                     ->label(__('Classroom'))
-                    ->relationship('classroom', 'name')
-                    ->getOptionLabelFromRecordUsing(fn ($r) => $r->level ? "{$r->level->code} — {$r->name}" : $r->name)
-                    ->nullable()->searchable()->preload(),
+                    ->options(
+                        Classroom::with('level')->orderBy('name')->get()
+                            ->mapWithKeys(fn ($c) => [
+                                $c->id => ($c->level?->code ? "{$c->level->code} — {$c->name}" : $c->name),
+                            ])
+                    )
+                    ->nullable()->searchable(),
                 Forms\Components\TextInput::make('class')->label(__('Class'))->maxLength(255),
                 Forms\Components\TextInput::make('level')->label(__('Level'))->maxLength(255),
                 Forms\Components\DatePicker::make('enrollment_date')->label(__('Enrollment Date')),
