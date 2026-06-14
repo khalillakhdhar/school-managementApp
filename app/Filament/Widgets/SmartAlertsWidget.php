@@ -10,7 +10,7 @@ class SmartAlertsWidget extends Widget
 {
     protected static bool $isLazy = true;
     protected static ?int $sort = 4;
-    protected static string $view = 'filament.widgets.smart-alerts-widget';
+    protected string $view = 'filament.widgets.smart-alerts-widget';
     protected int|string|array $columnSpan = 'full';
 
     protected function getViewData(): array
