@@ -128,6 +128,19 @@ class StudentResource extends Resource
                         'graduated' => __('Graduated'),
                         default     => $state,
                     }),
+                Tables\Columns\TextColumn::make('pending_balance')
+                    ->label(__('Balance'))
+                    ->getStateUsing(fn (Student $record): float =>
+                        $record->payments()->where('status', 'pending')->sum('amount')
+                    )
+                    ->money('TND')
+                    ->badge()
+                    ->color(fn (Student $record): string =>
+                        $record->payments()->where('status', 'pending')->whereDate('due_date', '<', now())->exists()
+                            ? 'danger'
+                            : ($record->payments()->where('status', 'pending')->exists() ? 'warning' : 'success')
+                    )
+                    ->sortable(false),
                 Tables\Columns\TextColumn::make('date_of_birth')->label(__('Birth Date'))->date()->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->label('Créé le')->dateTime()->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
