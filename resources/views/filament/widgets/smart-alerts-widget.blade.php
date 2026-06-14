@@ -14,11 +14,11 @@
         </x-slot>
 
         @if($overdueCount === 0 && $unnotifiedCount === 0 && $classesNoTeacher === 0)
-            <div class="flex items-center gap-3 py-4 text-emerald-600 dark:text-emerald-400">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <span class="text-sm font-semibold">{{ __('No alerts — everything is up to date!') }}</span>
+                <span class="text-sm font-medium">{{ __('No alerts — everything is up to date!') }}</span>
             </div>
         @else
             <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
