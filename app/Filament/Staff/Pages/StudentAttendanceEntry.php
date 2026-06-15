@@ -106,7 +106,23 @@ class StudentAttendanceEntry extends Page
             return;
         }
 
-        foreach ($this->statuses as $studentId => $status) {
+        // SÉCURITÉ : l'enseignant ne peut pointer qu'une classe qu'il enseigne.
+        if (! $this->myClasses()->pluck('id')->contains($this->classroomId)) {
+            Notification::make()->title('Accès refusé à cette classe.')->danger()->send();
+            return;
+        }
+
+        // SÉCURITÉ : on ne traite que les élèves réellement inscrits dans CETTE classe,
+        // avec un statut valide — on ignore tout ID injecté côté client.
+        $allowed = ['present', 'absent', 'late', 'excused'];
+        $rosterIds = Student::where('classroom_id', $this->classroomId)->pluck('id');
+        $saved = 0;
+
+        foreach ($rosterIds as $studentId) {
+            $status = $this->statuses[$studentId] ?? 'present';
+            if (! in_array($status, $allowed, true)) {
+                $status = 'present';
+            }
             StudentAttendance::updateOrCreate(
                 ['student_id' => $studentId, 'date' => $this->date],
                 [
@@ -115,10 +131,11 @@ class StudentAttendanceEntry extends Page
                     'status'       => $status,
                 ],
             );
+            $saved++;
         }
 
         Notification::make()
-            ->title("Appel enregistré — " . count($this->statuses) . " élève(s)")
+            ->title("Appel enregistré — {$saved} élève(s)")
             ->success()->send();
     }
 }

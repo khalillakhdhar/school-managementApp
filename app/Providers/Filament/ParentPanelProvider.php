@@ -30,14 +30,17 @@ class ParentPanelProvider extends PanelProvider
             ->brandLogoHeight('2rem')
             ->favicon(asset('favicon.svg'))
             ->colors([
-                'primary' => Color::hex('#1d4ed8'),
+                'primary' => Color::hex('#2563EB'),
                 'gray'    => Color::Slate,
-                'success' => Color::Emerald,
-                'warning' => Color::Amber,
-                'danger'  => Color::Rose,
+                'info'    => Color::Sky,
+                'success' => Color::hex('#10B981'),
+                'warning' => Color::hex('#F59E0B'),
+                'danger'  => Color::hex('#EF4444'),
             ])
+            ->sidebarCollapsibleOnDesktop()
             ->discoverPages(in: app_path('Filament/Parent/Pages'), for: 'App\Filament\Parent\Pages')
             ->pages([ParentDashboard::class])
+            ->renderHook('panels::head.end', fn () => view('filament.portal-theme'))
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -51,6 +54,7 @@ class ParentPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                \App\Http\Middleware\ForcePasswordChange::class,
             ])
             ->authGuard('web');
     }

@@ -56,7 +56,10 @@ class StaffPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            ->authMiddleware([Authenticate::class])
+            ->authMiddleware([
+                Authenticate::class,
+                \App\Http\Middleware\ForcePasswordChange::class,
+            ])
             ->authGuard('web');
     }
 }

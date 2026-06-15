@@ -8,6 +8,7 @@ use App\Models\Classroom;
 use App\Models\Employee;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
+use App\Models\Grade;
 use App\Models\Incident;
 use App\Models\Level;
 use App\Models\Payment;
@@ -40,7 +41,7 @@ class DemoDataService
     protected static array $tables = [
         'payment_service', 'payments', 'service_student', 'services',
         'timetable_entries', 'employee_subject', 'classroom_subject',
-        'student_attendances', 'attendances', 'payrolls', 'incidents',
+        'grades', 'student_attendances', 'attendances', 'payrolls', 'incidents',
         'parent_student', 'parents',
         'students', 'classrooms', 'subjects', 'levels',
         'expenses', 'expense_categories', 'blog_posts',
@@ -93,6 +94,7 @@ class DemoDataService
             self::seedTimetable($classes, $subjects, $teachers);
             self::seedAttendance($employees);
             self::seedStudentAttendance($classes);
+            self::seedGrades($classes, $subjects, $teachers);
             self::seedPayrolls($teachers);
             $cats = self::seedExpenseCategories();
             self::seedExpenses($cats);
@@ -524,6 +526,48 @@ class DemoDataService
         // Bulk insert in chunks for speed
         foreach (array_chunk($rows, 500) as $chunk) {
             StudentAttendance::insert($chunk);
+        }
+    }
+
+    // ── Grades (T1 for every student × subject) ────────────────────────────
+    protected static function seedGrades($classes, $subjects, $teachers): void
+    {
+        $teacherFor = [];
+        foreach ($subjects as $s) {
+            $teacherFor[$s->id] = $teachers->first(fn ($t) => $t->specialite === $s->name)?->id
+                ?? $classes->first()?->teacher_id;
+        }
+
+        // T1 & T2 complets (terminés) ; T3 (en cours) laissé vide volontairement.
+        $terms = ['T1' => 60, 'T2' => 30];
+        $rows = [];
+        $now = now();
+        foreach ($classes as $class) {
+            $students = Student::where('classroom_id', $class->id)->pluck('id');
+            foreach ($students as $sid) {
+                foreach ($subjects as $subject) {
+                    foreach ($terms as $term => $daysAgo) {
+                        // réaliste : la plupart entre 9 et 18
+                        $score = round(min(20, max(4, 8 + (mt_rand(0, 1000) / 100))), 2);
+                        $rows[] = [
+                            'student_id'   => $sid,
+                            'subject_id'   => $subject->id,
+                            'classroom_id' => $class->id,
+                            'employee_id'  => $teacherFor[$subject->id] ?? null,
+                            'term'         => $term,
+                            'score'        => $score,
+                            'max_score'    => 20,
+                            'coefficient'  => $subject->coefficient,
+                            'date'         => $now->copy()->subDays($daysAgo + rand(0, 20)),
+                            'created_at'   => $now,
+                            'updated_at'   => $now,
+                        ];
+                    }
+                }
+            }
+        }
+        foreach (array_chunk($rows, 500) as $chunk) {
+            Grade::insert($chunk);
         }
     }
 

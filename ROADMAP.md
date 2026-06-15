@@ -98,8 +98,8 @@ de l'employé connecté + bouton "Pointer mon arrivée/départ aujourd'hui".
 
 ---
 
-## 🟨 PHASE 3 — Portail Parent complet
-### 3.1 — Mes enfants & paiements
+## ✅ PHASE 3 — Portail Parent complet (TERMINÉE)
+### ✅ 3.1 — Mes enfants & paiements
 **Prompt :**
 ```
 Dans /parent, page "Paiements" : pour chaque enfant du parent connecté, solde dû,
@@ -108,7 +108,7 @@ historique des paiements (payés/en attente/en retard), total annuel. Design por
 **Fichiers :** `app/Filament/Parent/Pages/ParentPayments.php` + vue
 **Acceptation :** le parent voit les soldes et paiements de ses enfants.
 
-### 3.2 — Emploi du temps de l'enfant
+### ✅ 3.2 — Emploi du temps de l'enfant
 **Prompt :**
 ```
 Dans /parent, page "Emploi du temps" : sélection d'un enfant, affiche la grille
@@ -117,7 +117,7 @@ hebdomadaire de sa classe (réutilise la logique grille de MySchedule).
 **Fichiers :** `app/Filament/Parent/Pages/ChildTimetable.php` + vue
 **Acceptation :** le parent voit l'emploi du temps de la classe de son enfant.
 
-### 3.3 — Présences & incidents
+### ✅ 3.3 — Présences & incidents
 **Prompt :**
 ```
 Dans /parent, page "Suivi" : présence du mois (student_attendances) de chaque enfant
@@ -126,7 +126,7 @@ Dans /parent, page "Suivi" : présence du mois (student_attendances) de chaque e
 **Fichiers :** `app/Filament/Parent/Pages/ChildMonitoring.php` + vue
 **Acceptation :** le parent voit présences + incidents de ses enfants.
 
-### 3.4 — Annonces
+### ✅ 3.4 — Annonces
 **Prompt :**
 ```
 Dans /parent, page "Annonces" : liste lecture seule des BlogPost publiés (titre,
@@ -137,8 +137,8 @@ date, contenu), cards propres.
 
 ---
 
-## 🟧 PHASE 4 — Notes & Bulletins (module académique)
-### 4.1 — Schéma notes
+## ✅ PHASE 4 — Notes & Bulletins (TERMINÉE)
+### ✅ 4.1 — Schéma notes
 **Prompt :**
 ```
 Crée le module de notes : migrations `grades` (student_id, subject_id, classroom_id,
@@ -148,7 +148,7 @@ date, comment) + modèle Grade et relations. Migre.
 **Fichiers :** migration + `app/Models/Grade.php` + relations
 **Acceptation :** table créée, relations OK.
 
-### 4.2 — Saisie des notes (enseignant)
+### ✅ 4.2 — Saisie des notes (enseignant)
 **Prompt :**
 ```
 Dans /staff, page "Saisie des notes" : choix classe + matière + trimestre, puis grille
@@ -157,7 +157,7 @@ des élèves pour saisir une note /20. Sauvegarde en masse dans grades.
 **Fichiers :** `app/Filament/Staff/Pages/GradeEntry.php` + vue
 **Acceptation :** un enseignant saisit les notes d'une classe pour une matière.
 
-### 4.3 — Bulletin
+### ✅ 4.3 — Bulletin
 **Prompt :**
 ```
 Génère le bulletin trimestriel d'un élève : moyenne par matière (pondérée coefficient),
@@ -169,7 +169,7 @@ moyenne générale, rang dans la classe. Vue imprimable côté admin ET côté p
 ---
 
 ## 🟪 PHASE 5 — Sécurité & transverse
-### 5.1 — Changement de mot de passe à la 1ère connexion
+### ✅ 5.1 — Changement de mot de passe à la 1ère connexion (TERMINÉ)
 **Prompt :**
 ```
 Implémente la redirection forcée vers une page "Changer mon mot de passe" quand
@@ -178,7 +178,7 @@ hook Filament). Après changement, must_change_password=false.
 ```
 **Acceptation :** un compte fraîchement créé est obligé de changer son mot de passe.
 
-### 5.2 — Emails (bienvenue / rappels)
+### ✅ 5.2 — Emails (bienvenue / rappels) (TERMINÉ)
 **Prompt :**
 ```
 Configure l'envoi d'emails (actuellement MAIL_MAILER=log). Documente la config SMTP
@@ -187,7 +187,7 @@ paiement (reminders) doivent partir par email.
 ```
 **Acceptation :** emails de bienvenue testables (au moins en log), template propre.
 
-### 5.3 — Revue de sécurité
+### ✅ 5.3 — Revue de sécurité (TERMINÉE)
 **Prompt :**
 ```
 Lance /security-review sur la branche. Vérifie : isolation des données par rôle

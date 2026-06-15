@@ -396,6 +396,7 @@ window.addEventListener("pageshow", function (e) {
             ])
             ->authMiddleware([
                 Authenticate::class,
+                \App\Http\Middleware\ForcePasswordChange::class,
             ]);
     }
 }

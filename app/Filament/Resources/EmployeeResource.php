@@ -259,10 +259,19 @@ class EmployeeResource extends Resource
                     ->modalDescription('Un compte « Espace Personnel » sera créé. Le mot de passe temporaire devra être changé à la première connexion.')
                     ->action(function (Employee $record): void {
                         $result = \App\Services\AccountService::forEmployee($record, null, true);
-                        Notification::make()
-                            ->title('Compte créé pour ' . $record->full_name)
-                            ->body('Identifiant : ' . $result['email'] . ' — Mot de passe : ' . $result['password'])
-                            ->success()->persistent()->send();
+                        $loginUrl = url('/staff/login');
+                        try {
+                            \Illuminate\Support\Facades\Mail::to($result['email'])
+                                ->send(new \App\Mail\StaffWelcomeMail($record, $result['email'], $result['password'], $loginUrl));
+                            Notification::make()
+                                ->title('Compte créé — email envoyé à ' . $result['email'])
+                                ->success()->send();
+                        } catch (\Throwable $e) {
+                            Notification::make()
+                                ->title('Compte créé pour ' . $record->full_name)
+                                ->body('Identifiant : ' . $result['email'] . ' — Mot de passe : ' . $result['password'])
+                                ->warning()->persistent()->send();
+                        }
                     })
                     ->visible(fn (Employee $record) => $record->user_id === null),
                 Actions\Action::make('reset_account_password')
