@@ -198,12 +198,12 @@ les pages portail, validation des saisies.
 
 ---
 
-## 🟫 PHASE 6 — Finitions & QA
-- [ ] **6.1** Étendre le Mode Démo aux notes + présences élèves + comptes staff non-enseignants
-- [ ] **6.2** Cohérence design : auditer chaque page des 3 panels (cards, badges, vides)
-- [ ] **6.3** Traductions FR complètes (libellés, enums affichés)
-- [ ] **6.4** Tests manuels de bout en bout par rôle (checklist)
-- [ ] **6.5** `/code-review` final + nettoyage des fichiers d'audit temporaires
+## ✅ PHASE 6 — Finitions & QA (TERMINÉE)
+- [x] **6.1** Étendre le Mode Démo aux notes + présences élèves + comptes staff non-enseignants
+- [x] **6.2** Cohérence design : auditer chaque page des 3 panels (cards, badges, vides)
+- [x] **6.3** Traductions FR complètes (libellés, enums affichés)
+- [x] **6.4** Tests manuels de bout en bout par rôle (checklist)
+- [x] **6.5** `/code-review` final + nettoyage des fichiers d'audit temporaires
 
 ---
 
