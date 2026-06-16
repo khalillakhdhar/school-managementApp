@@ -217,3 +217,34 @@ les pages portail, validation des saisies.
 
 > 💡 Conseil : après CHAQUE phase, activer le Mode Démo et tester avec les comptes
 > `demo1234` (enseignant `salimwhichi@elamana.tn`, parent `parent1@elamana.tn`).
+
+---
+
+## 🎉 PROJET TERMINÉ — Bilan QA final (2026-06-15)
+
+**Toutes les phases (1 → 6) sont livrées et vérifiées.**
+
+### Résultats du smoke-test (HTTP 200 par rôle)
+| Panel | Pages OK | Détail |
+|---|---|---|
+| **Admin** `/admin` | **15/15** | élèves, employés, paiements, classes, matières, parents, présences élèves, bulletins, dépenses, incidents, blog, paies, niveaux, services + dashboard |
+| **Enseignant** `/staff` | **7/7** | tableau de bord, emploi du temps, faire l'appel, mes classes, fiches de paie, pointage, saisie des notes |
+| **Parent** `/parent` | **6/6** | tableau de bord (KPI+charts), paiements, emploi du temps, suivi, annonces, bulletins |
+| **Sécurité** | ✅ | enseignant → `/admin` = **403** ; isolation parent/enfants & prof/classes validée |
+
+### Données de démonstration (Mode Démo)
+48 élèves · 8 classes · 15 employés · 256 séances · 480 paiements · **960 notes (T1+T2)** · **720 présences élèves**.
+
+### Environnement — ⚠️ à retenir
+Lancer le serveur avec **PHP 8.4** (qui a `intl`) :
+- `\.serve.bat` (racine projet) — fiable partout, OU
+- `php artisan serve` dans un terminal **neuf** (le shim `C:\Users\khali\bin\php.cmd` force la 8.4).
+- ❌ Ne PAS utiliser le PHP 8.5 herd-lite (pas d'`intl` → erreur sur les tables Filament).
+
+### Comptes de test (mot de passe : `demo1234`)
+- **Admin** : compte habituel → `/admin/login`
+- **Enseignant** : `salimwhichi@elamana.tn` → `/staff/login`
+- **Parent** : `parent1@elamana.tn` → `/parent/login`
+
+### Documents de référence conservés
+`ROADMAP.md` · `SECURITY_AUDIT.md` · `PERMISSIONS_AUDIT.md` · `README.md`
