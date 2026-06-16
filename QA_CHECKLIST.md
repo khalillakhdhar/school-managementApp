@@ -1,43 +1,37 @@
 # ✅ Checklist QA — EliteCampus (test bout-en-bout par rôle)
 
-> **Préparation :** Paramètres → **Mode Démo** → *Activer*. Puis **Ctrl+Shift+R**.
-> Comptes : admin (le vôtre) · enseignant `salimwhichi@elamana.tn` · parent `parent1@elamana.tn` — mot de passe `demo1234`.
+> ⚠️ **Lancer le serveur avec `php84 artisan serve`** (PHP 8.4 + `intl`).
+> NE PAS utiliser `php artisan serve` → prend PHP 8.5 allégé sans `intl` → erreur sur tous les tableaux.
+> **Préparation :** Paramètres → **Mode Démo** → *Activer*, puis **Ctrl+Shift+R**.
+> Comptes de test : mot de passe `demo1234`.
 
----
+## 🔵 ADMIN — `http://localhost:8000/admin/login`
+- [ ] Tableau de bord avec **2 graphiques** visibles (évolution élèves + donut)
+- [ ] Académique → Élèves : KPIs, table, **taux de présence réel**
+- [ ] Académique → Présence élèves : appels des profs, filtres classe/statut
+- [ ] Académique → Bulletins : classe + élève + trimestre → bulletin **imprimable**
+- [ ] Finances → Paiements : montants affichés (plus d'erreur intl)
+- [ ] Employés → action **« Créer un compte »** → identifiants affichés
+- [ ] Paramètres → Mode Démo : Activer / Supprimer
 
-## 🔵 Admin — `/admin`
-- [ ] Tableau de bord : KPIs + 2 graphiques (évolution élèves, répartition) s'affichent
-- [ ] Élèves : KPI « Taux de présence » non nul + table remplie
-- [ ] Académique → **Présence élèves** : appels visibles, filtres classe/statut OK
-- [ ] Académique → **Bulletins** : choisir classe/élève/trimestre (T1 ou T2) → bulletin calculé + bouton Imprimer
-- [ ] Emploi du temps : chaque classe a sa grille (32 séances)
-- [ ] Finances → Paiements : KPIs (recettes, impayés, recouvrement)
-- [ ] RH → Employés : action **Créer un compte** sur un employé sans accès → notification identifiants
-- [ ] Paramètres → Mode Démo : voir les identifiants démo
-
-## 🟢 Enseignant — `/staff` (`salimwhichi@elamana.tn`)
-- [ ] Connexion → tableau de bord (cours du jour, fiches de paie)
-- [ ] Mon emploi du temps : grille hebdomadaire
-- [ ] **Faire l'appel** : choisir classe + date → P/R/A/E → Enregistrer → revenir, statuts conservés
+## 🟢 ENSEIGNANT — `http://localhost:8000/staff/login` (`salimwhichi@elamana.tn`)
+- [ ] Tableau de bord : KPIs + cours du jour + fiches de paie
+- [ ] Mon emploi du temps : grille hebdomadaire remplie
+- [ ] Faire l'appel : P/R/A/E → Enregistrer → recharger (modifiable)
 - [ ] Mes classes → Voir les élèves : taux de présence par élève
-- [ ] **Saisie des notes** : classe + matière (celles que j'enseigne) + trimestre → notes /20 → Enregistrer
-- [ ] Mes fiches de paie : net annuel + historique
-- [ ] Mon pointage : « Pointer l'arrivée » → heure enregistrée
-- [ ] Tenter d'accéder à `/admin` → **403** (verrouillé)
+- [ ] Saisie des notes : classe + matière + trimestre → /20 → Enregistrer
+- [ ] Mes fiches de paie + Mon pointage (Pointer arrivée/départ)
+- [ ] Accès `/admin` → **403** (cloisonnement OK)
 
-## 🟠 Parent — `/parent` (`parent1@elamana.tn`)
-- [ ] Connexion → tableau de bord (KPIs + 2 graphiques + enfants + activité + annonces)
-- [ ] Paiements : solde + historique de **mes** enfants uniquement
-- [ ] Emploi du temps : sélectionner l'enfant → grille de sa classe
-- [ ] Suivi : taux de présence + incidents
-- [ ] Bulletins : sélectionner enfant + trimestre → bulletin imprimable
-- [ ] Annonces : articles publiés
-- [ ] Ne voir QUE ses propres enfants (jamais les 48 de l'école)
+## 🟡 PARENT — `http://localhost:8000/parent/login` (`parent1@elamana.tn`)
+- [ ] Tableau de bord : KPIs + **graphique présence** + donut paiements + activité
+- [ ] Paiements / Emploi du temps / Suivi / Bulletins / Annonces
+- [ ] Ne voit **que ses propres enfants**
 
-## 🔒 Sécurité (cf. SECURITY_AUDIT.md)
-- [ ] Enseignant ne peut pointer/noter qu'une classe/matière qu'il enseigne
-- [ ] Parent ne voit que ses enfants (forcer un ID d'enfant dans l'URL → bloqué)
-- [ ] 1ère connexion d'un compte créé par l'admin → redirection forcée changement de mot de passe
+## 🔐 Sécurité (cf. SECURITY_AUDIT.md)
+- [ ] 1ère connexion (compte créé par admin) → changement de mot de passe forcé
+- [ ] Un prof ne peut pas pointer/noter une classe non enseignée
 
-## 🧹 Purge
-- [ ] Paramètres → Mode Démo → *Supprimer* → base vidée, compte admin conservé
+## ⚙️ Environnement
+- [ ] Serveur : `php84 artisan serve`  ·  MySQL démarré
+- [ ] Après modif code : `php84 artisan optimize:clear`
