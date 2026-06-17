@@ -193,18 +193,18 @@ Gravité: Haute
 
 Beaucoup de textes apparaissent sous forme corrompue:
 
-- `AcadÃ©mique`
-- `Ã‰lÃ¨ve`
-- `TÃ©lÃ©phone`
-- `PayÃ©`
-- `Ã‰chouÃ©`
+- `Académique`
+- `Élève`
+- `Téléphone`
+- `Payé`
+- `Échoué`
 
 Cela donne une impression de produit non fini. Pour des testeurs physiques, c'est probablement le problème le plus visible.
 
 Correction recommandée:
 
 - Reconvertir tous les fichiers PHP/Blade en UTF-8.
-- Rechercher les séquences `Ã`, `â`, `ð`, `�`.
+- Rechercher les séquences de texte corrompu dans les libellés visibles.
 - Remplacer les textes corrompus.
 - Centraliser les libellés dans `lang/fr`.
 

@@ -65,7 +65,6 @@ html:not(.dark) .fi-badge{border-radius:7px!important;font-weight:600!important;
 .fi-logo span,.fi-brand-name{color:#e2e8f0!important}
 .fi-sidebar-footer a,.fi-sidebar-footer button{color:#4a6480!important;font-size:12.5px!important}
 .fi-sidebar-footer a:hover,.fi-sidebar-footer button:hover{color:#8dafc8!important}
-#livewire-error{display:none!important}
 </style>
 <script>
 window.addEventListener("pageshow", function (e) {
