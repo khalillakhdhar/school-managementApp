@@ -10,6 +10,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ExpenseCategoryResource extends Resource
 {
@@ -21,6 +22,11 @@ class ExpenseCategoryResource extends Resource
     public static function getNavigationLabel(): string  { return __('Expense Categories'); }
     public static function getModelLabel(): string       { return __('Expense Category'); }
     public static function getPluralModelLabel(): string { return __('Expense Categories'); }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->withCount('expenses');
+    }
 
     public static function form(Schema $schema): Schema
     {
