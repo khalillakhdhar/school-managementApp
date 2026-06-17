@@ -55,7 +55,6 @@ class ExpenseCategoryResource extends Resource
                 Tables\Columns\TextColumn::make('description')
                     ->label('Description')->limit(60)->toggleable(),
                 Tables\Columns\TextColumn::make('expenses_count')
-                    ->label('Total Records')
                     ->label('Nb. Dépenses')
                     ->fontFamily(\Filament\Support\Enums\FontFamily::Mono)
                     ->alignRight()
