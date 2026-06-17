@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use App\Services\PaymentService;
+use Illuminate\Support\Facades\Gate;
 
 class PaymentController extends Controller
 {
@@ -11,22 +12,38 @@ class PaymentController extends Controller
 
     public function index()
     {
-        return Payment::with('student')->latest()->paginate(15);
+        Gate::authorize('viewAny', Payment::class);
+
+        $query = Payment::with('student')->latest();
+        $user = request()->user();
+
+        if ($user->isParent() && ! $user->isAdmin()) {
+            $studentIds = $user->parent?->students()?->pluck('students.id') ?? collect();
+            $query->whereIn('student_id', $studentIds);
+        }
+
+        return $query->paginate(15);
     }
 
     public function show(Payment $payment)
     {
+        Gate::authorize('view', $payment);
+
         return $payment->load('student', 'services');
     }
 
     public function destroy(Payment $payment)
     {
+        Gate::authorize('delete', $payment);
+
         $payment->delete();
         return response()->noContent();
     }
 
     public function recordPayment()
     {
+        Gate::authorize('create', Payment::class);
+
         $validated = request()->validate([
             'student_id' => 'required|exists:students,id',
             'amount' => 'required|numeric|min:0',

@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ParentResource\Pages;
 use App\Mail\ParentWelcomeMail;
 use App\Models\SchoolParent;
-use App\Models\User;
+use App\Services\AccountService;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Notifications\Notification;
@@ -13,9 +13,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 
 class ParentResource extends Resource
 {
@@ -109,29 +107,27 @@ class ParentResource extends Resource
                             return;
                         }
 
-                        $tempPassword = Str::password(10, symbols: false);
-
-                        $user = User::create([
-                            'name'                 => $record->full_name,
-                            'email'                => $record->email,
-                            'password'             => Hash::make($tempPassword),
-                            'role'                 => 'parent',
-                            'must_change_password' => true,
-                        ]);
-
-                        $record->update(['user_id' => $user->id]);
-
+                        $result = AccountService::forParent($record, null, true);
                         $loginUrl = url('/parent/login');
 
                         try {
-                            Mail::to($record->email)->send(new ParentWelcomeMail($record, $tempPassword, $loginUrl));
+                            Mail::to($record->email)->send(new ParentWelcomeMail($record, $result['password'], $loginUrl));
                             Notification::make()
                                 ->title(__('Account created and email sent to :email', ['email' => $record->email]))
                                 ->success()->send();
                         } catch (\Exception $e) {
-                            Notification::make()
-                                ->title(__('Account created. Temp password: :password', ['password' => $tempPassword]))
-                                ->warning()->persistent()->send();
+                            $notification = Notification::make()
+                                ->title(__('Account created, but the email could not be sent'))
+                                ->body(app()->environment('local')
+                                    ? __('Temporary password: :password', ['password' => $result['password']])
+                                    : __('Send the credentials through a trusted channel.'))
+                                ->warning();
+
+                            if (app()->environment('local')) {
+                                $notification->persistent();
+                            }
+
+                            $notification->send();
                         }
                     })
                     ->visible(fn ($record) => $record->user_id === null && $record->email),
@@ -141,18 +137,23 @@ class ParentResource extends Resource
                     ->color('warning')
                     ->requiresConfirmation()
                     ->action(function (SchoolParent $record): void {
-                        $tempPassword = Str::password(10, symbols: false);
-                        $record->user?->update([
-                            'password'             => Hash::make($tempPassword),
-                            'must_change_password' => true,
-                        ]);
+                        $result = AccountService::forParent($record, null, true);
                         try {
-                            Mail::to($record->email)->send(new ParentWelcomeMail($record, $tempPassword, url('/parent/login')));
+                            Mail::to($record->email)->send(new ParentWelcomeMail($record, $result['password'], url('/parent/login')));
                             Notification::make()->title(__('Password reset and email sent'))->success()->send();
                         } catch (\Exception $e) {
-                            Notification::make()
-                                ->title(__('New temp password: :password', ['password' => $tempPassword]))
-                                ->warning()->persistent()->send();
+                            $notification = Notification::make()
+                                ->title(__('Password reset, but the email could not be sent'))
+                                ->body(app()->environment('local')
+                                    ? __('Temporary password: :password', ['password' => $result['password']])
+                                    : __('Send the credentials through a trusted channel.'))
+                                ->warning();
+
+                            if (app()->environment('local')) {
+                                $notification->persistent();
+                            }
+
+                            $notification->send();
                         }
                     })
                     ->visible(fn ($record) => $record->user_id !== null),

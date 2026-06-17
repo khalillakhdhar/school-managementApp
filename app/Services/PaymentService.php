@@ -1,8 +1,9 @@
 <?php
 namespace App\Services;
 
-use App\Models\Student;
 use App\Models\Payment;
+use App\Models\Service;
+use App\Models\Student;
 use Illuminate\Support\Facades\DB;
 
 class PaymentService
@@ -18,18 +19,24 @@ class PaymentService
                 'reference_number' => $referenceNumber,
                 'status' => 'paid',
             ]);
-            if (!empty($serviceIds)) {
-                $payment->services()->attach($serviceIds);
+            if (! empty($serviceIds)) {
+                $services = Service::whereIn('id', $serviceIds)->get();
+                $pivotData = $services->mapWithKeys(fn (Service $service) => [
+                    $service->id => ['amount' => $service->amount],
+                ])->all();
+
+                $payment->services()->attach($pivotData);
             }
+
             return $payment;
         });
     }
 
     public function getStudentBalance(Student $student): array
     {
-        $totalDue = $student->services()->sum('services.amount');
+        $totalDue = $student->payments()->where('status', 'pending')->sum('amount');
         $totalPaid = $student->payments()->where('status', 'paid')->sum('amount');
-        $outstanding = max(0, $totalDue - $totalPaid);
+        $outstanding = max(0, $totalDue);
         $daysOverdue = $this->calculateDaysOverdue($student);
 
         return [
@@ -44,8 +51,13 @@ class PaymentService
 
     public function calculateDaysOverdue(Student $student): int
     {
-        $lastPayment = $student->payments()->where('status', 'paid')->latest('payment_date')->first();
-        if (!$lastPayment) return 0;
-        return now()->diffInDays($lastPayment->payment_date);
+        $oldestOverdue = $student->payments()
+            ->where('status', 'pending')
+            ->whereNotNull('due_date')
+            ->whereDate('due_date', '<', now())
+            ->orderBy('due_date')
+            ->first();
+
+        return $oldestOverdue ? (int) $oldestOverdue->due_date->diffInDays(now()) : 0;
     }
 }

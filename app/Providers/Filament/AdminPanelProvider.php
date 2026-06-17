@@ -234,9 +234,6 @@ html:not(.dark) .fi-badge{
 :root{--sidebar-width:18rem!important}
 .fi-main-ctn{--sidebar-width:18rem!important}
 
-/* ── Suppress Livewire error overlay (the dismissible 403 modal) ─ */
-#livewire-error{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
-
 /* ── Base background — override Filament\'s bg-white / bg-gray-900 ── */
 .fi-sidebar,html.dark .fi-sidebar{
   background:#0f172a!important;

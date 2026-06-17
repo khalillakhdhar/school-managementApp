@@ -275,10 +275,18 @@ class EmployeeResource extends Resource
                                 ->title('Compte créé — email envoyé à ' . $result['email'])
                                 ->success()->send();
                         } catch (\Throwable $e) {
-                            Notification::make()
+                            $notification = Notification::make()
                                 ->title('Compte créé pour ' . $record->full_name)
-                                ->body('Identifiant : ' . $result['email'] . ' — Mot de passe : ' . $result['password'])
-                                ->warning()->persistent()->send();
+                                ->body(app()->environment('local')
+                                    ? 'Identifiant : ' . $result['email'] . ' — Mot de passe : ' . $result['password']
+                                    : 'Identifiant : ' . $result['email'] . '. Envoyez le mot de passe via un canal de confiance.')
+                                ->warning();
+
+                            if (app()->environment('local')) {
+                                $notification->persistent();
+                            }
+
+                            $notification->send();
                         }
                     })
                     ->visible(fn (Employee $record) => $record->user_id === null),
@@ -289,10 +297,18 @@ class EmployeeResource extends Resource
                     ->requiresConfirmation()
                     ->action(function (Employee $record): void {
                         $result = \App\Services\AccountService::forEmployee($record, null, true);
-                        Notification::make()
+                        $notification = Notification::make()
                             ->title('Mot de passe réinitialisé')
-                            ->body('Nouveau mot de passe : ' . $result['password'])
-                            ->warning()->persistent()->send();
+                            ->body(app()->environment('local')
+                                ? 'Nouveau mot de passe : ' . $result['password']
+                                : 'Envoyez le nouveau mot de passe via un canal de confiance.')
+                            ->warning();
+
+                        if (app()->environment('local')) {
+                            $notification->persistent();
+                        }
+
+                        $notification->send();
                     })
                     ->visible(fn (Employee $record) => $record->user_id !== null),
                 // ── Pay all pending payslips for a contractor ──────────────────
