@@ -55,9 +55,12 @@ class ExpenseCategoryResource extends Resource
                 Tables\Columns\TextColumn::make('description')
                     ->label('Description')->limit(60)->toggleable(),
                 Tables\Columns\TextColumn::make('expenses_count')
-                    ->label('Dépenses')
-                    ->counts('expenses')
-                    ->badge()->color('warning'),
+                    ->label('Total Records')
+                    ->label('Nb. Dépenses')
+                    ->fontFamily(\Filament\Support\Enums\FontFamily::Mono)
+                    ->alignRight()
+                    ->badge()
+                    ->color('gray'),
             ])
             ->emptyStateIcon('heroicon-o-tag')
             ->emptyStateHeading('Aucune catégorie de dépense')
