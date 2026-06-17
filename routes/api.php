@@ -5,6 +5,10 @@ use App\Http\Controllers\Api\PayrollController;
 use Illuminate\Support\Facades\Route;
 
 
+if (! (bool) env('ENABLE_MVP_API', false)) {
+    return;
+}
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('students', StudentController::class);
     Route::get('students/{student}/balance', [StudentController::class, 'getBalance']);

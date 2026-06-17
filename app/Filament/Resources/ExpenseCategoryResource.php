@@ -57,6 +57,7 @@ class ExpenseCategoryResource extends Resource
                 Tables\Columns\TextColumn::make('expenses_count')
                     ->label('Nb. Dépenses')
                     ->fontFamily(\Filament\Support\Enums\FontFamily::Mono)
+                    ->sortable()
                     ->alignRight()
                     ->badge()
                     ->color('gray'),

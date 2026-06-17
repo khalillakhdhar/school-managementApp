@@ -13,6 +13,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class EmployeeResource extends Resource
 {
@@ -24,6 +25,17 @@ class EmployeeResource extends Resource
     public static function getNavigationLabel(): string   { return __('Employees'); }
     public static function getModelLabel(): string        { return __('Employee'); }
     public static function getPluralModelLabel(): string  { return __('Employees'); }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withSum([
+                'payrolls as unpaid_hours_sum' => fn ($query) => $query->whereIn('status', ['draft', 'finalized'])
+            ], 'total_hours_worked')
+            ->withSum([
+                'payrolls as unpaid_amount_sum' => fn ($query) => $query->whereIn('status', ['draft', 'finalized'])
+            ], 'net_salary');
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -203,9 +215,7 @@ class EmployeeResource extends Resource
                     ->badge()
                     ->getStateUsing(function (Employee $record): string {
                         if (!$record->isContractor()) return '—';
-                        $total = $record->payrolls()
-                            ->whereIn('status', ['draft', 'finalized'])
-                            ->sum('total_hours_worked');
+                        $total = $record->unpaid_hours_sum ?? 0;
                         return $total > 0 ? "{$total} h" : '0 h';
                     })
                     ->color(fn (string $state): string => match (true) {
@@ -219,9 +229,7 @@ class EmployeeResource extends Resource
                     ->badge()
                     ->getStateUsing(function (Employee $record): string {
                         if (!$record->isContractor()) return '—';
-                        $total = $record->payrolls()
-                            ->whereIn('status', ['draft', 'finalized'])
-                            ->sum('net_salary');
+                        $total = $record->unpaid_amount_sum ?? 0;
                         return $total > 0
                             ? number_format((float)$total, 3) . ' TND'
                             : '0 TND';

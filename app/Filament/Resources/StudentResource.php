@@ -12,12 +12,25 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-academic-cap';
     protected static ?int $navigationSort = 1;
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withSum(['payments as pending_balance_sum' => fn ($query) =>
+                $query->where('status', 'pending')
+            ], 'amount')
+            ->withExists(['payments as has_overdue_payments' => fn ($query) =>
+                $query->where('status', 'pending')
+                    ->whereDate('due_date', '<', now())
+            ]);
+    }
 
     public static function getNavigationGroup(): ?string
     {
@@ -151,14 +164,14 @@ class StudentResource extends Resource
                 Tables\Columns\TextColumn::make('pending_balance')
                     ->label('Solde dû')
                     ->getStateUsing(fn (Student $record): float =>
-                        $record->payments()->where('status', 'pending')->sum('amount')
+                        (float) ($record->pending_balance_sum ?? 0)
                     )
                     ->money('TND')
                     ->badge()
                     ->color(fn (Student $record): string =>
-                        $record->payments()->where('status', 'pending')->whereDate('due_date', '<', now())->exists()
+                        $record->has_overdue_payments
                             ? 'danger'
-                            : ($record->payments()->where('status', 'pending')->exists() ? 'warning' : 'success')
+                            : ($record->pending_balance_sum > 0 ? 'warning' : 'success')
                     )
                     ->sortable(false),
                 Tables\Columns\TextColumn::make('date_of_birth')
