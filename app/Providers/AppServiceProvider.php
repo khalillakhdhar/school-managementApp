@@ -2,6 +2,18 @@
 
 namespace App\Providers;
 
+use App\Models\Employee;
+use App\Models\Grade;
+use App\Models\Incident;
+use App\Models\Payment;
+use App\Models\Payroll;
+use App\Models\Student;
+use App\Policies\EmployeePolicy;
+use App\Policies\GradePolicy;
+use App\Policies\IncidentPolicy;
+use App\Policies\PaymentPolicy;
+use App\Policies\PayrollPolicy;
+use App\Policies\StudentPolicy;
 use BezhanSalleh\LanguageSwitch\LanguageSwitch;
 use Filament\Resources\Resource;
 use Filament\Support\Facades\FilamentView;
@@ -18,8 +30,14 @@ class AppServiceProvider extends ServiceProvider
         // This is the correct Filament v5 API (overrides get_authorization_response)
         Resource::skipAuthorization();
 
-        // Gate-level bypass as secondary defense
-        Gate::before(fn ($user) => $user ? true : null);
+        Gate::policy(Student::class, StudentPolicy::class);
+        Gate::policy(Payment::class, PaymentPolicy::class);
+        Gate::policy(Payroll::class, PayrollPolicy::class);
+        Gate::policy(Grade::class, GradePolicy::class);
+        Gate::policy(Incident::class, IncidentPolicy::class);
+        Gate::policy(Employee::class, EmployeePolicy::class);
+
+        Gate::before(fn ($user) => $user?->role === 'admin' ? true : null);
 
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
             $switch
