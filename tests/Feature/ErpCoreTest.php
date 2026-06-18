@@ -31,8 +31,8 @@ class ErpCoreTest extends TestCase
         ]);
         $emp = Employee::create([
             'user_id' => $user->id, 'first_name' => 'Prof', 'last_name' => 'Test',
-            'position' => 'Enseignant', 'is_teacher' => true, 'is_active' => true,
-            'contract_type' => 'permanent', 'salary_base' => 1500,
+            'position' => 'Enseignant', 'phone' => '+216 20 000 001', 'is_teacher' => true,
+            'is_active' => true, 'contract_type' => 'permanent', 'salary_base' => 1500,
         ]);
 
         return [$user, $emp];
@@ -51,6 +51,7 @@ class ErpCoreTest extends TestCase
     {
         return Student::create([
             'first_name' => 'Eleve', 'last_name' => 'Test',
+            'date_of_birth' => '2018-05-10', 'enrollment_date' => '2025-09-01',
             'status' => 'active', 'classroom_id' => $class->id,
         ]);
     }
@@ -72,7 +73,7 @@ class ErpCoreTest extends TestCase
     public function test_parent_peut_acceder_a_son_portail(): void
     {
         $user = User::create(['name' => 'P', 'email' => 'p@test.tn', 'password' => bcrypt('x'), 'role' => 'parent']);
-        SchoolParent::create(['first_name' => 'Par', 'last_name' => 'Ent', 'email' => 'p@test.tn', 'user_id' => $user->id]);
+        SchoolParent::create(['first_name' => 'Par', 'last_name' => 'Ent', 'phone' => '+216 20 000 002', 'email' => 'p@test.tn', 'user_id' => $user->id]);
         $this->actingAs($user)->get('/parent/parent-dashboard')->assertStatus(200);
     }
 
