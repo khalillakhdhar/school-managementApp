@@ -63,6 +63,8 @@ class DemoDataService
     {
         // No DB::transaction wrapper: wipe() uses TRUNCATE which implicitly
         // commits on MySQL and would break an enclosing transaction.
+        // Audit désactivé : éviter de tracer des centaines d'insertions de démo.
+        \App\Support\Audit::disable();
         self::wipe();
 
         $settings = SchoolSetting::getInstance();
@@ -100,6 +102,8 @@ class DemoDataService
             self::seedExpenses($cats);
             self::seedIncidents($students);
             self::seedBlog();
+
+            \App\Support\Audit::enable();
 
             return [
                 'levels'    => $levels->count(),

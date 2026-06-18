@@ -2,11 +2,19 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Grade extends Model
 {
+    use Auditable;
+
+    public function auditLabel(): string
+    {
+        return 'Note ' . $this->term . ' — ' . $this->score . '/' . $this->max_score;
+    }
+
     protected $fillable = [
         'student_id', 'subject_id', 'classroom_id', 'employee_id',
         'term', 'score', 'max_score', 'coefficient', 'date', 'comment',
