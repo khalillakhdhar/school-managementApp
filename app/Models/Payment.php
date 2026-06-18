@@ -1,12 +1,20 @@
 <?php
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Payment extends Model
 {
+    use Auditable;
+
+    public function auditLabel(): string
+    {
+        return 'Paiement #' . $this->id . ' — ' . number_format((float) $this->amount, 3) . ' TND';
+    }
+
     protected $fillable = [
         'student_id', 'amount', 'payment_date', 'due_date', 'payment_method',
         'reference_number', 'status', 'notes', 'receipt_path',
