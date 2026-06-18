@@ -594,6 +594,12 @@ class PayrollResource extends Resource
                     })
                     ->visible(fn (Payroll $record) => $record->status === 'finalized'),
 
+                Actions\Action::make('pdf')
+                    ->label('PDF')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('gray')
+                    ->url(fn (Payroll $record) => route('pdf.payslip', $record))
+                    ->openUrlInNewTab(),
                 Actions\EditAction::make(),
                 Actions\DeleteAction::make(),
             ])

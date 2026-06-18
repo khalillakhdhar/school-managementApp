@@ -22,6 +22,10 @@
             </select>
         </div>
         <div style="flex:1;"></div>
+        @if($report && $report['hasGrades'])
+        <a href="{{ route('pdf.bulletin', ['student' => $report['student']->id, 'term' => $report['term']]) }}" target="_blank"
+           style="background:#2563eb;color:#fff;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:600;text-decoration:none;">⬇ Télécharger PDF</a>
+        @endif
         <button onclick="window.print()" type="button" style="background:#0f172a;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;">🖨️ Imprimer</button>
     </div>
 

@@ -27,6 +27,7 @@ class MyPayslips extends Page
         $payslips = Payroll::where('employee_id', $emp->id)
             ->orderByDesc('year')->orderByDesc('month')->get()
             ->map(fn ($p) => [
+                'id'     => $p->id,
                 'period' => ($months[$p->month] ?? $p->month) . ' ' . $p->year,
                 'gross'  => (float) $p->gross_salary,
                 'cnss'   => (float) $p->cnss_deduction,

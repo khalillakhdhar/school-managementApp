@@ -22,6 +22,7 @@
                     <th style="text-align:right;padding:13px 14px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">IRPP</th>
                     <th style="text-align:right;padding:13px 14px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">Net</th>
                     <th style="text-align:center;padding:13px 22px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">Statut</th>
+                    <th style="text-align:right;padding:13px 22px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">PDF</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,6 +39,9 @@
                             color:{{ $p['status']==='paid' ? '#059669' : ($p['status']==='finalized' ? '#b45309' : '#64748b') }};">
                             {{ ['paid'=>'Payée','finalized'=>'Finalisée','draft'=>'Brouillon','rejected'=>'Rejetée'][$p['status']] ?? $p['status'] }}
                         </span>
+                    </td>
+                    <td style="padding:14px 22px;text-align:right;">
+                        <a href="{{ route('pdf.payslip', $p['id']) }}" target="_blank" style="color:#2563eb;font-size:12.5px;font-weight:700;text-decoration:none;">⬇ PDF</a>
                     </td>
                 </tr>
                 @endforeach

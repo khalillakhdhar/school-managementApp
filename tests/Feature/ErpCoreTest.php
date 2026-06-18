@@ -33,6 +33,7 @@ class ErpCoreTest extends TestCase
             'user_id' => $user->id, 'first_name' => 'Prof', 'last_name' => 'Test',
             'position' => 'Enseignant', 'phone' => '+216 20 000 001', 'is_teacher' => true,
             'is_active' => true, 'contract_type' => 'permanent', 'salary_base' => 1500,
+            'start_date' => '2024-09-01',
         ]);
 
         return [$user, $emp];
@@ -52,6 +53,7 @@ class ErpCoreTest extends TestCase
         return Student::create([
             'first_name' => 'Eleve', 'last_name' => 'Test',
             'date_of_birth' => '2018-05-10', 'enrollment_date' => '2025-09-01',
+            'class' => $class->name, 'level' => '1ère année',
             'status' => 'active', 'classroom_id' => $class->id,
         ]);
     }

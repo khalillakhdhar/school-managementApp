@@ -27,17 +27,15 @@
 
 ## 🎯 Améliorations réellement utiles (priorisées)
 
-### P0 — Robustesse & confiance (rapide, fort impact)
-1. **Tests automatisés (Pest).** Couverture actuelle quasi nulle (`ExampleTest`, `MvpAccessTest`).
-   → Tests d'accès par rôle (admin/staff/parent), isolation des données, calcul de bulletin, paie CNSS/IRPP, seed/purge démo.
-2. **Emails en file d'attente (Queue).** Les mails (bienvenue, rappels) partent en **synchrone** → ralentit la requête.
-   → `ShouldQueue` sur les Mailables + `QUEUE_CONNECTION=database` + worker. Évite de bloquer l'UI.
-3. **Statut paiement « verified ».** Ajouter à l'enum + workflow : *pending → paid (saisi) → verified (validé comptable)*. (seul vrai point du review)
+### ✅ P0 — Robustesse & confiance (TERMINÉ)
+1. ✅ **Tests automatisés (PHPUnit).** Suite `tests/Feature/ErpCoreTest.php` : accès par rôle (admin/teacher/parent + 403), 1ère connexion forcée, bulletin (moyenne pondérée + rang + mention), validation paiement + audit, CNSS. **11/11 verts** (sqlite mémoire, prod intacte). *(PHPUnit déjà présent — Pest inutile.)*
+2. ✅ **Emails en file d'attente.** Les 4 Mailables implémentent `ShouldQueue` ; `QUEUE_CONNECTION=database` + table `jobs` déjà là. → lancer `php artisan queue:work`.
+3. ✅ **Validation de paiement.** Flag `is_verified` + `verified_at`/`verified_by` (migration `2026_06_16_000001`), actions « Valider (comptable) » / « Annuler la validation », colonne + filtre. *(flag plutôt qu'enum → aucune requête de revenu impactée.)*
 
-### P1 — Rigueur financière & perf
-4. **`PaymentService` / `PayrollService` centralisés** avec arrondi unique au millime (BCMath optionnel) — une seule source de vérité pour les calculs.
-5. **Journal d'audit financier (Audit Log).** Tracer création/modif des paiements, paies, notes (`spatie/laravel-activitylog`). Anti-fraude + traçabilité.
-6. **Agrégations SQL pures dans les widgets restants** (`distribution par niveau`, trends) — remplacer `->get()->groupBy()` par `groupBy` SQL.
+### ✅ P1 — Rigueur financière & perf (TERMINÉ)
+4. ✅ **Services centralisés.** `PaymentService` (existant) étendu : `money()`, `markPaid()`, `verify()`, `unverify()` ; le `PaymentResource` les appelle (DRY). `PayrollService` déjà en place.
+5. ✅ **Journal d'audit (maison, sans dépendance).** Table `audit_logs` + modèle + trait `Auditable` (toggle `App\Support\Audit`) sur `Payment`, `Payroll`, `Grade` ; resource admin lecture seule (`/admin/audit-logs`). Seed démo silencieux.
+6. ✅ **Agrégations SQL.** `MainDashboardWidget` : répartition par niveau passée en `leftJoin + groupBy` SQL (plus de chargement de collection en mémoire).
 
 ### P2 — Fonctionnel & produit
 7. **Export PDF natif** des bulletins et fiches de paie (`barryvdh/laravel-dompdf`) au lieu de `window.print()`.
