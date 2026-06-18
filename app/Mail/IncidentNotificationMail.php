@@ -4,12 +4,13 @@ namespace App\Mail;
 use App\Models\Incident;
 use App\Models\SchoolParent;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class IncidentNotificationMail extends Mailable
+class IncidentNotificationMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
