@@ -153,6 +153,16 @@ class PaymentResource extends Resource
                         'cancelled' => 'Annulé',
                         default     => $state,
                     }),
+                Tables\Columns\IconColumn::make('is_verified')
+                    ->label('Vérifié')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-shield-check')
+                    ->falseIcon('heroicon-o-shield-exclamation')
+                    ->trueColor('success')
+                    ->falseColor('gray')
+                    ->tooltip(fn (Payment $record) => $record->is_verified && $record->verified_at
+                        ? 'Validé le ' . $record->verified_at->format('d/m/Y') . ($record->verifier ? ' par ' . $record->verifier->name : '')
+                        : 'En attente de validation comptable'),
                 Tables\Columns\TextColumn::make('reference_number')
                     ->label('Référence')->toggleable(isToggledHiddenByDefault: true),
             ])
