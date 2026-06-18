@@ -1,11 +1,19 @@
 <?php
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Payroll extends Model
 {
+    use Auditable;
+
+    public function auditLabel(): string
+    {
+        return 'Fiche de paie #' . $this->id . ' — ' . number_format((float) $this->net_salary, 3) . ' TND net';
+    }
+
     protected $fillable = [
         'employee_id', 'month', 'year',
         'period_from', 'period_to',
