@@ -61,13 +61,17 @@ class MainDashboardWidget extends Widget
             )->toArray(),
         ];
 
-        // ── Class Distribution (by level) ────────────────────────────────────────
-        $distribution = Student::where('status', 'active')
-            ->with('classroom.level')
+        // ── Class Distribution (by level) — agrégation SQL (pas de chargement mémoire) ─
+        $distribution = Student::query()
+            ->where('students.status', 'active')
+            ->leftJoin('classrooms', 'students.classroom_id', '=', 'classrooms.id')
+            ->leftJoin('levels', 'classrooms.level_id', '=', 'levels.id')
+            ->selectRaw("COALESCE(levels.name, 'Sans niveau') as label, COUNT(*) as count")
+            ->groupBy('label')
+            ->orderBy('label')
             ->get()
-            ->groupBy(fn ($s) => $s->classroom?->level?->name ?? 'Sans niveau')
-            ->map(fn ($g, $k) => ['label' => $k, 'count' => $g->count()])
-            ->values()->toArray();
+            ->map(fn ($r) => ['label' => $r->label, 'count' => (int) $r->count])
+            ->toArray();
 
         // ── Revenue chart (6 months) ─────────────────────────────────────────────
         $revenueChart = [

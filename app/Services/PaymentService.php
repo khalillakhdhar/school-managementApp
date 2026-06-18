@@ -60,4 +60,47 @@ class PaymentService
 
         return $oldestOverdue ? (int) $oldestOverdue->due_date->diffInDays(now()) : 0;
     }
+
+    // ── Transitions d'état (source unique, séparation des tâches) ──────────────
+
+    /** Arrondi monétaire standard (millime tunisien = 3 décimales). */
+    public static function money(float|int|string $amount): float
+    {
+        return round((float) $amount, 3);
+    }
+
+    /** Marquer un paiement comme encaissé (rôle secrétaire). */
+    public function markPaid(Payment $payment): Payment
+    {
+        $payment->update([
+            'status'       => 'paid',
+            'payment_date' => $payment->payment_date ?: now()->toDateString(),
+        ]);
+
+        return $payment;
+    }
+
+    /** Valider un paiement encaissé (rôle comptable). */
+    public function verify(Payment $payment, ?int $userId = null): Payment
+    {
+        $payment->update([
+            'is_verified' => true,
+            'verified_at' => now(),
+            'verified_by' => $userId ?? auth()->id(),
+        ]);
+
+        return $payment;
+    }
+
+    /** Annuler la validation comptable. */
+    public function unverify(Payment $payment): Payment
+    {
+        $payment->update([
+            'is_verified' => false,
+            'verified_at' => null,
+            'verified_by' => null,
+        ]);
+
+        return $payment;
+    }
 }

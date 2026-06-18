@@ -199,10 +199,7 @@ class PaymentResource extends Resource
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->action(fn (Payment $record) => $record->update([
-                        'status'       => 'paid',
-                        'payment_date' => now()->toDateString(),
-                    ]))
+                    ->action(fn (Payment $record) => app(\App\Services\PaymentService::class)->markPaid($record))
                     ->visible(fn (Payment $record): bool => $record->status === 'pending'),
                 // Validation comptable (séparation saisie / contrôle)
                 Actions\Action::make('verify')
@@ -212,22 +209,14 @@ class PaymentResource extends Resource
                     ->requiresConfirmation()
                     ->modalHeading('Valider ce paiement')
                     ->modalDescription('Confirme que ce paiement encaissé a été contrôlé et rapproché.')
-                    ->action(fn (Payment $record) => $record->update([
-                        'is_verified' => true,
-                        'verified_at' => now(),
-                        'verified_by' => auth()->id(),
-                    ]))
+                    ->action(fn (Payment $record) => app(\App\Services\PaymentService::class)->verify($record))
                     ->visible(fn (Payment $record): bool => $record->status === 'paid' && ! $record->is_verified),
                 Actions\Action::make('unverify')
                     ->label('Annuler la validation')
                     ->icon('heroicon-o-arrow-uturn-left')
                     ->color('warning')
                     ->requiresConfirmation()
-                    ->action(fn (Payment $record) => $record->update([
-                        'is_verified' => false,
-                        'verified_at' => null,
-                        'verified_by' => null,
-                    ]))
+                    ->action(fn (Payment $record) => app(\App\Services\PaymentService::class)->unverify($record))
                     ->visible(fn (Payment $record): bool => $record->is_verified),
                 Actions\EditAction::make(),
                 Actions\DeleteAction::make(),
