@@ -30,43 +30,43 @@ class TimetableEntryResource extends Resource
     {
         return $schema->components([
             Section::make('Planification de la séance')
-                ->description('Définissez la classe, matière, enseignant et le créneau horaire')
+                ->description(__('Définissez la classe, matière, enseignant et le créneau horaire'))
                 ->icon('heroicon-o-calendar-days')
                 ->schema([
                     Forms\Components\Select::make('classroom_id')
-                        ->label('Classe')
+                        ->label(__('Classe'))
                         ->options(
                             Classroom::with('level')->orderBy('level_id')->get()
                                 ->mapWithKeys(fn ($c) => [$c->id => $c->full_name])
                         )
                         ->required()->searchable()->preload(),
                     Forms\Components\Select::make('subject_id')
-                        ->label('Matière')
+                        ->label(__('Matière'))
                         ->relationship('subject', 'name')
                         ->required()->searchable()->preload(),
                     Forms\Components\Select::make('employee_id')
-                        ->label('Enseignant')
+                        ->label(__('Enseignant'))
                         ->options(
                             Employee::active()->teachers()->orderBy('last_name')->get()
                                 ->mapWithKeys(fn ($e) => [$e->id => $e->full_name])
                         )
-                        ->nullable()->searchable()->placeholder('Non assigné'),
+                        ->nullable()->searchable()->placeholder(__('Non assigné')),
                     Forms\Components\Select::make('day_of_week')
-                        ->label('Jour')
+                        ->label(__('Jour'))
                         ->options(array_combine(TimetableEntry::$days, TimetableEntry::$days))
                         ->required(),
                     Forms\Components\TimePicker::make('start_time')
-                        ->label('Heure début')
+                        ->label(__('Heure début'))
                         ->required()->seconds(false),
                     Forms\Components\TimePicker::make('end_time')
-                        ->label('Heure fin')
+                        ->label(__('Heure fin'))
                         ->required()->seconds(false)
                         ->after('start_time'),
                     Forms\Components\TextInput::make('room')
-                        ->label('Salle')
+                        ->label(__('Salle'))
                         ->maxLength(50)->placeholder('Salle 12 / Labo'),
                     Forms\Components\TextInput::make('academic_year')
-                        ->label('Année scolaire')
+                        ->label(__('Année scolaire'))
                         ->maxLength(10)
                         ->placeholder('2025-2026')
                         ->default(function () {
@@ -74,7 +74,7 @@ class TimetableEntryResource extends Resource
                             return now()->month >= 9 ? "{$y}-" . ($y + 1) : ($y - 1) . "-{$y}";
                         }),
                     Forms\Components\Textarea::make('notes')
-                        ->label('Notes')->columnSpanFull()->rows(2),
+                        ->label(__('Notes'))->columnSpanFull()->rows(2),
                 ])->columns(2),
         ]);
     }
@@ -86,7 +86,7 @@ class TimetableEntryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('day_of_week')
-                    ->label('Jour')
+                    ->label(__('Jour'))
                     ->badge()
                     ->color(fn ($state) => match ($state) {
                         'Lundi'    => 'primary',
@@ -99,52 +99,52 @@ class TimetableEntryResource extends Resource
                     })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('start_time')
-                    ->label('Début')
+                    ->label(__('Début'))
                     ->formatStateUsing(fn ($state) => substr($state, 0, 5))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('end_time')
-                    ->label('Fin')
+                    ->label(__('Fin'))
                     ->formatStateUsing(fn ($state) => substr($state, 0, 5)),
                 Tables\Columns\TextColumn::make('classroom.name')
-                    ->label('Classe')
+                    ->label(__('Classe'))
                     ->formatStateUsing(fn ($state, $record) => $record->classroom?->full_name ?? $state)
                     ->badge()->color('primary'),
                 Tables\Columns\TextColumn::make('subject.name')
-                    ->label('Matière')
+                    ->label(__('Matière'))
                     ->searchable()->sortable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('teacher.first_name')
-                    ->label('Enseignant')
+                    ->label(__('Enseignant'))
                     ->formatStateUsing(fn ($state, $record) => $record->teacher?->full_name ?? '—')
                     ->color(fn ($state, $record) => $record->employee_id ? null : 'danger'),
                 Tables\Columns\TextColumn::make('room')
-                    ->label('Salle')->badge()->color('gray'),
+                    ->label(__('Salle'))->badge()->color('gray'),
             ])
             ->defaultSort('day_of_week')
             ->filters([
                 Tables\Filters\SelectFilter::make('classroom_id')
-                    ->label('Classe')
+                    ->label(__('Classe'))
                     ->options(
                         Classroom::with('level')->orderBy('level_id')->get()
                             ->mapWithKeys(fn ($c) => [$c->id => $c->full_name])
                     ),
                 Tables\Filters\SelectFilter::make('subject_id')
-                    ->label('Matière')
+                    ->label(__('Matière'))
                     ->relationship('subject', 'name'),
                 Tables\Filters\SelectFilter::make('employee_id')
-                    ->label('Enseignant')
+                    ->label(__('Enseignant'))
                     ->options(
                         Employee::active()->teachers()->orderBy('last_name')->get()
                             ->mapWithKeys(fn ($e) => [$e->id => $e->full_name])
                     ),
                 Tables\Filters\SelectFilter::make('day_of_week')
-                    ->label('Jour')
+                    ->label(__('Jour'))
                     ->options(array_combine(TimetableEntry::$days, TimetableEntry::$days)),
             ])
             ->emptyStateIcon('heroicon-o-calendar-days')
             ->emptyStateHeading('Aucune séance planifiée')
             ->emptyStateDescription('Construisez les emplois du temps en ajoutant des séances.')
-            ->emptyStateActions([Actions\CreateAction::make()->label('Ajouter une séance')])
+            ->emptyStateActions([Actions\CreateAction::make()->label(__('Ajouter une séance'))])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

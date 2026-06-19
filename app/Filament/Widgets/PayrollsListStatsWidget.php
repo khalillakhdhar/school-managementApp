@@ -33,7 +33,7 @@ class PayrollsListStatsWidget extends StatsOverviewWidget
 
         return [
             Stat::make('Masse salariale '.$year, number_format($netYear, 3).' TND')
-                ->description('Net versé cette année')
+                ->description(__('Net versé cette année'))
                 ->descriptionIcon('heroicon-m-banknotes')
                 ->color('primary'),
 
@@ -43,12 +43,12 @@ class PayrollsListStatsWidget extends StatsOverviewWidget
                 ->color($pending > 0 ? 'warning' : 'success'),
 
             Stat::make('Charges patronales '.$year, number_format($chargesPatronales, 3).' TND')
-                ->description('CNSS + FOPROLOS employeur')
+                ->description(__('CNSS + FOPROLOS employeur'))
                 ->descriptionIcon('heroicon-m-building-library')
                 ->color('info'),
 
             Stat::make('Fiches payées', $paid)
-                ->description('Réglées cette année')
+                ->description(__('Réglées cette année'))
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
         ];

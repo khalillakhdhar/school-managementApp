@@ -12,7 +12,7 @@ class ListParents extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Ajouter un parent')];
+        return [CreateAction::make()->label(__('Ajouter un parent'))];
     }
 
     protected function getHeaderWidgets(): array

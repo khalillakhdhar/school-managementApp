@@ -11,6 +11,6 @@ class ListTimetableEntries extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Ajouter une séance')];
+        return [CreateAction::make()->label(__('Ajouter une séance'))];
     }
 }

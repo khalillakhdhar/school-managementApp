@@ -16,17 +16,17 @@ class StudentsRelationManager extends RelationManager
     {
         return $schema->components([
             Forms\Components\TextInput::make('first_name')
-                ->label('Prénom')->required()->maxLength(255),
+                ->label(__('Prénom'))->required()->maxLength(255),
             Forms\Components\TextInput::make('last_name')
-                ->label('Nom de famille')->required()->maxLength(255),
+                ->label(__('Nom de famille'))->required()->maxLength(255),
             Forms\Components\DatePicker::make('date_of_birth')
-                ->label('Date de naissance')->required()->displayFormat('d/m/Y'),
+                ->label(__('Date de naissance'))->required()->displayFormat('d/m/Y'),
             Forms\Components\TextInput::make('id_number')
-                ->label('N° identité')->maxLength(255),
+                ->label(__('N° identité'))->maxLength(255),
             Forms\Components\DatePicker::make('enrollment_date')
                 ->label('Date d\'inscription')->displayFormat('d/m/Y'),
             Forms\Components\Select::make('status')
-                ->label('Statut')
+                ->label(__('Statut'))
                 ->options([
                     'active'    => 'Actif',
                     'inactive'  => 'Inactif',
@@ -43,11 +43,11 @@ class StudentsRelationManager extends RelationManager
             ->recordTitleAttribute('full_name')
             ->columns([
                 Tables\Columns\TextColumn::make('full_name')
-                    ->label('Élève')
+                    ->label(__('Élève'))
                     ->searchable(['first_name', 'last_name'])
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('status')
-                    ->label('Statut')
+                    ->label(__('Statut'))
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'active'    => 'success',
@@ -64,16 +64,16 @@ class StudentsRelationManager extends RelationManager
                         default     => $state,
                     }),
                 Tables\Columns\TextColumn::make('date_of_birth')
-                    ->label('Né(e) le')->date('d/m/Y'),
+                    ->label(__('Né(e) le'))->date('d/m/Y'),
                 Tables\Columns\TextColumn::make('enrollment_date')
-                    ->label('Inscription')->date('d/m/Y'),
+                    ->label(__('Inscription'))->date('d/m/Y'),
                 Tables\Columns\TextColumn::make('id_number')
-                    ->label('N° identité')->color('gray')
+                    ->label(__('N° identité'))->color('gray')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('last_name')
             ->headerActions([
-                Tables\Actions\CreateAction::make()->label('Inscrire un élève dans cette classe'),
+                Tables\Actions\CreateAction::make()->label(__('Inscrire un élève dans cette classe')),
             ])
             ->actions([Tables\Actions\EditAction::make(), Tables\Actions\DeleteAction::make()])
             ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);

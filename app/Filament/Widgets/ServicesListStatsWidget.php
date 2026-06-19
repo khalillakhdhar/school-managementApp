@@ -33,7 +33,7 @@ class ServicesListStatsWidget extends StatsOverviewWidget
                 ->color('success'),
 
             Stat::make('Tarif moyen', number_format($avgAmount, 3).' TND')
-                ->description('Services actifs')
+                ->description(__('Services actifs'))
                 ->descriptionIcon('heroicon-m-tag')
                 ->color('info'),
 

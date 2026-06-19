@@ -30,18 +30,18 @@ class LevelResource extends Resource
                 ->icon('heroicon-o-academic-cap')
                 ->schema([
                     Forms\Components\TextInput::make('code')
-                        ->label('Code abrégé')
+                        ->label(__('Code abrégé'))
                         ->required()->maxLength(10)->unique(ignoreRecord: true)
                         ->placeholder('1AP'),
                     Forms\Components\TextInput::make('name')
-                        ->label('Intitulé du niveau')
+                        ->label(__('Intitulé du niveau'))
                         ->required()->maxLength(100)
                         ->placeholder('1ère Année Primaire'),
                     Forms\Components\TextInput::make('order')
                         ->label('Ordre d\'affichage')
                         ->numeric()->required()->default(1)->minValue(1)->maxValue(10),
                     Forms\Components\Textarea::make('description')
-                        ->label('Description')
+                        ->label(__('Description'))
                         ->columnSpanFull(),
                 ])->columns(2),
         ]);
@@ -51,14 +51,14 @@ class LevelResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('order')->label('Ordre')->sortable(),
+                Tables\Columns\TextColumn::make('order')->label(__('Ordre'))->sortable(),
                 Tables\Columns\TextColumn::make('code')
-                    ->label('Code')->searchable()->badge()->color('primary'),
+                    ->label(__('Code'))->searchable()->badge()->color('primary'),
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Niveau')->searchable()->sortable()
+                    ->label(__('Niveau'))->searchable()->sortable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('classrooms_count')
-                    ->label('Classes')
+                    ->label(__('Classes'))
                     ->counts('classrooms')
                     ->badge()->color('info'),
             ])
@@ -66,7 +66,7 @@ class LevelResource extends Resource
             ->emptyStateIcon('heroicon-o-academic-cap')
             ->emptyStateHeading('Aucun niveau créé')
             ->emptyStateDescription('Créez les niveaux scolaires (CP, CE1, etc.) pour organiser les classes.')
-            ->emptyStateActions([Actions\CreateAction::make()->label('Créer un niveau')])
+            ->emptyStateActions([Actions\CreateAction::make()->label(__('Créer un niveau'))])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

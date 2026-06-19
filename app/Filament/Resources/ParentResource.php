@@ -30,16 +30,16 @@ class ParentResource extends Resource
     {
         return $schema->components([
             Section::make('Informations du parent')
-                ->description('Identité, coordonnées et profession du responsable légal')
+                ->description(__('Identité, coordonnées et profession du responsable légal'))
                 ->icon('heroicon-o-user-circle')
                 ->schema([
-                    Forms\Components\TextInput::make('first_name')->label('Prénom')->required()->maxLength(255),
-                    Forms\Components\TextInput::make('last_name')->label('Nom de famille')->required()->maxLength(255),
-                    Forms\Components\TextInput::make('phone')->label('Téléphone')->required()->tel()->maxLength(20),
-                    Forms\Components\TextInput::make('email')->label('Adresse email')->email()->maxLength(255),
-                    Forms\Components\TextInput::make('occupation')->label('Profession')->maxLength(255),
-                    Forms\Components\Toggle::make('is_payer')->label('Payeur principal des frais de scolarité')->default(false)->inline(false),
-                    Forms\Components\Textarea::make('address')->label('Adresse')->columnSpanFull(),
+                    Forms\Components\TextInput::make('first_name')->label(__('Prénom'))->required()->maxLength(255),
+                    Forms\Components\TextInput::make('last_name')->label(__('Nom de famille'))->required()->maxLength(255),
+                    Forms\Components\TextInput::make('phone')->label(__('Téléphone'))->required()->tel()->maxLength(20),
+                    Forms\Components\TextInput::make('email')->label(__('Adresse email'))->email()->maxLength(255),
+                    Forms\Components\TextInput::make('occupation')->label(__('Profession'))->maxLength(255),
+                    Forms\Components\Toggle::make('is_payer')->label(__('Payeur principal des frais de scolarité'))->default(false)->inline(false),
+                    Forms\Components\Textarea::make('address')->label(__('Adresse'))->columnSpanFull(),
                 ])->columns(2),
 
             Section::make('Élèves rattachés')
@@ -47,11 +47,11 @@ class ParentResource extends Resource
                 ->icon('heroicon-o-academic-cap')
                 ->schema([
                     Forms\Components\Select::make('students')
-                        ->label('Enfants inscrits')
+                        ->label(__('Enfants inscrits'))
                         ->relationship('students', 'first_name')
                         ->getOptionLabelFromRecordUsing(fn ($r) => $r?->full_name ?? '—')
                         ->multiple()->preload()->searchable()->columnSpanFull()
-                        ->placeholder('Rechercher un élève...'),
+                        ->placeholder(__('Rechercher un élève...')),
                 ]),
         ]);
     }
@@ -61,22 +61,22 @@ class ParentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('first_name')
-                    ->label('Parent')
+                    ->label(__('Parent'))
                     ->formatStateUsing(fn ($state, SchoolParent $record): string => $record->full_name)
                     ->searchable(['first_name', 'last_name'])
                     ->sortable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('phone')
-                    ->label('Téléphone')->searchable(),
+                    ->label(__('Téléphone'))->searchable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->label('Email')->searchable()->toggleable(),
+                    ->label(__('Email'))->searchable()->toggleable(),
                 Tables\Columns\IconColumn::make('is_payer')
-                    ->label('Payeur principal')->boolean(),
+                    ->label(__('Payeur principal'))->boolean(),
                 Tables\Columns\TextColumn::make('students_count')
-                    ->counts('students')->label('Enfants')
+                    ->counts('students')->label(__('Enfants'))
                     ->badge()->color('info'),
                 Tables\Columns\IconColumn::make('user_id')
-                    ->label('Accès portail')
+                    ->label(__('Accès portail'))
                     ->boolean()
                     ->getStateUsing(fn ($record) => $record->user_id !== null)
                     ->trueColor('success')
@@ -85,12 +85,12 @@ class ParentResource extends Resource
                     ->falseIcon('heroicon-o-x-circle'),
             ])
             ->filters([
-                Tables\Filters\TernaryFilter::make('is_payer')->label('Payeur principal'),
+                Tables\Filters\TernaryFilter::make('is_payer')->label(__('Payeur principal')),
             ])
             ->emptyStateIcon('heroicon-o-users')
             ->emptyStateHeading('Aucun parent enregistré')
             ->emptyStateDescription('Ajoutez les parents des élèves pour activer le portail parents.')
-            ->emptyStateActions([Actions\CreateAction::make()->label('Ajouter un parent')])
+            ->emptyStateActions([Actions\CreateAction::make()->label(__('Ajouter un parent'))])
             ->actions([
                 Actions\Action::make('create_account')
                     ->label(__('Create Portal Account'))

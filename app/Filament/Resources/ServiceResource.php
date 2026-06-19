@@ -41,12 +41,12 @@ class ServiceResource extends Resource
     {
         return $schema->components([
             Section::make('Service proposé')
-                ->description('Définissez un service ou une prestation facturée aux familles')
+                ->description(__('Définissez un service ou une prestation facturée aux familles'))
                 ->icon('heroicon-o-clipboard-document-list')
                 ->schema([
-                    Forms\Components\TextInput::make('name')->label('Nom du service')->required()->maxLength(255),
+                    Forms\Components\TextInput::make('name')->label(__('Nom du service'))->required()->maxLength(255),
                     Forms\Components\Select::make('type')
-                        ->label('Périodicité de facturation')
+                        ->label(__('Périodicité de facturation'))
                         ->options([
                             'annual'  => 'Annuelle',
                             'monthly' => 'Mensuelle',
@@ -54,9 +54,9 @@ class ServiceResource extends Resource
                             'custom'  => 'Personnalisée',
                         ])
                         ->required(),
-                    Forms\Components\TextInput::make('amount')->label('Montant')->required()->numeric()->prefix('TND'),
-                    Forms\Components\Toggle::make('is_active')->label('Service actif')->default(true)->inline(false),
-                    Forms\Components\Textarea::make('description')->label('Description')->columnSpanFull(),
+                    Forms\Components\TextInput::make('amount')->label(__('Montant'))->required()->numeric()->prefix('TND'),
+                    Forms\Components\Toggle::make('is_active')->label(__('Service actif'))->default(true)->inline(false),
+                    Forms\Components\Textarea::make('description')->label(__('Description'))->columnSpanFull(),
                 ])->columns(2),
         ]);
     }
@@ -66,10 +66,10 @@ class ServiceResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Service')->searchable()->sortable()
+                    ->label(__('Service'))->searchable()->sortable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('type')
-                    ->label('Type')
+                    ->label(__('Type'))
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'annual'  => 'primary',
@@ -86,17 +86,17 @@ class ServiceResource extends Resource
                         default   => $state,
                     }),
                 Tables\Columns\TextColumn::make('amount')
-                    ->label('Montant')->money('TND')->sortable()
+                    ->label(__('Montant'))->money('TND')->sortable()
                     ->weight(\Filament\Support\Enums\FontWeight::Bold),
-                Tables\Columns\IconColumn::make('is_active')->label('Actif')->boolean(),
+                Tables\Columns\IconColumn::make('is_active')->label(__('Actif'))->boolean(),
                 Tables\Columns\TextColumn::make('students_count')
-                    ->counts('students')->label('Élèves inscrits')
+                    ->counts('students')->label(__('Élèves inscrits'))
                     ->badge()->color('info'),
             ])
             ->filters([
-                Tables\Filters\TernaryFilter::make('is_active')->label('Actif'),
+                Tables\Filters\TernaryFilter::make('is_active')->label(__('Actif')),
                 Tables\Filters\SelectFilter::make('type')
-                    ->label('Type')
+                    ->label(__('Type'))
                     ->options([
                         'annual'  => 'Annuel',
                         'monthly' => 'Mensuel',
@@ -107,7 +107,7 @@ class ServiceResource extends Resource
             ->emptyStateIcon('heroicon-o-clipboard-document-list')
             ->emptyStateHeading('Aucun service configuré')
             ->emptyStateDescription('Créez les services proposés aux élèves (scolarité, transport, etc.).')
-            ->emptyStateActions([Actions\CreateAction::make()->label('Créer un service')])
+            ->emptyStateActions([Actions\CreateAction::make()->label(__('Créer un service'))])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

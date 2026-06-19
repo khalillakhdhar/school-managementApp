@@ -26,23 +26,23 @@ class ExpenseResource extends Resource
     {
         return $schema->components([
             Section::make('Détails de la dépense')
-                ->description('Catégorie, montant, fournisseur et justificatif de la dépense')
+                ->description(__('Catégorie, montant, fournisseur et justificatif de la dépense'))
                 ->icon('heroicon-o-arrow-trending-down')
                 ->schema([
                     Forms\Components\Select::make('category_id')
-                        ->label('Catégorie')
+                        ->label(__('Catégorie'))
                         ->relationship('category', 'name')
                         ->required()->searchable()->preload()->createOptionForm([
-                            Forms\Components\TextInput::make('name')->label('Nom de la catégorie')->required(),
+                            Forms\Components\TextInput::make('name')->label(__('Nom de la catégorie'))->required(),
                         ]),
                     Forms\Components\DatePicker::make('date')
-                        ->label('Date de la dépense')
+                        ->label(__('Date de la dépense'))
                         ->required()->default(now())->displayFormat('d/m/Y'),
                     Forms\Components\TextInput::make('amount')
-                        ->label('Montant')
+                        ->label(__('Montant'))
                         ->required()->numeric()->minValue(0)->prefix('TND'),
                     Forms\Components\Select::make('payment_method')
-                        ->label('Mode de règlement')
+                        ->label(__('Mode de règlement'))
                         ->options([
                             'cash'   => 'Espèces',
                             'bank'   => 'Virement bancaire',
@@ -50,16 +50,16 @@ class ExpenseResource extends Resource
                         ])
                         ->required()->default('cash'),
                     Forms\Components\TextInput::make('supplier')
-                        ->label('Fournisseur / Prestataire')
+                        ->label(__('Fournisseur / Prestataire'))
                         ->maxLength(255),
                     Forms\Components\TextInput::make('invoice_number')
-                        ->label('N° facture / Reçu')
+                        ->label(__('N° facture / Reçu'))
                         ->maxLength(100),
                     Forms\Components\Textarea::make('description')
-                        ->label('Description')
+                        ->label(__('Description'))
                         ->columnSpanFull(),
                     Forms\Components\Textarea::make('notes')
-                        ->label('Notes internes')
+                        ->label(__('Notes internes'))
                         ->columnSpanFull(),
                 ])->columns(2),
         ]);
@@ -70,17 +70,17 @@ class ExpenseResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('date')
-                    ->label('Date')->date('d/m/Y')->sortable(),
+                    ->label(__('Date'))->date('d/m/Y')->sortable(),
                 Tables\Columns\TextColumn::make('category.name')
-                    ->label('Catégorie')->searchable()->sortable()->badge()->color('warning'),
+                    ->label(__('Catégorie'))->searchable()->sortable()->badge()->color('warning'),
                 Tables\Columns\TextColumn::make('description')
-                    ->label('Description')->limit(45)->searchable(),
+                    ->label(__('Description'))->limit(45)->searchable(),
                 Tables\Columns\TextColumn::make('supplier')
-                    ->label('Fournisseur')->toggleable(isToggledHiddenByDefault: true),
+                    ->label(__('Fournisseur'))->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('invoice_number')
-                    ->label('N° facture')->toggleable(isToggledHiddenByDefault: true),
+                    ->label(__('N° facture'))->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('payment_method')
-                    ->label('Mode')
+                    ->label(__('Mode'))
                     ->badge()
                     ->color(fn ($state) => match($state) {
                         'cash'   => 'success',
@@ -95,19 +95,19 @@ class ExpenseResource extends Resource
                         default  => $state,
                     }),
                 Tables\Columns\TextColumn::make('amount')
-                    ->label('Montant')
+                    ->label(__('Montant'))
                     ->money('TND')->sortable()
                     ->color('danger')
                     ->weight(\Filament\Support\Enums\FontWeight::Bold)
-                    ->summarize(Tables\Columns\Summarizers\Sum::make()->label('Total')->money('TND')),
+                    ->summarize(Tables\Columns\Summarizers\Sum::make()->label(__('Total'))->money('TND')),
             ])
             ->defaultSort('date', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('category_id')
-                    ->label('Catégorie')
+                    ->label(__('Catégorie'))
                     ->relationship('category', 'name'),
                 Tables\Filters\SelectFilter::make('payment_method')
-                    ->label('Mode de paiement')
+                    ->label(__('Mode de paiement'))
                     ->options([
                         'cash'   => 'Espèces',
                         'bank'   => 'Virement',
@@ -115,8 +115,8 @@ class ExpenseResource extends Resource
                     ]),
                 Tables\Filters\Filter::make('date')
                     ->form([
-                        Forms\Components\DatePicker::make('from')->label('Du'),
-                        Forms\Components\DatePicker::make('until')->label('Au'),
+                        Forms\Components\DatePicker::make('from')->label(__('Du')),
+                        Forms\Components\DatePicker::make('until')->label(__('Au')),
                     ])
                     ->query(fn ($query, array $data) => $query
                         ->when($data['from'],  fn ($q) => $q->whereDate('date', '>=', $data['from']))
@@ -126,7 +126,7 @@ class ExpenseResource extends Resource
             ->emptyStateIcon('heroicon-o-arrow-trending-down')
             ->emptyStateHeading('Aucune dépense enregistrée')
             ->emptyStateDescription('Enregistrez les dépenses de l\'établissement pour suivre les charges.')
-            ->emptyStateActions([Actions\CreateAction::make()->label('Ajouter une dépense')])
+            ->emptyStateActions([Actions\CreateAction::make()->label(__('Ajouter une dépense'))])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

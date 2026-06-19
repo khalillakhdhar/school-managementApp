@@ -12,7 +12,7 @@ class ListPayments extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Enregistrer un paiement')];
+        return [CreateAction::make()->label(__('Enregistrer un paiement'))];
     }
 
     protected function getHeaderWidgets(): array

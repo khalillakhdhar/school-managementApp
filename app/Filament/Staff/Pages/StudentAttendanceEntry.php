@@ -114,7 +114,7 @@ class StudentAttendanceEntry extends Page
 
         // SÉCURITÉ : l'enseignant ne peut pointer qu'une classe qu'il enseigne.
         if (! $this->myClasses()->pluck('id')->contains($this->classroomId)) {
-            Notification::make()->title('Accès refusé à cette classe.')->danger()->send();
+            Notification::make()->title(__('Accès refusé à cette classe.'))->danger()->send();
             return;
         }
 

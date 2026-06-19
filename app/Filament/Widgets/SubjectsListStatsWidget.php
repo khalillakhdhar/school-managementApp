@@ -40,7 +40,7 @@ class SubjectsListStatsWidget extends StatsOverviewWidget
                 ->color($unscheduled > 0 ? 'warning' : 'gray'),
 
             Stat::make('Coefficient moyen', $avgCoef)
-                ->description('Pondération moyenne')
+                ->description(__('Pondération moyenne'))
                 ->descriptionIcon('heroicon-m-scale')
                 ->color('info'),
         ];

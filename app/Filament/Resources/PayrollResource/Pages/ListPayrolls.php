@@ -12,7 +12,7 @@ class ListPayrolls extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Générer une fiche de paie')];
+        return [CreateAction::make()->label(__('Générer une fiche de paie'))];
     }
 
     protected function getHeaderWidgets(): array

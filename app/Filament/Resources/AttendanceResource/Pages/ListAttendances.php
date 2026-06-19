@@ -12,7 +12,7 @@ class ListAttendances extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Pointer un employé')];
+        return [CreateAction::make()->label(__('Pointer un employé'))];
     }
 
     protected function getHeaderWidgets(): array

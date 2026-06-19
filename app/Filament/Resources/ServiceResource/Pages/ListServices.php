@@ -12,7 +12,7 @@ class ListServices extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Créer un service')];
+        return [CreateAction::make()->label(__('Créer un service'))];
     }
 
     protected function getHeaderWidgets(): array

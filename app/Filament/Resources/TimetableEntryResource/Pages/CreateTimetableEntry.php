@@ -27,7 +27,7 @@ class CreateTimetableEntry extends CreateRecord
 
         if ($classroomConflict) {
             Notification::make()->danger()
-                ->title('Conflit de salle de classe')
+                ->title(__('Conflit de salle de classe'))
                 ->body('Cette classe a déjà une séance sur ce créneau.')
                 ->persistent()->send();
             $this->halt();

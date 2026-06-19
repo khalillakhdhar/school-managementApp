@@ -31,13 +31,13 @@ class AuditLogResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Date')->dateTime('d/m/Y H:i')->sortable(),
+                    ->label(__('Date'))->dateTime('d/m/Y H:i')->sortable(),
                 Tables\Columns\TextColumn::make('user_name')
-                    ->label('Utilisateur')
+                    ->label(__('Utilisateur'))
                     ->formatStateUsing(fn ($state) => $state ?: 'Système')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('event')
-                    ->label('Action')->badge()
+                    ->label(__('Action'))->badge()
                     ->color(fn (string $state) => match ($state) {
                         'created' => 'success', 'updated' => 'warning', 'deleted' => 'danger', default => 'gray',
                     })
@@ -45,12 +45,12 @@ class AuditLogResource extends Resource
                         'created' => 'Création', 'updated' => 'Modification', 'deleted' => 'Suppression', default => $state,
                     }),
                 Tables\Columns\TextColumn::make('auditable_type')
-                    ->label('Type')->badge()->color('gray')
+                    ->label(__('Type'))->badge()->color('gray')
                     ->formatStateUsing(fn ($state) => self::$typeLabels[$state] ?? class_basename($state)),
                 Tables\Columns\TextColumn::make('label')
-                    ->label('Élément')->wrap()->searchable(),
+                    ->label(__('Élément'))->wrap()->searchable(),
                 Tables\Columns\TextColumn::make('changes_summary')
-                    ->label('Changements')
+                    ->label(__('Changements'))
                     ->state(function (AuditLog $record): string {
                         $new = $record->new_values ?? [];
                         if ($record->event === 'updated' && $new) {
@@ -60,15 +60,15 @@ class AuditLogResource extends Resource
                     })
                     ->limit(80)->wrap()->toggleable(),
                 Tables\Columns\TextColumn::make('ip_address')
-                    ->label('IP')->toggleable(isToggledHiddenByDefault: true),
+                    ->label(__('IP'))->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('event')
-                    ->label('Action')
+                    ->label(__('Action'))
                     ->options(['created' => 'Création', 'updated' => 'Modification', 'deleted' => 'Suppression']),
                 Tables\Filters\SelectFilter::make('auditable_type')
-                    ->label('Type')
+                    ->label(__('Type'))
                     ->options(self::$typeLabels),
             ])
             ->emptyStateIcon('heroicon-o-shield-check')

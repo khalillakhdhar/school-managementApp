@@ -35,7 +35,7 @@ class LevelsListStatsWidget extends StatsOverviewWidget
                 ->color('info'),
 
             Stat::make('Élèves répartis', $activeStudents)
-                ->description('Élèves actifs tous niveaux')
+                ->description(__('Élèves actifs tous niveaux'))
                 ->descriptionIcon('heroicon-m-users')
                 ->color('success'),
 

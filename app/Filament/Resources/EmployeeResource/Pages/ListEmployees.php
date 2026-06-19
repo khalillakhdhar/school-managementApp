@@ -12,7 +12,7 @@ class ListEmployees extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Ajouter un employé')];
+        return [CreateAction::make()->label(__('Ajouter un employé'))];
     }
 
     protected function getHeaderWidgets(): array

@@ -36,10 +36,10 @@ class ExpenseCategoryResource extends Resource
                 ->icon('heroicon-o-tag')
                 ->schema([
                     Forms\Components\TextInput::make('name')
-                        ->label('Nom de la catégorie')
-                        ->required()->maxLength(100)->placeholder('ex: Fournitures scolaires'),
+                        ->label(__('Nom de la catégorie'))
+                        ->required()->maxLength(100)->placeholder(__('ex: Fournitures scolaires')),
                     Forms\Components\Textarea::make('description')
-                        ->label('Description')
+                        ->label(__('Description'))
                         ->columnSpanFull(),
                 ])->columns(1),
         ]);
@@ -50,12 +50,12 @@ class ExpenseCategoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Catégorie')->searchable()->sortable()
+                    ->label(__('Catégorie'))->searchable()->sortable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('description')
-                    ->label('Description')->limit(60)->toggleable(),
+                    ->label(__('Description'))->limit(60)->toggleable(),
                 Tables\Columns\TextColumn::make('expenses_count')
-                    ->label('Nb. Dépenses')
+                    ->label(__('Nb. Dépenses'))
                     ->fontFamily(\Filament\Support\Enums\FontFamily::Mono)
                     ->sortable()
                     ->alignRight()
@@ -65,7 +65,7 @@ class ExpenseCategoryResource extends Resource
             ->emptyStateIcon('heroicon-o-tag')
             ->emptyStateHeading('Aucune catégorie de dépense')
             ->emptyStateDescription('Créez des catégories pour organiser les dépenses (salaires, matériel, etc.).')
-            ->emptyStateActions([Actions\CreateAction::make()->label('Créer une catégorie')])
+            ->emptyStateActions([Actions\CreateAction::make()->label(__('Créer une catégorie'))])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

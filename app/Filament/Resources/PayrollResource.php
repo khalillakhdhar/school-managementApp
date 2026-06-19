@@ -137,7 +137,7 @@ class PayrollResource extends Resource
                 ->icon('heroicon-o-calendar-days')
                 ->schema([
                 Forms\Components\Select::make('employee_id')
-                    ->label('Employé')
+                    ->label(__('Employé'))
                     ->options(
                         Employee::active()->orderBy('last_name')->get()
                             ->mapWithKeys(fn ($e) => [
@@ -168,17 +168,17 @@ class PayrollResource extends Resource
                     }),
 
                 Forms\Components\Select::make('month')
-                    ->label('Mois')
+                    ->label(__('Mois'))
                     ->options(static::months())
                     ->required()->default((int)date('m')),
 
                 Forms\Components\TextInput::make('year')
-                    ->label('Année')
+                    ->label(__('Année'))
                     ->required()->numeric()->default((int)date('Y'))
                     ->minValue(2000)->maxValue(2100),
 
                 Forms\Components\Select::make('status')
-                    ->label('Statut de la fiche')
+                    ->label(__('Statut de la fiche'))
                     ->options([
                         'draft'     => 'Brouillon',
                         'finalized' => 'Finalisée',
@@ -190,44 +190,44 @@ class PayrollResource extends Resource
 
             // ── Contractor Mode ────────────────────────────────────────────────
             Section::make('Facturation vacataire')
-                ->description('Calcul basé sur les heures travaillées × taux horaire')
+                ->description(__('Calcul basé sur les heures travaillées × taux horaire'))
                 ->icon('heroicon-o-clock')
                 ->schema([
                     Forms\Components\DatePicker::make('period_from')
-                        ->label('Période du')
+                        ->label(__('Période du'))
                         ->required(fn (callable $get) => static::isContractor($get('employee_id')))
                         ->default(fn () => now()->startOfMonth())->displayFormat('d/m/Y'),
                     Forms\Components\DatePicker::make('period_to')
-                        ->label('Période au')
+                        ->label(__('Période au'))
                         ->required(fn (callable $get) => static::isContractor($get('employee_id')))
                         ->default(fn () => now()->endOfMonth())->displayFormat('d/m/Y'),
                     Forms\Components\TextInput::make('hourly_rate_used')
-                        ->label('Taux horaire (TND/h)')
+                        ->label(__('Taux horaire (TND/h)'))
                         ->required()->numeric()->minValue(0)->prefix('TND')
                         ->live(onBlur: true)->afterStateUpdated($contractorLiveUpdate),
                     Forms\Components\TextInput::make('total_hours_worked')
-                        ->label('Heures travaillées')
+                        ->label(__('Heures travaillées'))
                         ->required()->numeric()->default(0)->minValue(0)->suffix('h')
                         ->live(onBlur: true)->afterStateUpdated($contractorLiveUpdate)
-                        ->helperText('Saisissez manuellement ou utilisez "Charger depuis les présences".'),
+                        ->helperText(__('Saisissez manuellement ou utilisez "Charger depuis les présences".')),
                     Forms\Components\TextInput::make('gross_salary')
-                        ->label('Montant brut')
+                        ->label(__('Montant brut'))
                         ->prefix('TND')->disabled()->dehydrated()
                         ->hint('Calculé automatiquement')
                         ->hintIcon('heroicon-o-calculator')
                         ->hintColor('info'),
                     Forms\Components\TextInput::make('retenue_source')
-                        ->label('Retenue à la source (RS 15%)')
+                        ->label(__('Retenue à la source (RS 15%)'))
                         ->numeric()->default(0)->minValue(0)->prefix('TND')
                         ->live(onBlur: true)->afterStateUpdated($contractorLiveUpdate)
-                        ->helperText('Applicable aux honoraires versés aux personnes physiques (Art. 52 CIRPPIS)'),
+                        ->helperText(__('Applicable aux honoraires versés aux personnes physiques (Art. 52 CIRPPIS)')),
                     Forms\Components\TextInput::make('other_deductions')
-                        ->label('Autres retenues')
+                        ->label(__('Autres retenues'))
                         ->numeric()->default(0)->minValue(0)->prefix('TND')
                         ->live(onBlur: true)
                         ->afterStateUpdated($contractorLiveUpdate),
                     Forms\Components\TextInput::make('net_salary')
-                        ->label('Net à payer')
+                        ->label(__('Net à payer'))
                         ->prefix('TND')->disabled()->dehydrated()
                         ->hint('Calculé automatiquement')
                         ->hintIcon('heroicon-o-calculator')
@@ -239,35 +239,35 @@ class PayrollResource extends Resource
 
             // ── Fixed Salary Mode — Earnings ───────────────────────────────────
             Section::make('Éléments de rémunération')
-                ->description('Salaire de base, heures supplémentaires, primes et indemnités')
+                ->description(__('Salaire de base, heures supplémentaires, primes et indemnités'))
                 ->icon('heroicon-o-banknotes')
                 ->schema([
                     Forms\Components\TextInput::make('salary_base')
-                        ->label('Salaire de base')
+                        ->label(__('Salaire de base'))
                         ->required()->numeric()->minValue(0)->prefix('TND')
                         ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate),
                     Forms\Components\TextInput::make('overtime_pay')
-                        ->label('Heures supplémentaires')
+                        ->label(__('Heures supplémentaires'))
                         ->numeric()->default(0)->minValue(0)->prefix('TND')
                         ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate),
                     Forms\Components\TextInput::make('bonuses')
-                        ->label('Primes et gratifications')
+                        ->label(__('Primes et gratifications'))
                         ->numeric()->default(0)->minValue(0)->prefix('TND')
                         ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate),
                     Forms\Components\TextInput::make('indemnite_transport')
-                        ->label('Indemnité de transport')
+                        ->label(__('Indemnité de transport'))
                         ->numeric()->default(0)->minValue(0)->prefix('TND')
                         ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate),
                     Forms\Components\TextInput::make('indemnite_logement')
-                        ->label('Indemnité de logement')
+                        ->label(__('Indemnité de logement'))
                         ->numeric()->default(0)->minValue(0)->prefix('TND')
                         ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate),
                     Forms\Components\TextInput::make('autres_indemnites')
-                        ->label('Autres indemnités')
+                        ->label(__('Autres indemnités'))
                         ->numeric()->default(0)->minValue(0)->prefix('TND')
                         ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate),
                     Forms\Components\TextInput::make('gross_salary')
-                        ->label('Salaire brut total')
+                        ->label(__('Salaire brut total'))
                         ->prefix('TND')->disabled()->dehydrated()
                         ->hint('Calculé automatiquement')
                         ->hintIcon('heroicon-o-calculator')
@@ -279,25 +279,25 @@ class PayrollResource extends Resource
 
             // ── Fixed Salary Mode — Employee Deductions ────────────────────────
             Section::make('Retenues salariales')
-                ->description('CNSS salarié, IRPP et autres déductions sur le salaire')
+                ->description(__('CNSS salarié, IRPP et autres déductions sur le salaire'))
                 ->icon('heroicon-o-minus-circle')
                 ->schema([
                     Forms\Components\TextInput::make('cnss_deduction')
-                        ->label('CNSS salarié (9,18%)')
+                        ->label(__('CNSS salarié (9,18%)'))
                         ->prefix('TND')->numeric()->minValue(0)
                         ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate)
-                        ->helperText('Calculé automatiquement. Modifiable pour correction manuelle.'),
+                        ->helperText(__('Calculé automatiquement. Modifiable pour correction manuelle.')),
                     Forms\Components\TextInput::make('irpp_deduction')
-                        ->label('IRPP (barème tunisien 2024)')
+                        ->label(__('IRPP (barème tunisien 2024)'))
                         ->prefix('TND')->numeric()->minValue(0)
                         ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate)
-                        ->helperText('Après abattement professionnel et déductions familiales.'),
+                        ->helperText(__('Après abattement professionnel et déductions familiales.')),
                     Forms\Components\TextInput::make('other_deductions')
-                        ->label('Autres retenues')
+                        ->label(__('Autres retenues'))
                         ->prefix('TND')->numeric()->default(0)->minValue(0)
                         ->live(onBlur: true)->afterStateUpdated($fixedLiveUpdate),
                     Forms\Components\TextInput::make('net_salary')
-                        ->label('Salaire net à payer')
+                        ->label(__('Salaire net à payer'))
                         ->prefix('TND')->disabled()->dehydrated()
                         ->hint('Calculé automatiquement')
                         ->hintIcon('heroicon-o-calculator')
@@ -309,18 +309,18 @@ class PayrollResource extends Resource
 
             // ── Fixed Salary Mode — Employer Charges ──────────────────────────
             Section::make('Charges patronales')
-                ->description('Part employeur : CNSS patronale et FOPROLOS')
+                ->description(__('Part employeur : CNSS patronale et FOPROLOS'))
                 ->icon('heroicon-o-building-office-2')
                 ->schema([
                     Forms\Components\TextInput::make('cnss_patronale')
-                        ->label('CNSS patronale (16,57%)')
+                        ->label(__('CNSS patronale (16,57%)'))
                         ->prefix('TND')->disabled()->dehydrated(),
                     Forms\Components\TextInput::make('foprolos')
-                        ->label('FOPROLOS (1%)')
+                        ->label(__('FOPROLOS (1%)'))
                         ->prefix('TND')->disabled()->dehydrated()
-                        ->helperText('Fonds de Promotion du Logement Social'),
+                        ->helperText(__('Fonds de Promotion du Logement Social')),
                     Forms\Components\TextInput::make('total_charge_patronale')
-                        ->label('Total charges patronales')
+                        ->label(__('Total charges patronales'))
                         ->prefix('TND')->disabled()->dehydrated()
                         ->extraAttributes(['class' => 'font-bold']),
                 ])
@@ -329,11 +329,11 @@ class PayrollResource extends Resource
 
             // ── Notes ─────────────────────────────────────────────────────────
             Section::make('Notes internes')
-                ->description('Remarques ou informations complémentaires sur cette fiche de paie')
+                ->description(__('Remarques ou informations complémentaires sur cette fiche de paie'))
                 ->icon('heroicon-o-chat-bubble-left-ellipsis')
                 ->schema([
                     Forms\Components\Textarea::make('notes')
-                        ->label('Notes')->rows(3)->columnSpanFull(),
+                        ->label(__('Notes'))->rows(3)->columnSpanFull(),
                 ]),
 
         ]);
@@ -346,12 +346,12 @@ class PayrollResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('employee.first_name')
-                    ->label('Employé')
+                    ->label(__('Employé'))
                     ->formatStateUsing(fn ($state, $record) => $record->employee?->full_name ?? '—')
                     ->searchable()->sortable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('employee.contract_type')
-                    ->label('Type')
+                    ->label(__('Type'))
                     ->badge()
                     ->formatStateUsing(fn ($state) => match ($state) {
                         'permanent' => 'Permanent',
@@ -366,29 +366,29 @@ class PayrollResource extends Resource
                         default     => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('month')
-                    ->label('Mois')
+                    ->label(__('Mois'))
                     ->formatStateUsing(fn ($state) => static::months()[$state] ?? $state)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('year')
-                    ->label('Année')->sortable(),
+                    ->label(__('Année'))->sortable(),
                 Tables\Columns\TextColumn::make('period_from')
-                    ->label('Période')
+                    ->label(__('Période'))
                     ->formatStateUsing(fn ($state, $record) => $record->period_from
                         ? $record->period_from->format('d/m') . ' → ' . ($record->period_to?->format('d/m') ?? '?')
                         : '—')
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('total_hours_worked')
-                    ->label('Heures')
+                    ->label(__('Heures'))
                     ->formatStateUsing(fn ($state) => $state > 0 ? "{$state}h" : '—')
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('gross_salary')
-                    ->label('Brut')->money('TND')->sortable(),
+                    ->label(__('Brut'))->money('TND')->sortable(),
                 Tables\Columns\TextColumn::make('net_salary')
-                    ->label('Net')->money('TND')->sortable()
+                    ->label(__('Net'))->money('TND')->sortable()
                     ->color('success')
                     ->weight(\Filament\Support\Enums\FontWeight::Bold),
                 Tables\Columns\TextColumn::make('status')
-                    ->label('Statut')
+                    ->label(__('Statut'))
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'draft'     => 'gray',

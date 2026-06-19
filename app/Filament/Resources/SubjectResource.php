@@ -27,30 +27,30 @@ class SubjectResource extends Resource
     {
         return $schema->components([
             Section::make('Informations de la matière')
-                ->description('Définissez la matière, son code et son coefficient')
+                ->description(__('Définissez la matière, son code et son coefficient'))
                 ->icon('heroicon-o-book-open')
                 ->schema([
                     Forms\Components\TextInput::make('name')
-                        ->label('Nom de la matière')
+                        ->label(__('Nom de la matière'))
                         ->required()->maxLength(100)
                         ->placeholder('Mathématiques'),
                     Forms\Components\TextInput::make('code')
-                        ->label('Code')
+                        ->label(__('Code'))
                         ->maxLength(20)
                         ->placeholder('MATH')
                         ->unique(ignoreRecord: true),
                     Forms\Components\TextInput::make('coefficient')
-                        ->label('Coefficient')
+                        ->label(__('Coefficient'))
                         ->numeric()->default(1.00)
                         ->minValue(0)->maxValue(10)->step(0.5),
                     Forms\Components\ColorPicker::make('color')
-                        ->label('Couleur')
+                        ->label(__('Couleur'))
                         ->default('#1d4ed8'),
                     Forms\Components\Textarea::make('description')
-                        ->label('Description')
+                        ->label(__('Description'))
                         ->columnSpanFull()->rows(2),
                     Forms\Components\Toggle::make('is_active')
-                        ->label('Active')
+                        ->label(__('Active'))
                         ->default(true)
                         ->inline(false),
                 ])->columns(2),
@@ -64,34 +64,34 @@ class SubjectResource extends Resource
                 Tables\Columns\ColorColumn::make('color')
                     ->label(''),
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Matière')
+                    ->label(__('Matière'))
                     ->searchable()->sortable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('code')
-                    ->label('Code')
+                    ->label(__('Code'))
                     ->badge()->color('gray'),
                 Tables\Columns\TextColumn::make('coefficient')
-                    ->label('Coeff.')
+                    ->label(__('Coeff.'))
                     ->badge()->color('primary')
                     ->formatStateUsing(fn ($state) => 'x' . $state),
                 Tables\Columns\TextColumn::make('timetable_entries_count')
-                    ->label('Séances/sem.')
+                    ->label(__('Séances/sem.'))
                     ->counts('timetableEntries')
                     ->badge()->color('success'),
                 Tables\Columns\IconColumn::make('is_active')
-                    ->label('Active')
+                    ->label(__('Active'))
                     ->boolean(),
             ])
             ->defaultSort('name')
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_active')
-                    ->label('Statut')
+                    ->label(__('Statut'))
                     ->trueLabel('Actives')->falseLabel('Inactives'),
             ])
             ->emptyStateIcon('heroicon-o-book-open')
             ->emptyStateHeading('Aucune matière créée')
             ->emptyStateDescription('Créez les matières enseignées dans votre établissement.')
-            ->emptyStateActions([Actions\CreateAction::make()->label('Créer une matière')])
+            ->emptyStateActions([Actions\CreateAction::make()->label(__('Créer une matière'))])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

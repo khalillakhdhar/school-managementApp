@@ -16,13 +16,13 @@ class SubjectsRelationManager extends RelationManager
     {
         return $schema->components([
             Forms\Components\TextInput::make('weekly_hours')
-                ->label('Heures / semaine')
+                ->label(__('Heures / semaine'))
                 ->numeric()->minValue(0.5)->maxValue(40)->step(0.5)->default(2),
             Forms\Components\TextInput::make('coefficient')
-                ->label('Coefficient (classe)')
+                ->label(__('Coefficient (classe)'))
                 ->numeric()->minValue(0)->maxValue(10)->step(0.5)->default(1),
             Forms\Components\Toggle::make('is_active')
-                ->label('Active')->default(true)->inline(false),
+                ->label(__('Active'))->default(true)->inline(false),
         ]);
     }
 
@@ -33,19 +33,19 @@ class SubjectsRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\ColorColumn::make('color')->label(''),
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Matière')
+                    ->label(__('Matière'))
                     ->searchable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('code')
-                    ->label('Code')->badge()->color('gray'),
+                    ->label(__('Code'))->badge()->color('gray'),
                 Tables\Columns\TextColumn::make('pivot.weekly_hours')
-                    ->label('H/sem.')
+                    ->label(__('H/sem.'))
                     ->badge()->color('success')->suffix('h'),
                 Tables\Columns\TextColumn::make('pivot.coefficient')
-                    ->label('Coeff.')->badge()->color('primary')
+                    ->label(__('Coeff.'))->badge()->color('primary')
                     ->formatStateUsing(fn ($state) => 'x' . $state),
                 Tables\Columns\IconColumn::make('pivot.is_active')
-                    ->label('Active')->boolean(),
+                    ->label(__('Active'))->boolean(),
             ])
             ->headerActions([Tables\Actions\AttachAction::make()->preloadRecordSelect()])
             ->actions([Tables\Actions\EditAction::make(), Tables\Actions\DetachAction::make()])

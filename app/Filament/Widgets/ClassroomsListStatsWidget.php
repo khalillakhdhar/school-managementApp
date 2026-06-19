@@ -41,7 +41,7 @@ class ClassroomsListStatsWidget extends StatsOverviewWidget
                 ->color($occupancyRate >= 90 ? 'danger' : ($occupancyRate >= 70 ? 'warning' : 'success')),
 
             Stat::make('Moy. élèves/classe', $avgPerClass)
-                ->description('Répartition par classe')
+                ->description(__('Répartition par classe'))
                 ->descriptionIcon('heroicon-m-calculator')
                 ->color('info'),
         ];

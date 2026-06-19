@@ -12,7 +12,7 @@ class ListStudents extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Inscrire un élève')];
+        return [CreateAction::make()->label(__('Inscrire un élève'))];
     }
 
     protected function getHeaderWidgets(): array

@@ -31,15 +31,15 @@ class HolidayResource extends Resource
                 ->icon('heroicon-o-calendar-date-range')
                 ->schema([
                     Forms\Components\DatePicker::make('date')
-                        ->label('Date')->required()->displayFormat('d/m/Y')->native(false),
+                        ->label(__('Date'))->required()->displayFormat('d/m/Y')->native(false),
                     Forms\Components\Select::make('type')
-                        ->label('Type')
+                        ->label(__('Type'))
                         ->options(Holiday::$typeLabels)
                         ->required()->default('national'),
                     Forms\Components\TextInput::make('name')
-                        ->label('Intitulé')->required()->maxLength(255)->columnSpanFull(),
+                        ->label(__('Intitulé'))->required()->maxLength(255)->columnSpanFull(),
                     Forms\Components\Textarea::make('description')
-                        ->label('Description')->rows(2)->columnSpanFull(),
+                        ->label(__('Description'))->rows(2)->columnSpanFull(),
                 ])->columns(2),
         ]);
     }
@@ -48,10 +48,10 @@ class HolidayResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('date')->label('Date')->date('d/m/Y')->sortable(),
-                Tables\Columns\TextColumn::make('name')->label('Intitulé')->searchable()->wrap(),
+                Tables\Columns\TextColumn::make('date')->label(__('Date'))->date('d/m/Y')->sortable(),
+                Tables\Columns\TextColumn::make('name')->label(__('Intitulé'))->searchable()->wrap(),
                 Tables\Columns\TextColumn::make('type')
-                    ->label('Type')->badge()
+                    ->label(__('Type'))->badge()
                     ->color(fn (string $state) => match ($state) {
                         'national' => 'primary', 'religieux' => 'success', 'scolaire' => 'warning', default => 'gray',
                     })
@@ -59,16 +59,16 @@ class HolidayResource extends Resource
             ])
             ->defaultSort('date')
             ->filters([
-                Tables\Filters\SelectFilter::make('type')->label('Type')->options(Holiday::$typeLabels),
+                Tables\Filters\SelectFilter::make('type')->label(__('Type'))->options(Holiday::$typeLabels),
             ])
             ->headerActions([
                 Actions\Action::make('sync')
-                    ->label('Synchroniser une année')
+                    ->label(__('Synchroniser une année'))
                     ->icon('heroicon-o-arrow-path')
                     ->color('primary')
                     ->schema([
                         Forms\Components\TextInput::make('year')
-                            ->label('Année')->numeric()->required()
+                            ->label(__('Année'))->numeric()->required()
                             ->default(now()->year)->minValue(2020)->maxValue(2100),
                     ])
                     ->action(function (array $data): void {

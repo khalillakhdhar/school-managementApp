@@ -11,6 +11,6 @@ class ListStudentAttendances extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Ajouter une présence')];
+        return [CreateAction::make()->label(__('Ajouter une présence'))];
     }
 }

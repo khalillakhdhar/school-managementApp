@@ -32,19 +32,19 @@ class ClassroomResource extends Resource
                 ->icon('heroicon-o-building-office')
                 ->schema([
                     Forms\Components\Select::make('level_id')
-                        ->label('Niveau scolaire')
+                        ->label(__('Niveau scolaire'))
                         ->relationship('level', 'name')
                         ->required()->searchable()->preload(),
                     Forms\Components\TextInput::make('name')
-                        ->label('Nom de la classe')
+                        ->label(__('Nom de la classe'))
                         ->required()->maxLength(50)
                         ->placeholder('1A'),
                     Forms\Components\TextInput::make('capacity')
-                        ->label('Capacité maximale')
+                        ->label(__('Capacité maximale'))
                         ->numeric()->required()->default(30)->minValue(1)->maxValue(100)
                         ->suffix('élèves'),
                     Forms\Components\Select::make('teacher_id')
-                        ->label('Enseignant titulaire')
+                        ->label(__('Enseignant titulaire'))
                         ->options(
                             Employee::active()
                                 ->teachers()
@@ -52,9 +52,9 @@ class ClassroomResource extends Resource
                                 ->get()
                                 ->mapWithKeys(fn ($e) => [$e->id => "{$e->full_name}" . ($e->specialite ? " — {$e->specialite}" : '')])
                         )
-                        ->nullable()->searchable()->placeholder('Aucun enseignant assigné'),
+                        ->nullable()->searchable()->placeholder(__('Aucun enseignant assigné')),
                     Forms\Components\Textarea::make('notes')
-                        ->label('Notes')
+                        ->label(__('Notes'))
                         ->columnSpanFull(),
                 ])->columns(2),
         ]);
@@ -65,22 +65,22 @@ class ClassroomResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('level.code')
-                    ->label('Niveau')->badge()->color('primary')->sortable(),
+                    ->label(__('Niveau'))->badge()->color('primary')->sortable(),
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Classe')->searchable()->sortable()
+                    ->label(__('Classe'))->searchable()->sortable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('teacher.first_name')
-                    ->label('Enseignant titulaire')
+                    ->label(__('Enseignant titulaire'))
                     ->formatStateUsing(fn ($state, $record) => $record->teacher
                         ? $record->teacher->full_name . ($record->teacher->specialite ? " · {$record->teacher->specialite}" : '')
                         : '—')
                     ->color(fn ($state, $record) => $record->teacher_id ? null : 'danger'),
                 Tables\Columns\TextColumn::make('students_count')
-                    ->label('Élèves')
+                    ->label(__('Élèves'))
                     ->counts('students')
                     ->badge()->color('success'),
                 Tables\Columns\TextColumn::make('capacity')
-                    ->label('Capacité')->sortable()
+                    ->label(__('Capacité'))->sortable()
                     ->formatStateUsing(fn ($state, $record) =>
                         ($record->students_count ?? 0) . ' / ' . $state
                     ),
@@ -88,16 +88,16 @@ class ClassroomResource extends Resource
             ->defaultSort('level_id')
             ->filters([
                 Tables\Filters\SelectFilter::make('level_id')
-                    ->label('Niveau')
+                    ->label(__('Niveau'))
                     ->relationship('level', 'name'),
                 Tables\Filters\Filter::make('no_teacher')
-                    ->label('Sans enseignant')
+                    ->label(__('Sans enseignant'))
                     ->query(fn ($query) => $query->whereNull('teacher_id')),
             ])
             ->emptyStateIcon('heroicon-o-building-office')
             ->emptyStateHeading('Aucune classe créée')
             ->emptyStateDescription('Créez les classes de l\'établissement et assignez-leur un enseignant.')
-            ->emptyStateActions([Actions\CreateAction::make()->label('Créer une classe')])
+            ->emptyStateActions([Actions\CreateAction::make()->label(__('Créer une classe'))])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

@@ -12,7 +12,7 @@ class ListSubjects extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Créer une matière')];
+        return [CreateAction::make()->label(__('Créer une matière'))];
     }
 
     protected function getHeaderWidgets(): array

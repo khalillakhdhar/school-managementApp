@@ -12,7 +12,7 @@ class ListExpenses extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Ajouter une dépense')];
+        return [CreateAction::make()->label(__('Ajouter une dépense'))];
     }
 
     protected function getHeaderWidgets(): array

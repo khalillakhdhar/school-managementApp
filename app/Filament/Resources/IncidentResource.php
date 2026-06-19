@@ -45,12 +45,12 @@ class IncidentResource extends Resource
                 ->icon('heroicon-o-exclamation-triangle')
                 ->schema([
                     Forms\Components\Select::make('student_id')
-                        ->label('Élève concerné')
+                        ->label(__('Élève concerné'))
                         ->options(
                             Student::orderBy('last_name')->get()
                                 ->mapWithKeys(fn ($s) => [$s->id => $s->full_name])
                         )
-                        ->required()->searchable()->placeholder('Rechercher un élève...'),
+                        ->required()->searchable()->placeholder(__('Rechercher un élève...')),
                     Forms\Components\DatePicker::make('incident_date')
                         ->label('Date de l\'incident')
                         ->required()->default(now())->displayFormat('d/m/Y'),
@@ -66,7 +66,7 @@ class IncidentResource extends Resource
                         ])
                         ->required()->default('other'),
                     Forms\Components\Select::make('severity')
-                        ->label('Gravité')
+                        ->label(__('Gravité'))
                         ->options([
                             'low'    => '🟢 Faible',
                             'medium' => '🟡 Moyenne',
@@ -77,13 +77,13 @@ class IncidentResource extends Resource
                         ->label('Titre de l\'incident')
                         ->required()->maxLength(255)->columnSpanFull(),
                     Forms\Components\Textarea::make('description')
-                        ->label('Description détaillée')
+                        ->label(__('Description détaillée'))
                         ->required()->rows(4)->columnSpanFull(),
                     Forms\Components\Textarea::make('action_taken')
-                        ->label('Mesures prises')
+                        ->label(__('Mesures prises'))
                         ->rows(3)->columnSpanFull(),
                     Forms\Components\Toggle::make('parent_notified')
-                        ->label('Parents notifiés')
+                        ->label(__('Parents notifiés'))
                         ->disabled()->helperText('Géré automatiquement par l\'envoi d\'email'),
                 ])->columns(2),
         ]);
@@ -94,16 +94,16 @@ class IncidentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('incident_date')
-                    ->label('Date')->date('d/m/Y')->sortable(),
+                    ->label(__('Date'))->date('d/m/Y')->sortable(),
                 Tables\Columns\TextColumn::make('student.first_name')
-                    ->label('Élève')
+                    ->label(__('Élève'))
                     ->formatStateUsing(fn ($state, $record) => $record->student?->full_name ?? '—')
                     ->searchable()->sortable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('title')
-                    ->label('Titre')->limit(45)->searchable(),
+                    ->label(__('Titre'))->limit(45)->searchable(),
                 Tables\Columns\TextColumn::make('type')
-                    ->label('Type')
+                    ->label(__('Type'))
                     ->badge()
                     ->color(fn ($state) => match($state) {
                         'accident'     => 'danger',
@@ -122,7 +122,7 @@ class IncidentResource extends Resource
                         default        => 'Autre',
                     }),
                 Tables\Columns\TextColumn::make('severity')
-                    ->label('Gravité')
+                    ->label(__('Gravité'))
                     ->badge()
                     ->color(fn ($state) => match($state) {
                         'high'   => 'danger',
@@ -135,7 +135,7 @@ class IncidentResource extends Resource
                         default  => 'Faible',
                     }),
                 Tables\Columns\IconColumn::make('parent_notified')
-                    ->label('Parent notifié')
+                    ->label(__('Parent notifié'))
                     ->boolean()
                     ->trueColor('success')
                     ->falseColor('danger'),

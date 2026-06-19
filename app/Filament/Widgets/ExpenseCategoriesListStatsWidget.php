@@ -32,7 +32,7 @@ class ExpenseCategoriesListStatsWidget extends StatsOverviewWidget
                 ->color('primary'),
 
             Stat::make('Dépenses '.$year, number_format($spentYear, 3).' TND')
-                ->description('Toutes catégories confondues')
+                ->description(__('Toutes catégories confondues'))
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->color('danger'),
 

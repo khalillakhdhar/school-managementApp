@@ -16,13 +16,13 @@ class ServicesRelationManager extends RelationManager
     {
         return $schema->components([
             Forms\Components\TextInput::make('amount_override')
-                ->label('Montant personnalisé (TND)')
+                ->label(__('Montant personnalisé (TND)'))
                 ->numeric()->minValue(0)->prefix('TND')
-                ->helperText('Laissez vide pour utiliser le tarif standard du service'),
+                ->helperText(__('Laissez vide pour utiliser le tarif standard du service')),
             Forms\Components\DatePicker::make('start_date')
-                ->label('Date de début')->displayFormat('d/m/Y'),
+                ->label(__('Date de début'))->displayFormat('d/m/Y'),
             Forms\Components\DatePicker::make('end_date')
-                ->label('Date de fin')->displayFormat('d/m/Y'),
+                ->label(__('Date de fin'))->displayFormat('d/m/Y'),
         ]);
     }
 
@@ -32,32 +32,32 @@ class ServicesRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Service')
+                    ->label(__('Service'))
                     ->searchable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('type')
-                    ->label('Type')->badge()->color('primary'),
+                    ->label(__('Type'))->badge()->color('primary'),
                 Tables\Columns\TextColumn::make('amount')
-                    ->label('Tarif standard')->money('TND')->color('gray'),
+                    ->label(__('Tarif standard'))->money('TND')->color('gray'),
                 Tables\Columns\TextColumn::make('pivot.amount_override')
-                    ->label('Tarif appliqué')
+                    ->label(__('Tarif appliqué'))
                     ->formatStateUsing(fn ($state, $record): string =>
                         $state ? number_format((float) $state, 3) . ' TND' : number_format((float) $record->amount, 3) . ' TND'
                     )
                     ->badge()->color('success'),
                 Tables\Columns\TextColumn::make('pivot.start_date')
-                    ->label('Du')->date('d/m/Y'),
+                    ->label(__('Du'))->date('d/m/Y'),
                 Tables\Columns\TextColumn::make('pivot.end_date')
-                    ->label('Au')->date('d/m/Y'),
+                    ->label(__('Au'))->date('d/m/Y'),
             ])
             ->headerActions([
                 Tables\Actions\AttachAction::make()
-                    ->label('Souscrire à un service')
+                    ->label(__('Souscrire à un service'))
                     ->preloadRecordSelect(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DetachAction::make()->label('Désabonner'),
+                Tables\Actions\DetachAction::make()->label(__('Désabonner')),
             ])
             ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DetachBulkAction::make()])]);
     }

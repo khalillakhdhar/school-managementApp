@@ -63,14 +63,14 @@ class AttendanceResource extends Resource
                 ->icon('heroicon-o-calendar-days')
                 ->schema([
                     Forms\Components\Select::make('employee_id')
-                        ->label('Employé')
+                        ->label(__('Employé'))
                         ->relationship('employee', 'first_name')
                         ->getOptionLabelFromRecordUsing(fn ($record) => $record->full_name)
-                        ->searchable()->preload()->required()->placeholder('Rechercher un employé...'),
+                        ->searchable()->preload()->required()->placeholder(__('Rechercher un employé...')),
                     Forms\Components\DatePicker::make('date')
-                        ->label('Date')->required()->default(now())->displayFormat('d/m/Y'),
+                        ->label(__('Date'))->required()->default(now())->displayFormat('d/m/Y'),
                     Forms\Components\Select::make('status')
-                        ->label('Statut de présence')
+                        ->label(__('Statut de présence'))
                         ->options([
                             'present' => 'Présent',
                             'absent'  => 'Absent',
@@ -79,10 +79,10 @@ class AttendanceResource extends Resource
                         ])
                         ->required()->default('present'),
                     Forms\Components\TimePicker::make('time_in')->label('Heure d\'arrivée'),
-                    Forms\Components\TimePicker::make('time_out')->label('Heure de départ'),
-                    Forms\Components\TextInput::make('total_hours')->label('Heures travaillées')->numeric()->suffix('h'),
-                    Forms\Components\TextInput::make('overtime_hours')->label('Heures supplémentaires')->numeric()->default(0)->suffix('h'),
-                    Forms\Components\Textarea::make('notes')->label('Remarques')->columnSpanFull(),
+                    Forms\Components\TimePicker::make('time_out')->label(__('Heure de départ')),
+                    Forms\Components\TextInput::make('total_hours')->label(__('Heures travaillées'))->numeric()->suffix('h'),
+                    Forms\Components\TextInput::make('overtime_hours')->label(__('Heures supplémentaires'))->numeric()->default(0)->suffix('h'),
+                    Forms\Components\Textarea::make('notes')->label(__('Remarques'))->columnSpanFull(),
                 ])->columns(2),
         ]);
     }
@@ -92,14 +92,14 @@ class AttendanceResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('employee.first_name')
-                    ->label('Employé')
+                    ->label(__('Employé'))
                     ->formatStateUsing(fn ($state, $record) => $record->employee?->full_name ?? '—')
                     ->searchable()->sortable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('date')
-                    ->label('Date')->date('d/m/Y')->sortable(),
+                    ->label(__('Date'))->date('d/m/Y')->sortable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->label('Statut')
+                    ->label(__('Statut'))
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'present' => 'success',
@@ -115,18 +115,18 @@ class AttendanceResource extends Resource
                         'leave'   => 'Congé',
                         default   => $state,
                     }),
-                Tables\Columns\TextColumn::make('time_in')->label('Arrivée'),
-                Tables\Columns\TextColumn::make('time_out')->label('Départ'),
+                Tables\Columns\TextColumn::make('time_in')->label(__('Arrivée')),
+                Tables\Columns\TextColumn::make('time_out')->label(__('Départ')),
                 Tables\Columns\TextColumn::make('total_hours')
-                    ->label('Heures')->suffix(' h')
+                    ->label(__('Heures'))->suffix(' h')
                     ->weight(\Filament\Support\Enums\FontWeight::Bold),
                 Tables\Columns\TextColumn::make('overtime_hours')
-                    ->label('Heures sup.')->suffix(' h')->toggleable(isToggledHiddenByDefault: true),
+                    ->label(__('Heures sup.'))->suffix(' h')->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('date', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
-                    ->label('Statut')
+                    ->label(__('Statut'))
                     ->options([
                         'present' => 'Présent',
                         'absent'  => 'Absent',
@@ -134,7 +134,7 @@ class AttendanceResource extends Resource
                         'leave'   => 'Congé',
                     ]),
                 Tables\Filters\SelectFilter::make('employee')
-                    ->label('Employé')
+                    ->label(__('Employé'))
                     ->relationship('employee', 'first_name'),
             ])
             ->emptyStateIcon('heroicon-o-calendar-days')

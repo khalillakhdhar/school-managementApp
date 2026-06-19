@@ -36,10 +36,10 @@ class BlogPostResource extends Resource
                         ->live(onBlur: true)
                         ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
                     Forms\Components\TextInput::make('slug')
-                        ->label('Slug (URL)')
+                        ->label(__('Slug (URL)'))
                         ->required()->maxLength(255)->unique(ignoreRecord: true),
                     Forms\Components\Textarea::make('excerpt')
-                        ->label('Résumé / Introduction')
+                        ->label(__('Résumé / Introduction'))
                         ->rows(2)->columnSpanFull(),
                     Forms\Components\RichEditor::make('content')
                         ->label('Corps de l\'article')
@@ -51,11 +51,11 @@ class BlogPostResource extends Resource
                         ]),
                 ])->columns(2),
             Section::make('Publication')
-                ->description('Image de couverture, statut et date de publication')
+                ->description(__('Image de couverture, statut et date de publication'))
                 ->icon('heroicon-o-globe-alt')
                 ->schema([
                     Forms\Components\FileUpload::make('cover_image_path')
-                        ->label('Image de couverture')
+                        ->label(__('Image de couverture'))
                         ->image()->directory('blog/covers')
                         ->columnSpanFull(),
                     Forms\Components\Toggle::make('is_published')
@@ -66,7 +66,7 @@ class BlogPostResource extends Resource
                             : $set('published_at', null)
                         ),
                     Forms\Components\DateTimePicker::make('published_at')
-                        ->label('Date et heure de publication')
+                        ->label(__('Date et heure de publication'))
                         ->nullable()->displayFormat('d/m/Y H:i'),
                 ])->columns(2),
         ]);
@@ -79,28 +79,28 @@ class BlogPostResource extends Resource
                 Tables\Columns\ImageColumn::make('cover_image_path')
                     ->label('')->circular()->size(40),
                 Tables\Columns\TextColumn::make('title')
-                    ->label('Titre')->searchable()->sortable()->limit(55)
+                    ->label(__('Titre'))->searchable()->sortable()->limit(55)
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\IconColumn::make('is_published')
-                    ->label('Publié')
+                    ->label(__('Publié'))
                     ->boolean()
                     ->trueColor('success')
                     ->falseColor('gray'),
                 Tables\Columns\TextColumn::make('published_at')
-                    ->label('Publié le')
+                    ->label(__('Publié le'))
                     ->date('d/m/Y')->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Créé le')
+                    ->label(__('Créé le'))
                     ->date('d/m/Y')->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
-                Tables\Filters\TernaryFilter::make('is_published')->label('Publié'),
+                Tables\Filters\TernaryFilter::make('is_published')->label(__('Publié')),
             ])
             ->emptyStateIcon('heroicon-o-newspaper')
             ->emptyStateHeading('Aucun article publié')
             ->emptyStateDescription('Rédigez des annonces et actualités pour le portail parents.')
-            ->emptyStateActions([Actions\CreateAction::make()->label('Rédiger un article')])
+            ->emptyStateActions([Actions\CreateAction::make()->label(__('Rédiger un article'))])
             ->actions([
                 Actions\Action::make('publish')
                     ->label(__('Publish'))

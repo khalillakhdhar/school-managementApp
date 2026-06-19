@@ -42,23 +42,23 @@ class EmployeeResource extends Resource
         return $schema->components([
 
             Section::make('Informations personnelles')
-                ->description('Identité et coordonnées du membre du personnel')
+                ->description(__('Identité et coordonnées du membre du personnel'))
                 ->icon('heroicon-o-user')
                 ->schema([
                     Forms\Components\TextInput::make('first_name')
-                        ->label('Prénom')->required()->maxLength(255),
+                        ->label(__('Prénom'))->required()->maxLength(255),
                     Forms\Components\TextInput::make('last_name')
-                        ->label('Nom de famille')->required()->maxLength(255),
+                        ->label(__('Nom de famille'))->required()->maxLength(255),
                     Forms\Components\TextInput::make('cin')
-                        ->label('CIN')->maxLength(20)->placeholder('00000000'),
+                        ->label(__('CIN'))->maxLength(20)->placeholder('00000000'),
                     Forms\Components\TextInput::make('phone')
-                        ->label('Téléphone')->required()->tel()->maxLength(20),
+                        ->label(__('Téléphone'))->required()->tel()->maxLength(20),
                     Forms\Components\TextInput::make('email')
-                        ->label('Email professionnel')->email()->maxLength(255),
+                        ->label(__('Email professionnel'))->email()->maxLength(255),
                     Forms\Components\TextInput::make('rib')
-                        ->label('RIB bancaire')->maxLength(24)->placeholder('00 000 0000000000000 00'),
+                        ->label(__('RIB bancaire'))->maxLength(24)->placeholder('00 000 0000000000000 00'),
                     Forms\Components\Textarea::make('address')
-                        ->label('Adresse')->columnSpanFull(),
+                        ->label(__('Adresse'))->columnSpanFull(),
                 ])->columns(2),
 
             Section::make('Détails du poste')
@@ -66,7 +66,7 @@ class EmployeeResource extends Resource
                 ->icon('heroicon-o-briefcase')
                 ->schema([
                     Forms\Components\Select::make('contract_type')
-                        ->label('Type de contrat')
+                        ->label(__('Type de contrat'))
                         ->options([
                             'permanent' => 'CDI (Permanent)',
                             'temporary' => 'CDD (Durée déterminée)',
@@ -74,29 +74,29 @@ class EmployeeResource extends Resource
                         ])
                         ->required()->default('permanent')->live(),
                     Forms\Components\TextInput::make('position')
-                        ->label('Intitulé du poste')->required()->maxLength(255),
+                        ->label(__('Intitulé du poste'))->required()->maxLength(255),
                     Forms\Components\DatePicker::make('start_date')
-                        ->label('Date de prise de poste')->required()->displayFormat('d/m/Y'),
+                        ->label(__('Date de prise de poste'))->required()->displayFormat('d/m/Y'),
                     Forms\Components\DatePicker::make('end_date')
-                        ->label('Date de fin de contrat')->displayFormat('d/m/Y'),
+                        ->label(__('Date de fin de contrat'))->displayFormat('d/m/Y'),
                     Forms\Components\Toggle::make('is_active')
-                        ->label('Employé actif')->default(true)->inline(false),
+                        ->label(__('Employé actif'))->default(true)->inline(false),
                     Forms\Components\Toggle::make('is_teacher')
-                        ->label('Est enseignant')
+                        ->label(__('Est enseignant'))
                         ->helperText('Active les champs spécifiques aux enseignants et l\'affectation aux classes')
                         ->default(false)->inline(false)->live(),
                 ])->columns(2),
 
             Section::make('Profil enseignant')
-                ->description('Matière enseignée, numéro CNSS et situation familiale')
+                ->description(__('Matière enseignée, numéro CNSS et situation familiale'))
                 ->icon('heroicon-o-academic-cap')
                 ->schema([
                     Forms\Components\TextInput::make('specialite')
-                        ->label('Matière / Spécialité')->maxLength(255),
+                        ->label(__('Matière / Spécialité'))->maxLength(255),
                     Forms\Components\TextInput::make('matricule_cnss')
-                        ->label('Matricule CNSS')->maxLength(30),
+                        ->label(__('Matricule CNSS'))->maxLength(30),
                     Forms\Components\Select::make('situation_familiale')
-                        ->label('Situation familiale')
+                        ->label(__('Situation familiale'))
                         ->options([
                             'celibataire' => 'Célibataire',
                             'marie'       => 'Marié(e)',
@@ -112,11 +112,11 @@ class EmployeeResource extends Resource
                 ->visible(fn (callable $get) => (bool) $get('is_teacher')),
 
             Section::make('Classes assignées')
-                ->description('Sélectionnez les classes dont cet enseignant est responsable')
+                ->description(__('Sélectionnez les classes dont cet enseignant est responsable'))
                 ->icon('heroicon-o-building-office-2')
                 ->schema([
                     Forms\Components\Select::make('classroom_ids')
-                        ->label('Classes')
+                        ->label(__('Classes'))
                         ->options(function () {
                             return Classroom::with(['level', 'teacher'])
                                 ->get()
@@ -135,7 +135,7 @@ class EmployeeResource extends Resource
                 ->visible(fn (callable $get) => (bool) $get('is_teacher')),
 
             Section::make('Rémunération et indemnités')
-                ->description('Salaire de base, indemnités et taux horaire pour les vacataires')
+                ->description(__('Salaire de base, indemnités et taux horaire pour les vacataires'))
                 ->icon('heroicon-o-currency-dollar')
                 ->schema([
                 Forms\Components\TextInput::make('salary_base')
@@ -173,13 +173,13 @@ class EmployeeResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->label('#')->sortable()->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('first_name')
-                    ->label('Employé')
+                    ->label(__('Employé'))
                     ->formatStateUsing(fn ($state, Employee $record): string => $record->full_name)
                     ->searchable(['first_name', 'last_name'])
                     ->sortable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('position')
-                    ->label('Poste')->searchable()->sortable(),
+                    ->label(__('Poste'))->searchable()->sortable(),
                 Tables\Columns\IconColumn::make('is_teacher')
                     ->label(__('Teacher'))->boolean()
                     ->trueColor('primary')->falseColor('gray'),
@@ -259,12 +259,12 @@ class EmployeeResource extends Resource
             ->actions([
                 // ── Create a staff login account ───────────────────────────────
                 Actions\Action::make('create_account')
-                    ->label('Créer un compte')
+                    ->label(__('Créer un compte'))
                     ->icon('heroicon-o-key')
                     ->color('primary')
                     ->requiresConfirmation()
                     ->modalHeading(fn (Employee $record) => 'Créer un accès pour ' . $record->full_name)
-                    ->modalDescription('Un compte « Espace Personnel » sera créé. Le mot de passe temporaire devra être changé à la première connexion.')
+                    ->modalDescription(__('Un compte « Espace Personnel » sera créé. Le mot de passe temporaire devra être changé à la première connexion.'))
                     ->action(function (Employee $record): void {
                         $result = \App\Services\AccountService::forEmployee($record, null, true);
                         $loginUrl = url('/staff/login');
@@ -291,14 +291,14 @@ class EmployeeResource extends Resource
                     })
                     ->visible(fn (Employee $record) => $record->user_id === null),
                 Actions\Action::make('reset_account_password')
-                    ->label('Réinitialiser mot de passe')
+                    ->label(__('Réinitialiser mot de passe'))
                     ->icon('heroicon-o-arrow-path')
                     ->color('warning')
                     ->requiresConfirmation()
                     ->action(function (Employee $record): void {
                         $result = \App\Services\AccountService::forEmployee($record, null, true);
                         $notification = Notification::make()
-                            ->title('Mot de passe réinitialisé')
+                            ->title(__('Mot de passe réinitialisé'))
                             ->body(app()->environment('local')
                                 ? 'Nouveau mot de passe : ' . $result['password']
                                 : 'Envoyez le nouveau mot de passe via un canal de confiance.')
@@ -352,7 +352,7 @@ class EmployeeResource extends Resource
             ->emptyStateIcon('heroicon-o-identification')
             ->emptyStateHeading('Aucun employé enregistré')
             ->emptyStateDescription('Ajoutez les membres du personnel de l\'établissement.')
-            ->emptyStateActions([Actions\CreateAction::make()->label('Ajouter un employé')])
+            ->emptyStateActions([Actions\CreateAction::make()->label(__('Ajouter un employé'))])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }
 

@@ -12,7 +12,7 @@ class ListLevels extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Créer un niveau')];
+        return [CreateAction::make()->label(__('Créer un niveau'))];
     }
 
     protected function getHeaderWidgets(): array

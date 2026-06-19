@@ -31,23 +31,23 @@ class PayrollsRelationManager extends RelationManager
             ->defaultSort('year', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('period')
-                    ->label('Période')
+                    ->label(__('Période'))
                     ->getStateUsing(fn ($record): string =>
                         ($months[$record->month] ?? $record->month) . ' ' . $record->year
                     )
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('gross_salary')
-                    ->label('Brut')->money('TND'),
+                    ->label(__('Brut'))->money('TND'),
                 Tables\Columns\TextColumn::make('net_salary')
-                    ->label('Net')->money('TND')
+                    ->label(__('Net'))->money('TND')
                     ->weight(\Filament\Support\Enums\FontWeight::Bold)
                     ->color('success'),
                 Tables\Columns\TextColumn::make('total_hours_worked')
-                    ->label('Heures')
+                    ->label(__('Heures'))
                     ->formatStateUsing(fn ($state): string => $state > 0 ? $state . ' h' : '—')
                     ->badge()->color('gray'),
                 Tables\Columns\TextColumn::make('status')
-                    ->label('Statut')
+                    ->label(__('Statut'))
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'paid'      => 'success',
@@ -62,25 +62,25 @@ class PayrollsRelationManager extends RelationManager
                         default     => $state,
                     }),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Créé le')->date('d/m/Y')
+                    ->label(__('Créé le'))->date('d/m/Y')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
-                    ->label('Statut')
+                    ->label(__('Statut'))
                     ->options(['draft' => 'Brouillon', 'finalized' => 'Finalisé', 'paid' => 'Payé']),
             ])
             ->headerActions([])
             ->actions([
                 Tables\Actions\Action::make('mark_paid')
-                    ->label('Marquer payé')
+                    ->label(__('Marquer payé'))
                     ->icon('heroicon-o-banknotes')
                     ->color('success')
                     ->requiresConfirmation()
                     ->visible(fn ($record): bool => $record->status === 'finalized')
                     ->action(function ($record): void {
                         $record->update(['status' => 'paid']);
-                        Notification::make()->title('Fiche de paie marquée comme payée')->success()->send();
+                        Notification::make()->title(__('Fiche de paie marquée comme payée'))->success()->send();
                     }),
                 Tables\Actions\ViewAction::make()
                     ->url(fn ($record): string =>

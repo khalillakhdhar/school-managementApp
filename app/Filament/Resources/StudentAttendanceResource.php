@@ -31,19 +31,19 @@ class StudentAttendanceResource extends Resource
                 ->icon('heroicon-o-clipboard-document-check')
                 ->schema([
                     Forms\Components\Select::make('student_id')
-                        ->label('Élève')
+                        ->label(__('Élève'))
                         ->options(fn () => Student::orderBy('last_name')->get()->mapWithKeys(fn ($s) => [$s->id => $s->full_name]))
                         ->searchable()->required(),
                     Forms\Components\Select::make('classroom_id')
-                        ->label('Classe')
+                        ->label(__('Classe'))
                         ->options(fn () => Classroom::with('level')->get()->mapWithKeys(fn ($c) => [$c->id => $c->full_name]))
                         ->searchable(),
-                    Forms\Components\DatePicker::make('date')->label('Date')->required()->default(now())->displayFormat('d/m/Y'),
+                    Forms\Components\DatePicker::make('date')->label(__('Date'))->required()->default(now())->displayFormat('d/m/Y'),
                     Forms\Components\Select::make('status')
-                        ->label('Statut')
+                        ->label(__('Statut'))
                         ->options(['present' => 'Présent', 'absent' => 'Absent', 'late' => 'En retard', 'excused' => 'Excusé'])
                         ->required()->default('present'),
-                    Forms\Components\Textarea::make('notes')->label('Remarque')->columnSpanFull()->rows(2),
+                    Forms\Components\Textarea::make('notes')->label(__('Remarque'))->columnSpanFull()->rows(2),
                 ])->columns(2),
         ]);
     }
@@ -53,14 +53,14 @@ class StudentAttendanceResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('student.first_name')
-                    ->label('Élève')
+                    ->label(__('Élève'))
                     ->formatStateUsing(fn ($state, $record) => $record->student?->full_name ?? '—')
                     ->searchable()->sortable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
-                Tables\Columns\TextColumn::make('classroom.name')->label('Classe')->badge()->color('primary'),
-                Tables\Columns\TextColumn::make('date')->label('Date')->date('d/m/Y')->sortable(),
+                Tables\Columns\TextColumn::make('classroom.name')->label(__('Classe'))->badge()->color('primary'),
+                Tables\Columns\TextColumn::make('date')->label(__('Date'))->date('d/m/Y')->sortable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->label('Statut')->badge()
+                    ->label(__('Statut'))->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'present' => 'success', 'absent' => 'danger', 'late' => 'warning', 'excused' => 'info', default => 'gray',
                     })
@@ -68,17 +68,17 @@ class StudentAttendanceResource extends Resource
                         'present' => 'Présent', 'absent' => 'Absent', 'late' => 'En retard', 'excused' => 'Excusé', default => $state,
                     }),
                 Tables\Columns\TextColumn::make('employee.first_name')
-                    ->label('Saisi par')
+                    ->label(__('Saisi par'))
                     ->formatStateUsing(fn ($state, $record) => $record->employee?->full_name ?? '—')
                     ->toggleable(),
             ])
             ->defaultSort('date', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('classroom_id')
-                    ->label('Classe')
+                    ->label(__('Classe'))
                     ->options(fn () => Classroom::with('level')->get()->mapWithKeys(fn ($c) => [$c->id => $c->full_name])),
                 Tables\Filters\SelectFilter::make('status')
-                    ->label('Statut')
+                    ->label(__('Statut'))
                     ->options(['present' => 'Présent', 'absent' => 'Absent', 'late' => 'En retard', 'excused' => 'Excusé']),
             ])
             ->emptyStateIcon('heroicon-o-clipboard-document-check')

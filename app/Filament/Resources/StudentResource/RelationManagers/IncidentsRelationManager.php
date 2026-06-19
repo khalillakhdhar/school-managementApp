@@ -19,9 +19,9 @@ class IncidentsRelationManager extends RelationManager
     {
         return $schema->components([
             Forms\Components\TextInput::make('title')
-                ->label('Titre')->required()->maxLength(255)->columnSpanFull(),
+                ->label(__('Titre'))->required()->maxLength(255)->columnSpanFull(),
             Forms\Components\Select::make('type')
-                ->label('Type')
+                ->label(__('Type'))
                 ->options([
                     'behavioral'  => 'Comportement',
                     'medical'     => 'Médical',
@@ -31,7 +31,7 @@ class IncidentsRelationManager extends RelationManager
                 ])
                 ->required(),
             Forms\Components\Select::make('severity')
-                ->label('Gravité')
+                ->label(__('Gravité'))
                 ->options([
                     'low'    => 'Faible',
                     'medium' => 'Moyen',
@@ -41,9 +41,9 @@ class IncidentsRelationManager extends RelationManager
             Forms\Components\DatePicker::make('incident_date')
                 ->label('Date de l\'incident')->required()->displayFormat('d/m/Y'),
             Forms\Components\Textarea::make('description')
-                ->label('Description')->rows(3)->columnSpanFull(),
+                ->label(__('Description'))->rows(3)->columnSpanFull(),
             Forms\Components\Textarea::make('action_taken')
-                ->label('Mesure prise')->rows(2)->columnSpanFull(),
+                ->label(__('Mesure prise'))->rows(2)->columnSpanFull(),
         ]);
     }
 
@@ -54,11 +54,11 @@ class IncidentsRelationManager extends RelationManager
             ->defaultSort('incident_date', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->label('Incident')
+                    ->label(__('Incident'))
                     ->searchable()
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('type')
-                    ->label('Type')
+                    ->label(__('Type'))
                     ->badge()->color('primary')
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'behavioral' => 'Comportement',
@@ -68,7 +68,7 @@ class IncidentsRelationManager extends RelationManager
                         default      => 'Autre',
                     }),
                 Tables\Columns\TextColumn::make('severity')
-                    ->label('Gravité')
+                    ->label(__('Gravité'))
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'high'   => 'danger',
@@ -81,14 +81,14 @@ class IncidentsRelationManager extends RelationManager
                         default  => 'Faible',
                     }),
                 Tables\Columns\TextColumn::make('incident_date')
-                    ->label('Date')->date('d/m/Y'),
+                    ->label(__('Date'))->date('d/m/Y'),
                 Tables\Columns\IconColumn::make('parent_notified')
-                    ->label('Parents notifiés')->boolean(),
+                    ->label(__('Parents notifiés'))->boolean(),
             ])
-            ->headerActions([Tables\Actions\CreateAction::make()->label('Signaler un incident')])
+            ->headerActions([Tables\Actions\CreateAction::make()->label(__('Signaler un incident'))])
             ->actions([
                 Tables\Actions\Action::make('notify_parent')
-                    ->label('Notifier les parents')
+                    ->label(__('Notifier les parents'))
                     ->icon('heroicon-o-bell')
                     ->color('warning')
                     ->requiresConfirmation()
@@ -98,7 +98,7 @@ class IncidentsRelationManager extends RelationManager
                         $emails  = $student->parents->map(fn ($p) => $p->email)->filter()->toArray();
 
                         if (empty($emails)) {
-                            Notification::make()->title('Aucun parent avec email trouvé')->warning()->send();
+                            Notification::make()->title(__('Aucun parent avec email trouvé'))->warning()->send();
                             return;
                         }
 
@@ -107,7 +107,7 @@ class IncidentsRelationManager extends RelationManager
                         }
 
                         $record->update(['parent_notified' => true, 'notification_sent_at' => now()]);
-                        Notification::make()->title('Notification envoyée aux parents')->success()->send();
+                        Notification::make()->title(__('Notification envoyée aux parents'))->success()->send();
                     }),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),

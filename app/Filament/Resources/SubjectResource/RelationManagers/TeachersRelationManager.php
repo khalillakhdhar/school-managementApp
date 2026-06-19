@@ -16,10 +16,10 @@ class TeachersRelationManager extends RelationManager
     {
         return $schema->components([
             Forms\Components\TextInput::make('specialization')
-                ->label('Spécialisation')
+                ->label(__('Spécialisation'))
                 ->maxLength(100),
             Forms\Components\TextInput::make('max_hours_per_week')
-                ->label('Heures max / semaine')
+                ->label(__('Heures max / semaine'))
                 ->numeric()->minValue(1)->maxValue(40)->default(20),
         ]);
     }
@@ -30,17 +30,17 @@ class TeachersRelationManager extends RelationManager
             ->recordTitleAttribute('full_name')
             ->columns([
                 Tables\Columns\TextColumn::make('full_name')
-                    ->label('Enseignant')
+                    ->label(__('Enseignant'))
                     ->searchable(['first_name', 'last_name'])
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('specialite')
-                    ->label('Spécialité générale')
+                    ->label(__('Spécialité générale'))
                     ->color('gray'),
                 Tables\Columns\TextColumn::make('pivot.specialization')
-                    ->label('Spécialisation matière')
+                    ->label(__('Spécialisation matière'))
                     ->badge()->color('primary'),
                 Tables\Columns\TextColumn::make('pivot.max_hours_per_week')
-                    ->label('H max/sem.')
+                    ->label(__('H max/sem.'))
                     ->badge()->color('warning')
                     ->suffix('h'),
             ])

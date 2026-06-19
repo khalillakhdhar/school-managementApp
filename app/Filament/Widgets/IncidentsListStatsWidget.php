@@ -36,7 +36,7 @@ class IncidentsListStatsWidget extends StatsOverviewWidget
                 ->chart($monthlyTrend),
 
             Stat::make('Parents non notifiés', $unnotified)
-                ->description('Notifications en attente')
+                ->description(__('Notifications en attente'))
                 ->descriptionIcon('heroicon-m-bell-alert')
                 ->color($unnotified > 0 ? 'warning' : 'success'),
 

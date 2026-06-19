@@ -12,7 +12,7 @@ class ListExpenseCategories extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Créer une catégorie')];
+        return [CreateAction::make()->label(__('Créer une catégorie'))];
     }
 
     protected function getHeaderWidgets(): array

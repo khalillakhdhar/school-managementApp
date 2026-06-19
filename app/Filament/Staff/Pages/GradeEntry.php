@@ -102,7 +102,7 @@ class GradeEntry extends Page
         // SÉCURITÉ : l'enseignant ne peut noter qu'une matière qu'il enseigne dans CETTE classe.
         if (! $this->myClasses()->keys()->contains($this->classroomId)
             || ! $this->subjectsForClass()->keys()->contains($this->subjectId)) {
-            Notification::make()->title('Accès refusé à cette classe/matière.')->danger()->send();
+            Notification::make()->title(__('Accès refusé à cette classe/matière.'))->danger()->send();
             return;
         }
         if (! in_array($this->term, ['T1', 'T2', 'T3'], true)) {

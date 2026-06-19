@@ -11,6 +11,6 @@ class ListHolidays extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Ajouter un jour férié')];
+        return [CreateAction::make()->label(__('Ajouter un jour férié'))];
     }
 }

@@ -54,7 +54,7 @@ class PaymentsListStatsWidget extends StatsOverviewWidget
                 ->chart($revenueChart),
 
             Stat::make('Recettes '.$year, number_format($revenueYear, 3).' TND')
-                ->description('Total encaissé cette année')
+                ->description(__('Total encaissé cette année'))
                 ->descriptionIcon('heroicon-m-banknotes')
                 ->color('primary'),
 

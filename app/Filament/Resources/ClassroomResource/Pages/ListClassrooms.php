@@ -12,7 +12,7 @@ class ListClassrooms extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Créer une classe')];
+        return [CreateAction::make()->label(__('Créer une classe'))];
     }
 
     protected function getHeaderWidgets(): array

@@ -12,7 +12,7 @@ class ListIncidents extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Signaler un incident')];
+        return [CreateAction::make()->label(__('Signaler un incident'))];
     }
 
     protected function getHeaderWidgets(): array

@@ -12,7 +12,7 @@ class ListBlogPosts extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()->label('Rédiger un article')];
+        return [CreateAction::make()->label(__('Rédiger un article'))];
     }
 
     protected function getHeaderWidgets(): array

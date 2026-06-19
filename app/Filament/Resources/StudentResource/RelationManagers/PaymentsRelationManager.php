@@ -17,17 +17,17 @@ class PaymentsRelationManager extends RelationManager
     {
         return $schema->components([
             Forms\Components\TextInput::make('amount')
-                ->label('Montant (TND)')->numeric()->required()->minValue(0)->prefix('TND'),
+                ->label(__('Montant (TND)'))->numeric()->required()->minValue(0)->prefix('TND'),
             Forms\Components\Select::make('status')
-                ->label('Statut')
+                ->label(__('Statut'))
                 ->options(['pending' => 'En attente', 'paid' => 'Payé', 'cancelled' => 'Annulé'])
                 ->default('pending')->required(),
             Forms\Components\DatePicker::make('due_date')
                 ->label('Date d\'échéance')->displayFormat('d/m/Y'),
             Forms\Components\DatePicker::make('payment_date')
-                ->label('Date de paiement')->displayFormat('d/m/Y'),
+                ->label(__('Date de paiement'))->displayFormat('d/m/Y'),
             Forms\Components\Select::make('payment_method')
-                ->label('Mode de paiement')
+                ->label(__('Mode de paiement'))
                 ->options([
                     'cash'          => 'Espèces',
                     'bank_transfer' => 'Virement bancaire',
@@ -36,9 +36,9 @@ class PaymentsRelationManager extends RelationManager
                 ])
                 ->nullable(),
             Forms\Components\TextInput::make('reference_number')
-                ->label('Référence')->maxLength(100),
+                ->label(__('Référence'))->maxLength(100),
             Forms\Components\Textarea::make('notes')
-                ->label('Notes')->rows(2)->columnSpanFull(),
+                ->label(__('Notes'))->rows(2)->columnSpanFull(),
         ]);
     }
 
@@ -49,10 +49,10 @@ class PaymentsRelationManager extends RelationManager
             ->defaultSort('due_date', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('amount')
-                    ->label('Montant')->money('TND')
+                    ->label(__('Montant'))->money('TND')
                     ->weight(\Filament\Support\Enums\FontWeight::SemiBold),
                 Tables\Columns\TextColumn::make('status')
-                    ->label('Statut')
+                    ->label(__('Statut'))
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'paid'      => 'success',
@@ -67,14 +67,14 @@ class PaymentsRelationManager extends RelationManager
                         default     => $state,
                     }),
                 Tables\Columns\TextColumn::make('due_date')
-                    ->label('Échéance')->date('d/m/Y')
+                    ->label(__('Échéance'))->date('d/m/Y')
                     ->color(fn ($record): string =>
                         $record->status === 'pending' && $record->due_date?->isPast() ? 'danger' : 'gray'
                     ),
                 Tables\Columns\TextColumn::make('payment_date')
-                    ->label('Payé le')->date('d/m/Y'),
+                    ->label(__('Payé le'))->date('d/m/Y'),
                 Tables\Columns\TextColumn::make('payment_method')
-                    ->label('Mode')
+                    ->label(__('Mode'))
                     ->formatStateUsing(fn ($state): string => match ($state) {
                         'cash'          => 'Espèces',
                         'bank_transfer' => 'Virement',
@@ -84,20 +84,20 @@ class PaymentsRelationManager extends RelationManager
                     })
                     ->badge()->color('primary'),
                 Tables\Columns\TextColumn::make('reference_number')
-                    ->label('Référence')->color('gray')
+                    ->label(__('Référence'))->color('gray')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->headerActions([Tables\Actions\CreateAction::make()->label('Enregistrer un paiement')])
+            ->headerActions([Tables\Actions\CreateAction::make()->label(__('Enregistrer un paiement'))])
             ->actions([
                 Tables\Actions\Action::make('mark_paid')
-                    ->label('Marquer payé')
+                    ->label(__('Marquer payé'))
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
                     ->visible(fn ($record): bool => $record->status === 'pending')
                     ->action(function ($record): void {
                         $record->update(['status' => 'paid', 'payment_date' => now()]);
-                        Notification::make()->title('Paiement marqué comme payé')->success()->send();
+                        Notification::make()->title(__('Paiement marqué comme payé'))->success()->send();
                     }),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
