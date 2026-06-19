@@ -18,9 +18,9 @@ class ClassTimetable extends Page
     public function getTitle(): string
     {
         if ($this->classroomId && ($c = $this->selectedClassroom)) {
-            return 'EDT — ' . $c->full_name;
+            return __('EDT — ') . $c->full_name;
         }
-        return 'Emplois du temps';
+        return __('Emplois du temps');
     }
 
     /** Null = list view; set = detail view for that class */

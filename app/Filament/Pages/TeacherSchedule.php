@@ -18,9 +18,9 @@ class TeacherSchedule extends Page
     public function getTitle(): string
     {
         if ($this->employeeId && ($t = $this->selectedTeacher)) {
-            return 'Planning — ' . $t->full_name;
+            return __('Planning — ') . $t->full_name;
         }
-        return 'Planning enseignants';
+        return __('Planning enseignants');
     }
 
     /** Null = list view; set = detail view for that teacher */
