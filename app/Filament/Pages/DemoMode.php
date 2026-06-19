@@ -40,7 +40,10 @@ class DemoMode extends Page
                     $this->active = true;
                     Notification::make()
                         ->title(__('Mode démo activé'))
-                        ->body("{$stats['students']} élèves · {$stats['classes']} classes · {$stats['employees']} employés · {$stats['seances']} séances · {$stats['payments']} paiements créés.")
+                        ->body(__(':students élèves · :classes classes · :employees employés · :seances séances · :payments paiements créés.', [
+                            'students' => $stats['students'], 'classes' => $stats['classes'],
+                            'employees' => $stats['employees'], 'seances' => $stats['seances'], 'payments' => $stats['payments'],
+                        ]))
                         ->success()->duration(8000)->send();
                 }),
 
@@ -58,7 +61,7 @@ class DemoMode extends Page
                     $this->active = false;
                     Notification::make()
                         ->title(__('Données démo supprimées'))
-                        ->body('La base a été vidée. Vous pouvez réactiver le mode démo à tout moment.')
+                        ->body(__('La base a été vidée. Vous pouvez réactiver le mode démo à tout moment.'))
                         ->success()->send();
                 }),
         ];

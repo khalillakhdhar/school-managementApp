@@ -167,11 +167,11 @@ class AttendanceResource extends Resource
 
                         if ($created > 0) {
                             Notification::make()
-                                ->title("{$created} employé(s) marqués présents aujourd'hui")
+                                ->title(__(':count employé(s) marqués présents aujourd\'hui', ['count' => $created]))
                                 ->success()->send();
                         } else {
                             Notification::make()
-                                ->title('Tous les employés sont déjà pointés aujourd\'hui')
+                                ->title(__('Tous les employés sont déjà pointés aujourd\'hui'))
                                 ->info()->send();
                         }
                     }),

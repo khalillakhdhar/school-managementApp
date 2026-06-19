@@ -74,8 +74,8 @@ class HolidayResource extends Resource
                     ->action(function (array $data): void {
                         $n = HolidayService::sync((int) $data['year']);
                         Notification::make()
-                            ->title("{$n} jours fériés synchronisés pour {$data['year']}")
-                            ->body('Jours civils + fêtes religieuses (calendrier hégirien). Les dates religieuses sont indicatives et ajustables.')
+                            ->title(__(':count jours fériés synchronisés pour :year', ['count' => $n, 'year' => $data['year']]))
+                            ->body(__('Jours civils + fêtes religieuses (calendrier hégirien). Les dates religieuses sont indicatives et ajustables.'))
                             ->success()->send();
                     }),
             ])

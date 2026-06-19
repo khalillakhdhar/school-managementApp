@@ -21,10 +21,10 @@ class IncidentObserver
             'medium' => 'warning',
             default  => 'info',
         };
-        $studentName = $incident->student?->full_name ?? 'Élève';
+        $studentName = $incident->student?->full_name ?? __('Élève');
 
         $notification = Notification::make()
-            ->title('Nouvel incident signalé')
+            ->title(__('Nouvel incident signalé'))
             ->body($incident->title . ' — ' . $studentName)
             ->icon('heroicon-o-exclamation-triangle')
             ->color($severityColor)

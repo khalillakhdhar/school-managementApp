@@ -334,5 +334,8 @@
     "Enrolled in :month": "Inscrit en :month",
     "of total": "du total",
     "active": "actif",
-    "net": "net"
+    "net": "net",
+
+    "Temporary password: :password": "Mot de passe temporaire : :password",
+    "Send the credentials through a trusted channel.": "Envoyez les identifiants via un canal de confiance."
 }

@@ -103,7 +103,7 @@ class SchoolSettings extends Page
 
         Notification::make()->success()
             ->title(__('Paramètres sauvegardés'))
-            ->body('Les informations de l\'établissement ont été mises à jour.')
+            ->body(__('Les informations de l\'établissement ont été mises à jour.'))
             ->send();
     }
 }

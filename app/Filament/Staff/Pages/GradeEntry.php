@@ -133,6 +133,6 @@ class GradeEntry extends Page
             $saved++;
         }
 
-        Notification::make()->title("{$saved} note(s) enregistrée(s)")->success()->send();
+        Notification::make()->title(__(':count note(s) enregistrée(s)', ['count' => $saved]))->success()->send();
     }
 }

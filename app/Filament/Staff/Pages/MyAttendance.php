@@ -23,11 +23,11 @@ class MyAttendance extends Page
         }
         $att = Attendance::firstOrNew(['employee_id' => $emp->id, 'date' => now()->toDateString()]);
         if ($att->time_in) {
-            Notification::make()->title('Arrivée déjà pointée à ' . substr($att->time_in, 0, 5))->warning()->send();
+            Notification::make()->title(__('Arrivée déjà pointée à :time', ['time' => substr($att->time_in, 0, 5)]))->warning()->send();
             return;
         }
         $att->fill(['status' => 'present', 'time_in' => now()->format('H:i')])->save();
-        Notification::make()->title('Arrivée pointée à ' . now()->format('H:i'))->success()->send();
+        Notification::make()->title(__('Arrivée pointée à :time', ['time' => now()->format('H:i')]))->success()->send();
     }
 
     public function clockOut(): void
@@ -38,12 +38,12 @@ class MyAttendance extends Page
         }
         $att = Attendance::firstOrNew(['employee_id' => $emp->id, 'date' => now()->toDateString()]);
         if (! $att->time_in) {
-            Notification::make()->title('Pointez d\'abord votre arrivée.')->warning()->send();
+            Notification::make()->title(__('Pointez d\'abord votre arrivée.'))->warning()->send();
             return;
         }
         $hours = round((strtotime(now()->format('H:i')) - strtotime(substr($att->time_in, 0, 5))) / 3600, 2);
         $att->fill(['time_out' => now()->format('H:i'), 'total_hours' => max(0, $hours)])->save();
-        Notification::make()->title('Départ pointé à ' . now()->format('H:i') . " — {$hours}h travaillées")->success()->send();
+        Notification::make()->title(__('Départ pointé à :time — :hoursh travaillées', ['time' => now()->format('H:i'), 'hours' => $hours]))->success()->send();
     }
 
     protected function getViewData(): array

@@ -62,8 +62,8 @@ class SendPaymentReminders extends Command
             $overdueTotal = (float) Payment::where('status', 'pending')
                 ->whereNotNull('due_date')->whereDate('due_date', '<', now())->sum('amount');
             $notification = \Filament\Notifications\Notification::make()
-                ->title("{$overdueCount} paiement(s) en retard")
-                ->body('Total dû : ' . number_format($overdueTotal, 3) . ' TND')
+                ->title(__(':count paiement(s) en retard', ['count' => $overdueCount]))
+                ->body(__('Total dû : :amount TND', ['amount' => number_format($overdueTotal, 3)]))
                 ->icon('heroicon-o-exclamation-circle')
                 ->color('danger')
                 ->toDatabase();

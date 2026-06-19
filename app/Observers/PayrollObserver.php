@@ -27,14 +27,14 @@ class PayrollObserver
             return;
         }
 
-        $months = [1 => 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-            'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-        $period = ($months[$payroll->month] ?? $payroll->month) . ' ' . $payroll->year;
+        $months = [1 => 'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'];
+        $period = __($months[$payroll->month] ?? (string) $payroll->month) . ' ' . $payroll->year;
 
         $user->notifyNow(
             Notification::make()
-                ->title($payroll->status === 'paid' ? 'Votre salaire a été versé' : 'Votre fiche de paie est prête')
-                ->body($period . ' — Net : ' . number_format((float) $payroll->net_salary, 3) . ' TND')
+                ->title($payroll->status === 'paid' ? __('Votre salaire a été versé') : __('Votre fiche de paie est prête'))
+                ->body(__(':period — Net : :amount TND', ['period' => $period, 'amount' => number_format((float) $payroll->net_salary, 3)]))
                 ->icon('heroicon-o-banknotes')
                 ->color('success')
                 ->toDatabase()

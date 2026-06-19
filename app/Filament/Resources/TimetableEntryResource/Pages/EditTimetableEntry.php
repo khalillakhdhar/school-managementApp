@@ -36,7 +36,7 @@ class EditTimetableEntry extends EditRecord
         if ($classroomConflict) {
             Notification::make()->danger()
                 ->title(__('Conflit de salle de classe'))
-                ->body('Cette classe a déjà une séance sur ce créneau.')
+                ->body(__('Cette classe a déjà une séance sur ce créneau.'))
                 ->persistent()->send();
             $this->halt();
         }
@@ -51,8 +51,8 @@ class EditTimetableEntry extends EditRecord
 
             if ($teacherConflict) {
                 Notification::make()->danger()
-                    ->title('Conflit d\'enseignant')
-                    ->body('Cet enseignant est déjà occupé sur ce créneau.')
+                    ->title(__('Conflit d\'enseignant'))
+                    ->body(__('Cet enseignant est déjà occupé sur ce créneau.'))
                     ->persistent()->send();
                 $this->halt();
             }

@@ -272,14 +272,14 @@ class EmployeeResource extends Resource
                             \Illuminate\Support\Facades\Mail::to($result['email'])
                                 ->send(new \App\Mail\StaffWelcomeMail($record, $result['email'], $result['password'], $loginUrl));
                             Notification::make()
-                                ->title('Compte créé — email envoyé à ' . $result['email'])
+                                ->title(__('Compte créé — email envoyé à :email', ['email' => $result['email']]))
                                 ->success()->send();
                         } catch (\Throwable $e) {
                             $notification = Notification::make()
-                                ->title('Compte créé pour ' . $record->full_name)
+                                ->title(__('Compte créé pour :name', ['name' => $record->full_name]))
                                 ->body(app()->environment('local')
-                                    ? 'Identifiant : ' . $result['email'] . ' — Mot de passe : ' . $result['password']
-                                    : 'Identifiant : ' . $result['email'] . '. Envoyez le mot de passe via un canal de confiance.')
+                                    ? __('Identifiant : :email — Mot de passe : :password', ['email' => $result['email'], 'password' => $result['password']])
+                                    : __('Identifiant : :email. Envoyez le mot de passe via un canal de confiance.', ['email' => $result['email']]))
                                 ->warning();
 
                             if (app()->environment('local')) {
@@ -300,8 +300,8 @@ class EmployeeResource extends Resource
                         $notification = Notification::make()
                             ->title(__('Mot de passe réinitialisé'))
                             ->body(app()->environment('local')
-                                ? 'Nouveau mot de passe : ' . $result['password']
-                                : 'Envoyez le nouveau mot de passe via un canal de confiance.')
+                                ? __('Nouveau mot de passe : :password', ['password' => $result['password']])
+                                : __('Envoyez le nouveau mot de passe via un canal de confiance.'))
                             ->warning();
 
                         if (app()->environment('local')) {
