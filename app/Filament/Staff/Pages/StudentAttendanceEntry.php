@@ -141,7 +141,7 @@ class StudentAttendanceEntry extends Page
         }
 
         Notification::make()
-            ->title("Appel enregistré — {$saved} élève(s)")
+            ->title(__('Appel enregistré — :count élève(s)', ['count' => $saved]))
             ->success()->send();
     }
 }
