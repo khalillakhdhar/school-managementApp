@@ -27,7 +27,7 @@ class ClassroomResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Informations de la classe')
+            Section::make(__('Informations de la classe'))
                 ->description('Niveau, nom, capacité d\'accueil et enseignant titulaire')
                 ->icon('heroicon-o-building-office')
                 ->schema([

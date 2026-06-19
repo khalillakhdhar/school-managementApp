@@ -73,7 +73,7 @@ class StudentResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Informations personnelles')
+            Section::make(__('Informations personnelles'))
                 ->description('Identité civile de l\'élève')
                 ->icon('heroicon-o-user')
                 ->schema([
@@ -87,7 +87,7 @@ class StudentResource extends Resource
                         ->label(__('N° identité (CIN/passeport)'))->maxLength(255),
                 ])->columns(2),
 
-            Section::make('Scolarité')
+            Section::make(__('Scolarité'))
                 ->description('Classe, niveau et statut de l\'élève')
                 ->icon('heroicon-o-academic-cap')
                 ->schema([
@@ -115,7 +115,7 @@ class StudentResource extends Resource
                         ->label(__('Adresse'))->columnSpanFull()->rows(2),
                 ])->columns(2),
 
-            Section::make('Informations médicales')
+            Section::make(__('Informations médicales'))
                 ->description(__('Données de santé confidentielles'))
                 ->icon('heroicon-o-heart')
                 ->schema([

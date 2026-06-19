@@ -31,7 +31,7 @@ class ExpenseCategoryResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Catégorie de dépense')
+            Section::make(__('Catégorie de dépense'))
                 ->description('Créez une catégorie pour regrouper et analyser les dépenses de l\'établissement')
                 ->icon('heroicon-o-tag')
                 ->schema([

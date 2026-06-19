@@ -29,7 +29,7 @@ class TimetableEntryResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Planification de la séance')
+            Section::make(__('Planification de la séance'))
                 ->description(__('Définissez la classe, matière, enseignant et le créneau horaire'))
                 ->icon('heroicon-o-calendar-days')
                 ->schema([

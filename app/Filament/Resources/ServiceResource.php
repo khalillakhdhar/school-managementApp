@@ -40,7 +40,7 @@ class ServiceResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Service proposé')
+            Section::make(__('Service proposé'))
                 ->description(__('Définissez un service ou une prestation facturée aux familles'))
                 ->icon('heroicon-o-clipboard-document-list')
                 ->schema([

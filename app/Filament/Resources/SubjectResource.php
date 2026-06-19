@@ -26,7 +26,7 @@ class SubjectResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Informations de la matière')
+            Section::make(__('Informations de la matière'))
                 ->description(__('Définissez la matière, son code et son coefficient'))
                 ->icon('heroicon-o-book-open')
                 ->schema([

@@ -27,7 +27,7 @@ class HolidayResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Jour férié / vacances')
+            Section::make(__('Jour férié / vacances'))
                 ->icon('heroicon-o-calendar-date-range')
                 ->schema([
                     Forms\Components\DatePicker::make('date')

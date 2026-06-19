@@ -25,7 +25,7 @@ class ExpenseResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Détails de la dépense')
+            Section::make(__('Détails de la dépense'))
                 ->description(__('Catégorie, montant, fournisseur et justificatif de la dépense'))
                 ->icon('heroicon-o-arrow-trending-down')
                 ->schema([

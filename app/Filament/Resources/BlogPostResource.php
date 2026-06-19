@@ -50,7 +50,7 @@ class BlogPostResource extends Resource
                             'blockquote', 'link', 'undo', 'redo',
                         ]),
                 ])->columns(2),
-            Section::make('Publication')
+            Section::make(__('Publication'))
                 ->description(__('Image de couverture, statut et date de publication'))
                 ->icon('heroicon-o-globe-alt')
                 ->schema([

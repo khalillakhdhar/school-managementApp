@@ -53,7 +53,7 @@ class PaymentResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Paiement')
+            Section::make(__('Paiement'))
                 ->description(__('Informations du paiement à enregistrer'))
                 ->icon('heroicon-o-banknotes')
                 ->schema([

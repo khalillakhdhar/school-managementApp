@@ -27,7 +27,7 @@ class StudentAttendanceResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Présence')
+            Section::make(__('Présence'))
                 ->icon('heroicon-o-clipboard-document-check')
                 ->schema([
                     Forms\Components\Select::make('student_id')

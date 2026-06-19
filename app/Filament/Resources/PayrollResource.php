@@ -132,7 +132,7 @@ class PayrollResource extends Resource
         return $schema->components([
 
             // ── Employee & Period ──────────────────────────────────────────────
-            Section::make('Employé et période')
+            Section::make(__('Employé et période'))
                 ->description('Sélectionnez l\'employé et la période de paie concernée')
                 ->icon('heroicon-o-calendar-days')
                 ->schema([
@@ -189,7 +189,7 @@ class PayrollResource extends Resource
             ])->columns(2),
 
             // ── Contractor Mode ────────────────────────────────────────────────
-            Section::make('Facturation vacataire')
+            Section::make(__('Facturation vacataire'))
                 ->description(__('Calcul basé sur les heures travaillées × taux horaire'))
                 ->icon('heroicon-o-clock')
                 ->schema([
@@ -238,7 +238,7 @@ class PayrollResource extends Resource
                 ->visible(fn (callable $get) => static::isContractor($get('employee_id'))),
 
             // ── Fixed Salary Mode — Earnings ───────────────────────────────────
-            Section::make('Éléments de rémunération')
+            Section::make(__('Éléments de rémunération'))
                 ->description(__('Salaire de base, heures supplémentaires, primes et indemnités'))
                 ->icon('heroicon-o-banknotes')
                 ->schema([
@@ -278,7 +278,7 @@ class PayrollResource extends Resource
                 ->visible(fn (callable $get) => !static::isContractor($get('employee_id'))),
 
             // ── Fixed Salary Mode — Employee Deductions ────────────────────────
-            Section::make('Retenues salariales')
+            Section::make(__('Retenues salariales'))
                 ->description(__('CNSS salarié, IRPP et autres déductions sur le salaire'))
                 ->icon('heroicon-o-minus-circle')
                 ->schema([
@@ -308,7 +308,7 @@ class PayrollResource extends Resource
                 ->visible(fn (callable $get) => !static::isContractor($get('employee_id'))),
 
             // ── Fixed Salary Mode — Employer Charges ──────────────────────────
-            Section::make('Charges patronales')
+            Section::make(__('Charges patronales'))
                 ->description(__('Part employeur : CNSS patronale et FOPROLOS'))
                 ->icon('heroicon-o-building-office-2')
                 ->schema([
@@ -328,7 +328,7 @@ class PayrollResource extends Resource
                 ->visible(fn (callable $get) => !static::isContractor($get('employee_id'))),
 
             // ── Notes ─────────────────────────────────────────────────────────
-            Section::make('Notes internes')
+            Section::make(__('Notes internes'))
                 ->description(__('Remarques ou informations complémentaires sur cette fiche de paie'))
                 ->icon('heroicon-o-chat-bubble-left-ellipsis')
                 ->schema([

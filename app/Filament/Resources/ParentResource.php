@@ -29,7 +29,7 @@ class ParentResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Informations du parent')
+            Section::make(__('Informations du parent'))
                 ->description(__('Identité, coordonnées et profession du responsable légal'))
                 ->icon('heroicon-o-user-circle')
                 ->schema([
@@ -42,7 +42,7 @@ class ParentResource extends Resource
                     Forms\Components\Textarea::make('address')->label(__('Adresse'))->columnSpanFull(),
                 ])->columns(2),
 
-            Section::make('Élèves rattachés')
+            Section::make(__('Élèves rattachés'))
                 ->description('Associez ce parent aux enfants scolarisés dans l\'établissement')
                 ->icon('heroicon-o-academic-cap')
                 ->schema([

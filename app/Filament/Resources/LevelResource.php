@@ -25,7 +25,7 @@ class LevelResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Niveau scolaire')
+            Section::make(__('Niveau scolaire'))
                 ->description('Définissez un niveau d\'enseignement et son ordre d\'affichage')
                 ->icon('heroicon-o-academic-cap')
                 ->schema([

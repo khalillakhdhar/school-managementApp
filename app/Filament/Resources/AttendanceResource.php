@@ -58,7 +58,7 @@ class AttendanceResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Pointage de présence')
+            Section::make(__('Pointage de présence'))
                 ->description('Enregistrez la présence ou l\'absence d\'un employé pour une journée donnée')
                 ->icon('heroicon-o-calendar-days')
                 ->schema([

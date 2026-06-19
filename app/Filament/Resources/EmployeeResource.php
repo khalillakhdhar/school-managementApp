@@ -41,7 +41,7 @@ class EmployeeResource extends Resource
     {
         return $schema->components([
 
-            Section::make('Informations personnelles')
+            Section::make(__('Informations personnelles'))
                 ->description(__('Identité et coordonnées du membre du personnel'))
                 ->icon('heroicon-o-user')
                 ->schema([
@@ -61,7 +61,7 @@ class EmployeeResource extends Resource
                         ->label(__('Adresse'))->columnSpanFull(),
                 ])->columns(2),
 
-            Section::make('Détails du poste')
+            Section::make(__('Détails du poste'))
                 ->description('Type de contrat, poste occupé et dates d\'emploi')
                 ->icon('heroicon-o-briefcase')
                 ->schema([
@@ -87,7 +87,7 @@ class EmployeeResource extends Resource
                         ->default(false)->inline(false)->live(),
                 ])->columns(2),
 
-            Section::make('Profil enseignant')
+            Section::make(__('Profil enseignant'))
                 ->description(__('Matière enseignée, numéro CNSS et situation familiale'))
                 ->icon('heroicon-o-academic-cap')
                 ->schema([
@@ -111,7 +111,7 @@ class EmployeeResource extends Resource
                 ->columns(2)
                 ->visible(fn (callable $get) => (bool) $get('is_teacher')),
 
-            Section::make('Classes assignées')
+            Section::make(__('Classes assignées'))
                 ->description(__('Sélectionnez les classes dont cet enseignant est responsable'))
                 ->icon('heroicon-o-building-office-2')
                 ->schema([
@@ -134,7 +134,7 @@ class EmployeeResource extends Resource
                 ])
                 ->visible(fn (callable $get) => (bool) $get('is_teacher')),
 
-            Section::make('Rémunération et indemnités')
+            Section::make(__('Rémunération et indemnités'))
                 ->description(__('Salaire de base, indemnités et taux horaire pour les vacataires'))
                 ->icon('heroicon-o-currency-dollar')
                 ->schema([
