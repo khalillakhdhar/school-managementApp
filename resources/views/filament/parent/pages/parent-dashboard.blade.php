@@ -5,27 +5,27 @@
 
 @if(! $parent)
     <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:14px;padding:24px;color:#92400e;">
-        <strong>Aucun profil parent associé à ce compte.</strong>
-        <div style="margin-top:6px;font-size:13px;">Contactez l'administration de l'établissement.</div>
+        <strong>{{ __('Aucun profil parent associé à ce compte.') }}</strong>
+        <div style="margin-top:6px;font-size:13px;">{{ __("Contactez l'administration de l'établissement.") }}</div>
     </div>
 @else
 <div style="display:flex;flex-direction:column;gap:18px;">
 
     {{-- Hero --}}
     <div style="border-radius:16px;padding:24px 28px;color:#fff;background:linear-gradient(135deg,#2563eb,#1d4ed8);box-shadow:0 8px 24px rgba(37,99,235,.3);">
-        <div style="font-size:13px;opacity:.85;font-weight:600;">Portail Parents</div>
-        <div style="font-size:24px;font-weight:800;letter-spacing:-.4px;margin-top:2px;">Bonjour, {{ $parent->first_name }} 👋</div>
-        <div style="font-size:13.5px;opacity:.9;margin-top:4px;">{{ $childrenCount }} enfant(s) · {{ now()->locale('fr')->isoFormat('dddd D MMMM YYYY') }}</div>
+        <div style="font-size:13px;opacity:.85;font-weight:600;">{{ __('Portail Parents') }}</div>
+        <div style="font-size:24px;font-weight:800;letter-spacing:-.4px;margin-top:2px;">{{ __('Bonjour, :name', ['name' => $parent->first_name]) }} 👋</div>
+        <div style="font-size:13.5px;opacity:.9;margin-top:4px;">{{ __(':count enfant(s)', ['count' => $childrenCount]) }} · {{ now()->locale(app()->getLocale())->isoFormat('dddd D MMMM YYYY') }}</div>
     </div>
 
     {{-- KPI cards --}}
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
         @php
         $kpis = [
-            ['Solde dû', number_format($totalOutstanding,3).' TND', $totalOutstanding>0?'#f59e0b':'#10b981', $totalOutstanding>0?'#fffbeb':'#ecfdf5', $totalOutstanding>0?'À régler':'Tout est payé'],
-            ['Taux de présence', $avgAttendance.'%', $avgAttendance>=90?'#10b981':($avgAttendance>=75?'#f59e0b':'#ef4444'), '#eff6ff', 'Ce mois-ci'],
-            ['Incidents', $incidentsMonth, $incidentsMonth>0?'#ef4444':'#10b981', $incidentsMonth>0?'#fef2f2':'#ecfdf5', 'Ce mois-ci'],
-            ['Prochaine échéance', $nextDue ? number_format($nextDue['amount'],3).' TND' : '—', '#2563eb', '#eff6ff', $nextDue ? 'Avant le '.$nextDue['date'] : 'Aucune échéance'],
+            [__('Solde dû'), number_format($totalOutstanding,3).' TND', $totalOutstanding>0?'#f59e0b':'#10b981', $totalOutstanding>0?'#fffbeb':'#ecfdf5', $totalOutstanding>0?__('À régler'):__('Tout est payé')],
+            [__('Taux de présence'), $avgAttendance.'%', $avgAttendance>=90?'#10b981':($avgAttendance>=75?'#f59e0b':'#ef4444'), '#eff6ff', __('Ce mois-ci')],
+            [__('Incidents'), $incidentsMonth, $incidentsMonth>0?'#ef4444':'#10b981', $incidentsMonth>0?'#fef2f2':'#ecfdf5', __('Ce mois-ci')],
+            [__('Prochaine échéance'), $nextDue ? number_format($nextDue['amount'],3).' TND' : '—', '#2563eb', '#eff6ff', $nextDue ? __('Avant le :date', ['date' => $nextDue['date']]) : __('Aucune échéance')],
         ];
         @endphp
         @foreach($kpis as $k)
