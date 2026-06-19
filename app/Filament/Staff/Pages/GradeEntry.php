@@ -16,9 +16,9 @@ class GradeEntry extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-pencil-square';
     protected static ?int $navigationSort = 6;
 
-    public static function getNavigationLabel(): string { return 'Saisie des notes'; }
-    public static function getNavigationGroup(): ?string { return 'Enseignement'; }
-    public function getTitle(): string { return 'Saisie des notes'; }
+    public static function getNavigationLabel(): string { return __('Saisie des notes'); }
+    public static function getNavigationGroup(): ?string { return __('Enseignement'); }
+    public function getTitle(): string { return __('Saisie des notes'); }
 
     public ?int $classroomId = null;
     public ?int $subjectId = null;

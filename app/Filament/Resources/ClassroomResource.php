@@ -19,7 +19,7 @@ class ClassroomResource extends Resource
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-office';
     protected static ?int $navigationSort = 2;
 
-    public static function getNavigationGroup(): ?string { return 'Académique'; }
+    public static function getNavigationGroup(): ?string { return __('Académique'); }
     public static function getNavigationLabel(): string  { return __('Classrooms'); }
     public static function getModelLabel(): string       { return __('Classroom'); }
     public static function getPluralModelLabel(): string { return __('Classrooms'); }

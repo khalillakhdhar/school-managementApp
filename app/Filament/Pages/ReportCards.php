@@ -14,9 +14,9 @@ class ReportCards extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-chart-bar';
     protected static ?int $navigationSort = 4;
 
-    public static function getNavigationGroup(): ?string { return 'Académique'; }
-    public static function getNavigationLabel(): string  { return 'Bulletins'; }
-    public function getTitle(): string { return 'Bulletins scolaires'; }
+    public static function getNavigationGroup(): ?string { return __('Académique'); }
+    public static function getNavigationLabel(): string  { return __('Bulletins'); }
+    public function getTitle(): string { return __('Bulletins scolaires'); }
 
     public ?int $classroomId = null;
     public ?int $studentId = null;

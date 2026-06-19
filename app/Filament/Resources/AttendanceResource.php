@@ -21,7 +21,7 @@ class AttendanceResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'RH';
+        return __('RH');
     }
 
     public static function getNavigationLabel(): string

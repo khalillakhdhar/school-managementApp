@@ -10,8 +10,8 @@ class ParentAnnouncements extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-megaphone';
     protected static ?int $navigationSort = 4;
 
-    public static function getNavigationLabel(): string { return 'Annonces'; }
-    public function getTitle(): string { return "Annonces de l'établissement"; }
+    public static function getNavigationLabel(): string { return __('Annonces'); }
+    public function getTitle(): string { return __("Annonces de l'établissement"); }
 
     protected function getViewData(): array
     {

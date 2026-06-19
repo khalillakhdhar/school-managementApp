@@ -21,7 +21,7 @@ class ParentResource extends Resource
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-users';
     protected static ?int $navigationSort = 2;
 
-    public static function getNavigationGroup(): ?string { return 'Académique'; }
+    public static function getNavigationGroup(): ?string { return __('Académique'); }
     public static function getNavigationLabel(): string  { return __('Parents'); }
     public static function getModelLabel(): string       { return __('Parent'); }
     public static function getPluralModelLabel(): string { return __('Parents'); }

@@ -19,10 +19,10 @@ class HolidayResource extends Resource
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-date-range';
     protected static ?int $navigationSort = 50;
 
-    public static function getNavigationGroup(): ?string { return 'Paramètres'; }
-    public static function getNavigationLabel(): string  { return 'Jours fériés'; }
-    public static function getModelLabel(): string       { return 'Jour férié'; }
-    public static function getPluralModelLabel(): string { return 'Jours fériés'; }
+    public static function getNavigationGroup(): ?string { return __('Paramètres'); }
+    public static function getNavigationLabel(): string  { return __('Jours fériés'); }
+    public static function getModelLabel(): string       { return __('Jour férié'); }
+    public static function getPluralModelLabel(): string { return __('Jours fériés'); }
 
     public static function form(Schema $schema): Schema
     {

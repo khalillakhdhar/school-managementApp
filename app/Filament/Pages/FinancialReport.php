@@ -16,9 +16,9 @@ class FinancialReport extends Page
     public ?string $from   = null;
     public ?string $until  = null;
 
-    public static function getNavigationLabel(): string  { return 'Rapport Financier'; }
-    public static function getNavigationGroup(): ?string { return 'Finances'; }
-    public function getTitle(): string                   { return 'Rapport Financier'; }
+    public static function getNavigationLabel(): string  { return __('Rapport Financier'); }
+    public static function getNavigationGroup(): ?string { return __('Finances'); }
+    public function getTitle(): string                   { return __('Rapport Financier'); }
     public function getView(): string                    { return 'filament.pages.financial-report'; }
 
     public function mount(): void

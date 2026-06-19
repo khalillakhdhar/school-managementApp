@@ -17,7 +17,7 @@ class ExpenseResource extends Resource
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrow-trending-down';
     protected static ?int $navigationSort = 3;
 
-    public static function getNavigationGroup(): ?string { return 'Finances'; }
+    public static function getNavigationGroup(): ?string { return __('Finances'); }
     public static function getNavigationLabel(): string  { return __('Expenses'); }
     public static function getModelLabel(): string       { return __('Expense'); }
     public static function getPluralModelLabel(): string { return __('Expenses'); }

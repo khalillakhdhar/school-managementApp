@@ -21,10 +21,10 @@ class TimetableEntryResource extends Resource
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-pencil-square';
     protected static ?int $navigationSort = 5;
 
-    public static function getNavigationGroup(): ?string { return 'Académique'; }
-    public static function getNavigationLabel(): string  { return 'Saisie créneaux'; }
-    public static function getModelLabel(): string       { return 'Séance'; }
-    public static function getPluralModelLabel(): string { return 'Emplois du temps'; }
+    public static function getNavigationGroup(): ?string { return __('Académique'); }
+    public static function getNavigationLabel(): string  { return __('Saisie créneaux'); }
+    public static function getModelLabel(): string       { return __('Séance'); }
+    public static function getPluralModelLabel(): string { return __('Emplois du temps'); }
 
     public static function form(Schema $schema): Schema
     {

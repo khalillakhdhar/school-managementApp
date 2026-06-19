@@ -13,7 +13,7 @@ class AuditLogResource extends Resource
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shield-check';
     protected static ?int $navigationSort = 90;
 
-    public static function getNavigationGroup(): ?string { return 'Paramètres'; }
+    public static function getNavigationGroup(): ?string { return __('Paramètres'); }
     public static function getNavigationLabel(): string  { return 'Journal d\'audit'; }
     public static function getModelLabel(): string       { return 'Entrée d\'audit'; }
     public static function getPluralModelLabel(): string { return 'Journal d\'audit'; }

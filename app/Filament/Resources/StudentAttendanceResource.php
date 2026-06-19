@@ -19,10 +19,10 @@ class StudentAttendanceResource extends Resource
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-check';
     protected static ?int $navigationSort = 3;
 
-    public static function getNavigationGroup(): ?string { return 'Académique'; }
-    public static function getNavigationLabel(): string  { return 'Présence élèves'; }
-    public static function getModelLabel(): string       { return 'Présence élève'; }
-    public static function getPluralModelLabel(): string { return 'Présences élèves'; }
+    public static function getNavigationGroup(): ?string { return __('Académique'); }
+    public static function getNavigationLabel(): string  { return __('Présence élèves'); }
+    public static function getModelLabel(): string       { return __('Présence élève'); }
+    public static function getPluralModelLabel(): string { return __('Présences élèves'); }
 
     public static function form(Schema $schema): Schema
     {

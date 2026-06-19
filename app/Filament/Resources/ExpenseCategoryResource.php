@@ -18,7 +18,7 @@ class ExpenseCategoryResource extends Resource
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-tag';
     protected static ?int $navigationSort = 2;
 
-    public static function getNavigationGroup(): ?string { return 'Paramètres'; }
+    public static function getNavigationGroup(): ?string { return __('Paramètres'); }
     public static function getNavigationLabel(): string  { return __('Expense Categories'); }
     public static function getModelLabel(): string       { return __('Expense Category'); }
     public static function getPluralModelLabel(): string { return __('Expense Categories'); }

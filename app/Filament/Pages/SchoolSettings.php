@@ -15,8 +15,8 @@ class SchoolSettings extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-cog-8-tooth';
     protected static ?int $navigationSort = 1;
 
-    public static function getNavigationGroup(): ?string { return 'Paramètres'; }
-    public static function getNavigationLabel(): string  { return 'Établissement'; }
+    public static function getNavigationGroup(): ?string { return __('Paramètres'); }
+    public static function getNavigationLabel(): string  { return __('Établissement'); }
     public function getTitle(): string                   { return 'Paramètres de l\'établissement'; }
 
     public string $school_name   = '';

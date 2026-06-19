@@ -12,8 +12,8 @@ class ChildTimetable extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
     protected static ?int $navigationSort = 2;
 
-    public static function getNavigationLabel(): string { return 'Emploi du temps'; }
-    public function getTitle(): string { return "Emploi du temps"; }
+    public static function getNavigationLabel(): string { return __('Emploi du temps'); }
+    public function getTitle(): string { return __("Emploi du temps"); }
 
     #[Url(as: 'enfant')]
     public ?int $studentId = null;

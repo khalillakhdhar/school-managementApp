@@ -10,9 +10,9 @@ class MyPayslips extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-banknotes';
     protected static ?int $navigationSort = 4;
 
-    public static function getNavigationLabel(): string { return 'Mes fiches de paie'; }
-    public static function getNavigationGroup(): ?string { return 'Mon espace'; }
-    public function getTitle(): string { return 'Mes fiches de paie'; }
+    public static function getNavigationLabel(): string { return __('Mes fiches de paie'); }
+    public static function getNavigationGroup(): ?string { return __('Mon espace'); }
+    public function getTitle(): string { return __('Mes fiches de paie'); }
 
     protected function getViewData(): array
     {

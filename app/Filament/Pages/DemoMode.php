@@ -12,9 +12,9 @@ class DemoMode extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-sparkles';
     protected static ?int $navigationSort = 99;
 
-    public static function getNavigationGroup(): ?string { return 'Paramètres'; }
-    public static function getNavigationLabel(): string  { return 'Mode Démo'; }
-    public function getTitle(): string                   { return 'Mode Démo'; }
+    public static function getNavigationGroup(): ?string { return __('Paramètres'); }
+    public static function getNavigationLabel(): string  { return __('Mode Démo'); }
+    public function getTitle(): string                   { return __('Mode Démo'); }
 
     public bool $active = false;
 

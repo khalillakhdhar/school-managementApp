@@ -12,8 +12,8 @@ class ClassTimetable extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-table-cells';
     protected static ?int $navigationSort = 6;
 
-    public static function getNavigationGroup(): ?string { return 'Académique'; }
-    public static function getNavigationLabel(): string  { return 'Emploi du temps'; }
+    public static function getNavigationGroup(): ?string { return __('Académique'); }
+    public static function getNavigationLabel(): string  { return __('Emploi du temps'); }
 
     public function getTitle(): string
     {

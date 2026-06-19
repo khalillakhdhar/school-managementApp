@@ -21,7 +21,7 @@ class IncidentResource extends Resource
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-exclamation-triangle';
     protected static ?int $navigationSort = 1;
 
-    public static function getNavigationGroup(): ?string { return 'Communication'; }
+    public static function getNavigationGroup(): ?string { return __('Communication'); }
     public static function getNavigationLabel(): string  { return __('Incidents'); }
     public static function getModelLabel(): string       { return __('Incident'); }
     public static function getPluralModelLabel(): string { return __('Incidents'); }

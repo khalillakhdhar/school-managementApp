@@ -18,7 +18,7 @@ class BlogPostResource extends Resource
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-newspaper';
     protected static ?int $navigationSort = 2;
 
-    public static function getNavigationGroup(): ?string { return 'Communication'; }
+    public static function getNavigationGroup(): ?string { return __('Communication'); }
     public static function getNavigationLabel(): string  { return __('Blog'); }
     public static function getModelLabel(): string       { return __('Post'); }
     public static function getPluralModelLabel(): string { return __('Blog Posts'); }

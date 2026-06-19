@@ -15,9 +15,9 @@ class StudentAttendanceEntry extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-check';
     protected static ?int $navigationSort = 2;
 
-    public static function getNavigationLabel(): string { return "Faire l'appel"; }
-    public static function getNavigationGroup(): ?string { return 'Enseignement'; }
-    public function getTitle(): string { return "Faire l'appel des élèves"; }
+    public static function getNavigationLabel(): string { return __("Faire l'appel"); }
+    public static function getNavigationGroup(): ?string { return __('Enseignement'); }
+    public function getTitle(): string { return __("Faire l'appel des élèves"); }
 
     public ?int $classroomId = null;
     public string $date = '';

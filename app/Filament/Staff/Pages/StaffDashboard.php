@@ -12,9 +12,9 @@ class StaffDashboard extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-home';
     protected static ?int $navigationSort = 0;
 
-    public static function getNavigationLabel(): string { return 'Tableau de bord'; }
-    public static function getNavigationGroup(): ?string { return 'Mon espace'; }
-    public function getTitle(): string { return 'Mon tableau de bord'; }
+    public static function getNavigationLabel(): string { return __('Tableau de bord'); }
+    public static function getNavigationGroup(): ?string { return __('Mon espace'); }
+    public function getTitle(): string { return __('Mon tableau de bord'); }
 
     public ?Employee $employee = null;
 

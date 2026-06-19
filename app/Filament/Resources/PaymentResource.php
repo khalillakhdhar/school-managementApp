@@ -20,7 +20,7 @@ class PaymentResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Finances';
+        return __('Finances');
     }
 
     public static function getNavigationLabel(): string

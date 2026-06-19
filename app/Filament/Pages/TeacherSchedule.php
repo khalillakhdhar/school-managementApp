@@ -12,8 +12,8 @@ class TeacherSchedule extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
     protected static ?int $navigationSort = 7;
 
-    public static function getNavigationGroup(): ?string { return 'Académique'; }
-    public static function getNavigationLabel(): string  { return 'Planning enseignants'; }
+    public static function getNavigationGroup(): ?string { return __('Académique'); }
+    public static function getNavigationLabel(): string  { return __('Planning enseignants'); }
 
     public function getTitle(): string
     {

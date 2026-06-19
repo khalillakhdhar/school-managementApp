@@ -34,7 +34,7 @@ class StudentResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Académique';
+        return __('Académique');
     }
 
     public static function getGloballySearchableAttributes(): array

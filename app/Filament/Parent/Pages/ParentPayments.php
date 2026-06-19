@@ -10,8 +10,8 @@ class ParentPayments extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-credit-card';
     protected static ?int $navigationSort = 1;
 
-    public static function getNavigationLabel(): string { return 'Paiements'; }
-    public function getTitle(): string { return 'Paiements & soldes'; }
+    public static function getNavigationLabel(): string { return __('Paiements'); }
+    public function getTitle(): string { return __('Paiements & soldes'); }
 
     protected function getViewData(): array
     {

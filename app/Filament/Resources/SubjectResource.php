@@ -18,10 +18,10 @@ class SubjectResource extends Resource
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-book-open';
     protected static ?int $navigationSort = 3;
 
-    public static function getNavigationGroup(): ?string { return 'Académique'; }
-    public static function getNavigationLabel(): string  { return 'Matières'; }
-    public static function getModelLabel(): string       { return 'Matière'; }
-    public static function getPluralModelLabel(): string { return 'Matières'; }
+    public static function getNavigationGroup(): ?string { return __('Académique'); }
+    public static function getNavigationLabel(): string  { return __('Matières'); }
+    public static function getModelLabel(): string       { return __('Matière'); }
+    public static function getPluralModelLabel(): string { return __('Matières'); }
 
     public static function form(Schema $schema): Schema
     {

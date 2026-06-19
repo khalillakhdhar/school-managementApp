@@ -15,9 +15,9 @@ class MyClasses extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-group';
     protected static ?int $navigationSort = 3;
 
-    public static function getNavigationLabel(): string { return 'Mes classes'; }
-    public static function getNavigationGroup(): ?string { return 'Enseignement'; }
-    public function getTitle(): string { return 'Mes classes'; }
+    public static function getNavigationLabel(): string { return __('Mes classes'); }
+    public static function getNavigationGroup(): ?string { return __('Enseignement'); }
+    public function getTitle(): string { return __('Mes classes'); }
 
     /** Null = list view ; set = roster of that class */
     #[Url(as: 'classe')]

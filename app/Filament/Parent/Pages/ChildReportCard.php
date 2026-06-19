@@ -13,8 +13,8 @@ class ChildReportCard extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-chart-bar';
     protected static ?int $navigationSort = 5;
 
-    public static function getNavigationLabel(): string { return 'Bulletins'; }
-    public function getTitle(): string { return 'Bulletins'; }
+    public static function getNavigationLabel(): string { return __('Bulletins'); }
+    public function getTitle(): string { return __('Bulletins'); }
 
     #[Url(as: 'enfant')]
     public ?int $studentId = null;

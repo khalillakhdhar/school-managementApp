@@ -10,9 +10,9 @@ class MySchedule extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
     protected static ?int $navigationSort = 1;
 
-    public static function getNavigationLabel(): string { return 'Mon emploi du temps'; }
-    public static function getNavigationGroup(): ?string { return 'Enseignement'; }
-    public function getTitle(): string { return 'Mon emploi du temps'; }
+    public static function getNavigationLabel(): string { return __('Mon emploi du temps'); }
+    public static function getNavigationGroup(): ?string { return __('Enseignement'); }
+    public function getTitle(): string { return __('Mon emploi du temps'); }
 
     protected function getViewData(): array
     {

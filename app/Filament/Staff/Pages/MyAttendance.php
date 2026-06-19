@@ -11,9 +11,9 @@ class MyAttendance extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-finger-print';
     protected static ?int $navigationSort = 5;
 
-    public static function getNavigationLabel(): string { return 'Mon pointage'; }
-    public static function getNavigationGroup(): ?string { return 'Mon espace'; }
-    public function getTitle(): string { return 'Mon pointage'; }
+    public static function getNavigationLabel(): string { return __('Mon pointage'); }
+    public static function getNavigationGroup(): ?string { return __('Mon espace'); }
+    public function getTitle(): string { return __('Mon pointage'); }
 
     public function clockIn(): void
     {

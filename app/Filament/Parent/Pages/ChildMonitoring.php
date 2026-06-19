@@ -11,8 +11,8 @@ class ChildMonitoring extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shield-check';
     protected static ?int $navigationSort = 3;
 
-    public static function getNavigationLabel(): string { return 'Suivi'; }
-    public function getTitle(): string { return "Suivi (présences & incidents)"; }
+    public static function getNavigationLabel(): string { return __('Suivi'); }
+    public function getTitle(): string { return __("Suivi (présences & incidents)"); }
 
     protected function getViewData(): array
     {
