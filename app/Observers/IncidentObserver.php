@@ -23,14 +23,17 @@ class IncidentObserver
         };
         $studentName = $incident->student?->full_name ?? 'Élève';
 
-        $admins = User::where('role', 'admin')->get();
-        foreach ($admins as $admin) {
-            Notification::make()
-                ->title('Nouvel incident signalé')
-                ->body($incident->title . ' — ' . $studentName)
-                ->icon('heroicon-o-exclamation-triangle')
-                ->color($severityColor)
-                ->sendToDatabase($admin);
+        $notification = Notification::make()
+            ->title('Nouvel incident signalé')
+            ->body($incident->title . ' — ' . $studentName)
+            ->icon('heroicon-o-exclamation-triangle')
+            ->color($severityColor)
+            ->toDatabase();
+
+        // notifyNow : persistance immédiate (la DatabaseNotification est ShouldQueue,
+        // sendToDatabase la mettrait en file et nécessiterait un worker).
+        foreach (User::where('role', 'admin')->get() as $admin) {
+            $admin->notifyNow($notification);
         }
     }
 }

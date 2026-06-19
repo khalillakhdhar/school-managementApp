@@ -39,9 +39,9 @@
 
 ### P2 — Fonctionnel & produit
 7. ✅ **Export PDF natif** (`barryvdh/laravel-dompdf`). `DocumentPdfController` + vues `pdf.bulletin`/`pdf.payslip` (layout table dompdf-safe) ; routes `pdf.bulletin`/`pdf.payslip` sécurisées par rôle (admin/parent-own-child, admin/staff-own-payslip → 403 sinon) ; boutons « Télécharger PDF » câblés (admin Bulletins + PayrollResource, parent, staff Mes fiches). Vérifié : PDF réels + 403.
-8. **Notifications in-app** (cloche Filament) reliées aux events : nouvel impayé, incident, fiche de paie prête. *(à faire)*
+8. ✅ **Notifications in-app** (cloche Filament). `->databaseNotifications()` sur panels Admin + Staff (+ table `notifications`). Observers : `IncidentObserver` (nouvel incident → admins), `PayrollObserver` (fiche finalisée/payée → l'employé). Commande `payments:send-reminders` → digest impayés aux admins. **Envoi via `notifyNow()`** (la `DatabaseNotification` de Filament est `ShouldQueue` → `sendToDatabase` exigerait un worker ; `notifyNow` persiste immédiatement). Skippé pendant le seed (toggle `Audit`). Vérifié par 2 tests PHPUnit (13/13).
 9. ✅ **Jours fériés tunisiens** (sans API). `HolidayService` : jours civils grégoriens fixes + fêtes religieuses converties du calendrier **hégirien Umm al-Qura** via `intl`. Réconcilié avec la table existante (`holidays`, enum `national/religieux/scolaire`, `unique(date)` → fusion des noms en cas de collision ex. Indépendance + Aïd). Resource admin (Paramètres → Jours fériés) + action « Synchroniser une année » ; bannière jour férié dans *Faire l'appel* ; sync intégrée au Mode Démo.
-10. **Captures d'écran réelles** sur la landing (remplacer les placeholders). *(à faire — nécessite de vraies images)*
+10. ✅ **Aperçus de la landing** — placeholders vides remplacés par **3 maquettes HTML/CSS réalistes** en fenêtre navigateur (Admin : sidebar + KPI + bar chart ; Enseignant : faire l'appel ; Parent : dashboard). Légende « Maquettes illustratives ». *(De vraies captures PNG pourront les remplacer plus tard — impossible à générer côté serveur.)*
 
 ### P3 — Évolutions long terme
 11. **Internationalisation AR complète (RTL)** — l'arabe est dans le sélecteur mais les pages portail sont en FR inline.

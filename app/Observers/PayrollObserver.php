@@ -31,11 +31,13 @@ class PayrollObserver
             'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
         $period = ($months[$payroll->month] ?? $payroll->month) . ' ' . $payroll->year;
 
-        Notification::make()
-            ->title($payroll->status === 'paid' ? 'Votre salaire a été versé' : 'Votre fiche de paie est prête')
-            ->body($period . ' — Net : ' . number_format((float) $payroll->net_salary, 3) . ' TND')
-            ->icon('heroicon-o-banknotes')
-            ->color('success')
-            ->sendToDatabase($user);
+        $user->notifyNow(
+            Notification::make()
+                ->title($payroll->status === 'paid' ? 'Votre salaire a été versé' : 'Votre fiche de paie est prête')
+                ->body($period . ' — Net : ' . number_format((float) $payroll->net_salary, 3) . ' TND')
+                ->icon('heroicon-o-banknotes')
+                ->color('success')
+                ->toDatabase()
+        );
     }
 }

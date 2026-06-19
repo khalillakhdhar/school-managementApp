@@ -151,4 +151,40 @@ class ErpCoreTest extends TestCase
         $this->assertGreaterThan(80, $cnss);
         $this->assertLessThan(100, $cnss);
     }
+
+    // ── Notifications in-app ───────────────────────────────────────────────
+
+    public function test_un_incident_notifie_les_admins_en_base(): void
+    {
+        $admin = User::create(['name' => 'Admin', 'email' => 'an@test.tn', 'password' => bcrypt('x'), 'role' => 'admin']);
+        $class = $this->makeClassroom();
+        $student = $this->makeStudent($class);
+
+        \App\Models\Incident::create([
+            'student_id' => $student->id, 'title' => 'Bagarre', 'description' => 'x',
+            'type' => 'disciplinary', 'severity' => 'high', 'incident_date' => now(), 'parent_notified' => false,
+        ]);
+
+        // L'observer envoie une notification in-app (notifyNow → persistée immédiatement).
+        $this->assertDatabaseHas('notifications', [
+            'notifiable_type' => User::class,
+            'notifiable_id'   => $admin->id,
+        ]);
+    }
+
+    public function test_fiche_de_paie_finalisee_notifie_l_employe(): void
+    {
+        [$user, $emp] = $this->makeTeacher();
+        $payroll = Payroll::create([
+            'employee_id' => $emp->id, 'month' => 1, 'year' => 2026,
+            'salary_base' => 1000, 'gross_salary' => 1000, 'net_salary' => 900, 'status' => 'draft',
+        ]);
+
+        $payroll->update(['status' => 'finalized']);
+
+        $this->assertDatabaseHas('notifications', [
+            'notifiable_type' => User::class,
+            'notifiable_id'   => $user->id,
+        ]);
+    }
 }

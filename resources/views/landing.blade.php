@@ -268,18 +268,89 @@
             <p class="mt-4 text-lg text-slate-400">Un aperçu des espaces Administration, Enseignant et Parent.</p>
         </div>
         <div class="mt-14 grid md:grid-cols-3 gap-6">
-            @foreach([['Tableau de bord','#2563eb'],['Espace Enseignant','#10b981'],['Portail Parents','#8b5cf6']] as $shot)
-            <div class="rounded-2xl overflow-hidden border border-white/10 bg-slate-800/60">
-                <div class="aspect-[4/3] grid place-items-center" style="background:linear-gradient(135deg,{{ $shot[1] }}22,transparent)">
-                    <div class="text-center">
-                        <svg width="46" height="46" class="mx-auto opacity-40" fill="none" stroke="white" stroke-width="1.5"><rect x="3" y="5" width="40" height="30" rx="3"/><path d="M3 13h40M9 21h12M9 27h20"/></svg>
-                        <span class="mt-3 block text-sm font-semibold text-slate-300">{{ $shot[0] }}</span>
-                        <span class="text-xs text-slate-500">Capture à venir</span>
+
+            {{-- ── Mockup 1 : Tableau de bord Admin ── --}}
+            <figure class="rounded-2xl overflow-hidden border border-white/10 bg-white shadow-2xl">
+                <div class="flex items-center gap-1.5 px-3 py-2.5 bg-slate-100 border-b border-slate-200">
+                    <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span><span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span><span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+                    <span class="ml-2 text-[10px] text-slate-400">/admin · Tableau de bord</span>
+                </div>
+                <div class="flex h-56">
+                    <div class="w-1/3 bg-slate-900 p-2.5 space-y-1.5">
+                        <div class="h-2 w-3/4 rounded bg-brand-500/80"></div>
+                        @foreach([1,0,0,0,0] as $a)<div class="h-1.5 w-{{ $a ? 'full' : '5/6' }} rounded {{ $a ? 'bg-brand-600' : 'bg-white/10' }}"></div>@endforeach
+                    </div>
+                    <div class="flex-1 p-3 bg-slate-50">
+                        <div class="grid grid-cols-3 gap-1.5 mb-2">
+                            @foreach([['#2563eb','1 248'],['#10b981','96%'],['#8b5cf6','82k']] as $c)
+                            <div class="rounded-md bg-white border border-slate-100 p-1.5">
+                                <div class="h-1 w-2/3 rounded" style="background:{{ $c[0] }}55"></div>
+                                <div class="text-[10px] font-extrabold text-slate-700 mt-1">{{ $c[1] }}</div>
+                            </div>
+                            @endforeach
+                        </div>
+                        <div class="rounded-md bg-white border border-slate-100 p-2 flex items-end gap-1 h-28">
+                            @foreach([40,60,48,75,65,88,72,95] as $h)<div class="flex-1 rounded-t bg-brand-500/80" style="height:{{ $h }}%"></div>@endforeach
+                        </div>
                     </div>
                 </div>
-            </div>
-            @endforeach
+                <figcaption class="px-4 py-3 bg-slate-800 text-sm font-semibold text-white">Espace Administration</figcaption>
+            </figure>
+
+            {{-- ── Mockup 2 : Faire l'appel (Enseignant) ── --}}
+            <figure class="rounded-2xl overflow-hidden border border-white/10 bg-white shadow-2xl">
+                <div class="flex items-center gap-1.5 px-3 py-2.5 bg-slate-100 border-b border-slate-200">
+                    <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span><span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span><span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+                    <span class="ml-2 text-[10px] text-slate-400">/staff · Faire l'appel</span>
+                </div>
+                <div class="h-56 p-3 bg-slate-50 space-y-2">
+                    <div class="grid grid-cols-4 gap-1.5">
+                        @foreach([['#10b981','24'],['#ef4444','2'],['#f59e0b','1'],['#6366f1','0']] as $c)
+                        <div class="rounded-md p-1.5 text-center" style="background:{{ $c[0] }}18"><div class="text-[12px] font-extrabold" style="color:{{ $c[0] }}">{{ $c[1] }}</div></div>
+                        @endforeach
+                    </div>
+                    @foreach(['Mohamed B.','Lina T.','Youssef G.','Maryam J.'] as $i => $name)
+                    <div class="flex items-center gap-2 rounded-md bg-white border border-slate-100 px-2 py-1.5">
+                        <div class="h-5 w-5 rounded-full bg-brand-50 text-brand-600 grid place-items-center text-[8px] font-bold">{{ mb_substr($name,0,1) }}</div>
+                        <div class="flex-1 text-[10px] font-semibold text-slate-700">{{ $name }}</div>
+                        @foreach(['#10b981','#f59e0b','#ef4444'] as $j => $col)
+                        <span class="h-4 w-4 rounded text-[7px] grid place-items-center font-bold" style="{{ ($i % 3 === $j) ? 'background:'.$col.';color:#fff' : 'background:#eef2f7;color:#94a3b8' }}">{{ ['P','R','A'][$j] }}</span>
+                        @endforeach
+                    </div>
+                    @endforeach
+                </div>
+                <figcaption class="px-4 py-3 bg-slate-800 text-sm font-semibold text-white">Espace Enseignant</figcaption>
+            </figure>
+
+            {{-- ── Mockup 3 : Portail Parent ── --}}
+            <figure class="rounded-2xl overflow-hidden border border-white/10 bg-white shadow-2xl">
+                <div class="flex items-center gap-1.5 px-3 py-2.5 bg-slate-100 border-b border-slate-200">
+                    <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span><span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span><span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+                    <span class="ml-2 text-[10px] text-slate-400">/parent · Tableau de bord</span>
+                </div>
+                <div class="h-56 p-3 bg-slate-50 space-y-2">
+                    <div class="rounded-lg p-2.5 text-white" style="background:linear-gradient(135deg,#2563eb,#1d4ed8)">
+                        <div class="text-[9px] opacity-80">Solde dû</div><div class="text-sm font-extrabold">220,000 TND</div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-1.5">
+                        @foreach([['Présence','92%','#10b981'],['Incidents','0','#10b981']] as $c)
+                        <div class="rounded-md bg-white border border-slate-100 p-2"><div class="text-[8px] text-slate-400 font-semibold uppercase">{{ $c[0] }}</div><div class="text-xs font-extrabold" style="color:{{ $c[2] }}">{{ $c[1] }}</div></div>
+                        @endforeach
+                    </div>
+                    <div class="rounded-md bg-white border border-slate-100 p-2">
+                        <div class="text-[9px] font-bold text-slate-600 mb-1">Mes enfants</div>
+                        <div class="flex items-center gap-2">
+                            <div class="h-6 w-6 rounded-lg bg-brand-50 text-brand-600 grid place-items-center text-[9px] font-bold">M</div>
+                            <div class="flex-1"><div class="text-[10px] font-semibold text-slate-700">Mohamed L.</div><div class="text-[8px] text-slate-400">Classe 1A</div></div>
+                            <div class="text-[11px] font-extrabold text-emerald-600">92%</div>
+                        </div>
+                    </div>
+                </div>
+                <figcaption class="px-4 py-3 bg-slate-800 text-sm font-semibold text-white">Portail Parents</figcaption>
+            </figure>
+
         </div>
+        <p class="mt-8 text-center text-sm text-slate-500">Maquettes illustratives de l'interface réelle.</p>
     </div>
 </section>
 
