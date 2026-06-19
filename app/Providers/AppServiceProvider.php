@@ -39,6 +39,10 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::before(fn ($user) => $user?->role === 'admin' ? true : null);
 
+        // Observers — notifications in-app
+        Incident::observe(\App\Observers\IncidentObserver::class);
+        Payroll::observe(\App\Observers\PayrollObserver::class);
+
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
             $switch
                 ->locales(['ar', 'en', 'fr'])
