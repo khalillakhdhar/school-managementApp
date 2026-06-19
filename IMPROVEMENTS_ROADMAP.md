@@ -38,10 +38,10 @@
 6. ✅ **Agrégations SQL.** `MainDashboardWidget` : répartition par niveau passée en `leftJoin + groupBy` SQL (plus de chargement de collection en mémoire).
 
 ### P2 — Fonctionnel & produit
-7. **Export PDF natif** des bulletins et fiches de paie (`barryvdh/laravel-dompdf`) au lieu de `window.print()`.
-8. **Notifications in-app** (cloche Filament) reliées aux events : nouvel impayé, incident, fiche de paie prête.
-9. **Jours fériés tunisiens** (table + calcul hégirien, sans API payante) → exclure des présences et emplois du temps.
-10. **Captures d'écran réelles** sur la landing (remplacer les placeholders).
+7. ✅ **Export PDF natif** (`barryvdh/laravel-dompdf`). `DocumentPdfController` + vues `pdf.bulletin`/`pdf.payslip` (layout table dompdf-safe) ; routes `pdf.bulletin`/`pdf.payslip` sécurisées par rôle (admin/parent-own-child, admin/staff-own-payslip → 403 sinon) ; boutons « Télécharger PDF » câblés (admin Bulletins + PayrollResource, parent, staff Mes fiches). Vérifié : PDF réels + 403.
+8. **Notifications in-app** (cloche Filament) reliées aux events : nouvel impayé, incident, fiche de paie prête. *(à faire)*
+9. ✅ **Jours fériés tunisiens** (sans API). `HolidayService` : jours civils grégoriens fixes + fêtes religieuses converties du calendrier **hégirien Umm al-Qura** via `intl`. Réconcilié avec la table existante (`holidays`, enum `national/religieux/scolaire`, `unique(date)` → fusion des noms en cas de collision ex. Indépendance + Aïd). Resource admin (Paramètres → Jours fériés) + action « Synchroniser une année » ; bannière jour férié dans *Faire l'appel* ; sync intégrée au Mode Démo.
+10. **Captures d'écran réelles** sur la landing (remplacer les placeholders). *(à faire — nécessite de vraies images)*
 
 ### P3 — Évolutions long terme
 11. **Internationalisation AR complète (RTL)** — l'arabe est dans le sélecteur mais les pages portail sont en FR inline.

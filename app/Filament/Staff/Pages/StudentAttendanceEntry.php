@@ -88,6 +88,12 @@ class StudentAttendanceEntry extends Page
         }
     }
 
+    /** Le jour sélectionné est-il férié ? (pour afficher un avertissement) */
+    public function getHolidayProperty(): ?\App\Models\Holiday
+    {
+        return $this->date ? \App\Services\HolidayService::isHoliday($this->date) : null;
+    }
+
     public function getSummaryProperty(): array
     {
         $vals = array_count_values($this->statuses);

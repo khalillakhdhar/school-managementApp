@@ -41,7 +41,7 @@ class HolidayService
         $out = [];
 
         foreach (self::CIVIL as [$d, $m, $name]) {
-            $out[] = ['date' => Carbon::create($year, $m, $d), 'name' => $name, 'type' => 'civil'];
+            $out[] = ['date' => Carbon::create($year, $m, $d), 'name' => $name, 'type' => 'national'];
         }
 
         foreach (self::religiousForYear($year) as $h) {
@@ -97,10 +97,21 @@ class HolidayService
     {
         $count = 0;
         foreach (self::forYear($year) as $h) {
-            Holiday::updateOrCreate(
-                ['date' => $h['date']->toDateString(), 'name' => $h['name']],
-                ['type' => $h['type']],
-            );
+            // La table a une contrainte unique sur `date`. Si deux fêtes tombent
+            // le même jour (ex. Indépendance + Aïd), on fusionne les intitulés
+            // au lieu d'en perdre une.
+            $existing = Holiday::whereDate('date', $h['date']->toDateString())->first();
+            if ($existing) {
+                if (! str_contains($existing->name, $h['name'])) {
+                    $existing->update(['name' => $existing->name . ' / ' . $h['name']]);
+                }
+            } else {
+                Holiday::create([
+                    'date' => $h['date']->toDateString(),
+                    'name' => $h['name'],
+                    'type' => $h['type'],
+                ]);
+            }
             $count++;
         }
 

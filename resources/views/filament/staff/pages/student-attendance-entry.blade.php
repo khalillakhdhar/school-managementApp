@@ -9,6 +9,16 @@
 @else
 <div style="display:flex;flex-direction:column;gap:16px;">
 
+    @if($this->holiday)
+    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:12px 18px;display:flex;align-items:center;gap:10px;color:#92400e;">
+        <span style="font-size:18px;">🎉</span>
+        <div style="font-size:13.5px;">
+            <strong>Jour férié : {{ $this->holiday->name }}.</strong>
+            Normalement il n'y a pas cours ce jour ; vérifiez avant de saisir l'appel.
+        </div>
+    </div>
+    @endif
+
     {{-- Controls --}}
     <div style="background:#fff;border:1px solid #e5e9f0;border-radius:14px;padding:16px 20px;box-shadow:0 1px 3px rgba(16,24,40,.05);display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;">
         <div>

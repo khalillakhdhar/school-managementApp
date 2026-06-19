@@ -102,6 +102,7 @@ class DemoDataService
             self::seedExpenses($cats);
             self::seedIncidents($students);
             self::seedBlog();
+            \App\Services\HolidayService::sync((int) now()->year);
 
             \App\Support\Audit::enable();
 
