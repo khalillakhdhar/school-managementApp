@@ -2,8 +2,8 @@
 @if(empty($posts))
     <div style="background:#fff;border:1px solid #e5e9f0;border-radius:14px;padding:48px;text-align:center;">
         <div style="font-size:38px;">📣</div>
-        <div style="font-size:15px;font-weight:700;color:#1e293b;margin-top:10px;">Aucune annonce pour le moment</div>
-        <div style="font-size:13px;color:#94a3b8;margin-top:4px;">Les actualités de l'établissement apparaîtront ici.</div>
+        <div style="font-size:15px;font-weight:700;color:#1e293b;margin-top:10px;">{{ __('Aucune annonce pour le moment') }}</div>
+        <div style="font-size:13px;color:#94a3b8;margin-top:4px;">{{ __("Les actualités de l'établissement apparaîtront ici.") }}</div>
     </div>
 @else
 <div style="display:flex;flex-direction:column;gap:16px;max-width:760px;">

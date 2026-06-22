@@ -40,15 +40,15 @@
     {{-- Charts row --}}
     <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
         <div style="background:#fff;border:1px solid #e5e9f0;border-radius:14px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,24,40,.05);">
-            <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0 0 4px;">Évolution de la présence</h3>
-            <p style="font-size:12px;color:#64748b;margin:0 0 14px;">6 derniers mois</p>
+            <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0 0 4px;">{{ __('Évolution de la présence') }}</h3>
+            <p style="font-size:12px;color:#64748b;margin:0 0 14px;">{{ __('6 derniers mois') }}</p>
             <div style="position:relative;height:200px;"><canvas id="parentAttendanceChart"></canvas></div>
         </div>
         <div style="background:#fff;border:1px solid #e5e9f0;border-radius:14px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,24,40,.05);">
-            <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0 0 14px;">Répartition des paiements</h3>
+            <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0 0 14px;">{{ __('Répartition des paiements') }}</h3>
             <div style="position:relative;height:150px;"><canvas id="parentPaymentChart"></canvas></div>
             <div style="display:flex;flex-direction:column;gap:6px;margin-top:14px;">
-                @foreach([['Payé',$paymentBreakdown['paid'],'#10b981'],['En attente',$paymentBreakdown['pending'],'#f59e0b'],['En retard',$paymentBreakdown['overdue'],'#ef4444']] as $pb)
+                @foreach([[__('Payé'),$paymentBreakdown['paid'],'#10b981'],[__('En attente'),$paymentBreakdown['pending'],'#f59e0b'],[__('En retard'),$paymentBreakdown['overdue'],'#ef4444']] as $pb)
                 <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;">
                     <span style="display:flex;align-items:center;gap:6px;"><span style="width:9px;height:9px;border-radius:50%;background:{{ $pb[2] }};"></span><span style="color:#475569;">{{ $pb[0] }}</span></span>
                     <span style="font-weight:700;color:#0f172a;">{{ number_format($pb[1],3) }}</span>
@@ -62,7 +62,7 @@
     <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:16px;">
         {{-- Children --}}
         <div style="background:#fff;border:1px solid #e5e9f0;border-radius:14px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,24,40,.05);">
-            <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0 0 14px;">Mes enfants</h3>
+            <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0 0 14px;">{{ __('Mes enfants') }}</h3>
             <div style="display:flex;flex-direction:column;gap:10px;">
                 @foreach($children as $c)
                 <div style="display:flex;align-items:center;gap:14px;padding:12px 14px;background:#f8fafc;border-radius:11px;">
@@ -71,16 +71,16 @@
                     </div>
                     <div style="flex:1;min-width:0;">
                         <div style="font-size:14px;font-weight:700;color:#0f172a;">{{ $c['name'] }}</div>
-                        <div style="font-size:12px;color:#64748b;">Classe {{ $c['class'] }}</div>
+                        <div style="font-size:12px;color:#64748b;">{{ __('Classe :class', ['class' => $c['class']]) }}</div>
                     </div>
                     <div style="text-align:right;">
                         <div style="font-size:15px;font-weight:800;color:{{ $c['rate']===null ? '#94a3b8' : ($c['rate']>=90?'#059669':($c['rate']>=75?'#b45309':'#dc2626')) }};">{{ $c['rate']===null ? '—' : $c['rate'].'%' }}</div>
-                        <div style="font-size:10.5px;color:#94a3b8;font-weight:600;">PRÉSENCE</div>
+                        <div style="font-size:10.5px;color:#94a3b8;font-weight:600;">{{ __('PRÉSENCE') }}</div>
                     </div>
                     @if($c['outstanding']>0)
                     <div style="text-align:right;">
                         <div style="font-size:14px;font-weight:800;color:#b45309;">{{ number_format($c['outstanding'],3) }}</div>
-                        <div style="font-size:10.5px;color:#94a3b8;font-weight:600;">DÛ</div>
+                        <div style="font-size:10.5px;color:#94a3b8;font-weight:600;">{{ __('DÛ') }}</div>
                     </div>
                     @endif
                 </div>
@@ -91,7 +91,7 @@
         {{-- Activity + announcements --}}
         <div style="display:flex;flex-direction:column;gap:16px;">
             <div style="background:#fff;border:1px solid #e5e9f0;border-radius:14px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,24,40,.05);">
-                <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0 0 12px;">Activité récente</h3>
+                <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0 0 12px;">{{ __('Activité récente') }}</h3>
                 @forelse($activities as $a)
                 <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;{{ !$loop->last ? 'border-bottom:1px solid #f8fafc;' : '' }}">
                     <div style="width:28px;height:28px;border-radius:50%;background:{{ $a['color'] }}20;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">{{ $a['icon'] }}</div>
@@ -101,19 +101,19 @@
                     </div>
                 </div>
                 @empty
-                <div style="color:#94a3b8;font-size:13px;padding:8px 0;">Aucune activité récente.</div>
+                <div style="color:#94a3b8;font-size:13px;padding:8px 0;">{{ __('Aucune activité récente.') }}</div>
                 @endforelse
             </div>
 
             <div style="background:#fff;border:1px solid #e5e9f0;border-radius:14px;padding:20px 24px;box-shadow:0 1px 3px rgba(16,24,40,.05);flex:1;">
-                <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0 0 12px;">Dernières annonces</h3>
+                <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0 0 12px;">{{ __('Dernières annonces') }}</h3>
                 @forelse($announcements as $ann)
                 <div style="display:flex;gap:9px;align-items:flex-start;padding:7px 0;{{ !$loop->last ? 'border-bottom:1px solid #f8fafc;' : '' }}">
                     <span style="font-size:14px;">📣</span>
                     <div><div style="font-size:12.5px;font-weight:600;color:#1e293b;">{{ $ann['title'] }}</div><div style="font-size:11px;color:#94a3b8;">{{ $ann['date'] }}</div></div>
                 </div>
                 @empty
-                <div style="color:#94a3b8;font-size:13px;">Aucune annonce.</div>
+                <div style="color:#94a3b8;font-size:13px;">{{ __('Aucune annonce.') }}</div>
                 @endforelse
             </div>
         </div>
@@ -131,7 +131,7 @@ if (attEl) {
         data: {
             labels: @json($attendanceTrend['labels']),
             datasets: [{
-                label: 'Présence %', data: @json($attendanceTrend['rates']),
+                label: '{{ __('Présence %') }}', data: @json($attendanceTrend['rates']),
                 borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.08)',
                 borderWidth: 2.5, fill: true, tension: 0.4, pointBackgroundColor: '#2563eb', pointRadius: 4,
             }]
@@ -151,7 +151,7 @@ if (payEl) {
     if (d.reduce((a,b)=>a+b,0) > 0) {
         new Chart(payEl, {
             type: 'doughnut',
-            data: { labels: ['Payé','En attente','En retard'], datasets: [{ data: d, backgroundColor: ['#10b981','#f59e0b','#ef4444'], borderWidth: 2, borderColor: '#fff', hoverOffset: 5 }] },
+            data: { labels: ['{{ __('Payé') }}','{{ __('En attente') }}','{{ __('En retard') }}'], datasets: [{ data: d, backgroundColor: ['#10b981','#f59e0b','#ef4444'], borderWidth: 2, borderColor: '#fff', hoverOffset: 5 }] },
             options: { responsive: true, maintainAspectRatio: false, cutout: '68%', plugins: { legend: { display: false } } }
         });
     }

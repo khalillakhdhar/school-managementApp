@@ -4,7 +4,7 @@
 
 @if($classes->isEmpty())
     <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:14px;padding:24px;color:#92400e;">
-        <strong>Aucune classe à votre emploi du temps.</strong>
+        <strong>{{ __('Aucune classe à votre emploi du temps.') }}</strong>
     </div>
 @else
 <div style="display:flex;flex-direction:column;gap:16px;">
@@ -12,30 +12,30 @@
     {{-- Controls --}}
     <div style="background:#fff;border:1px solid #e5e9f0;border-radius:14px;padding:16px 20px;box-shadow:0 1px 3px rgba(16,24,40,.05);display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;">
         <div>
-            <label style="display:block;font-size:12px;font-weight:600;color:#64748b;margin-bottom:5px;">Classe</label>
+            <label style="display:block;font-size:12px;font-weight:600;color:#64748b;margin-bottom:5px;">{{ __('Classe') }}</label>
             <select wire:model.live="classroomId" style="border:1px solid #dde3ea;border-radius:8px;padding:8px 12px;font-size:14px;min-width:180px;background:#fff;color:#0f172a;">
                 @foreach($classes as $id => $name)<option value="{{ $id }}">{{ $name }}</option>@endforeach
             </select>
         </div>
         <div>
-            <label style="display:block;font-size:12px;font-weight:600;color:#64748b;margin-bottom:5px;">Matière</label>
+            <label style="display:block;font-size:12px;font-weight:600;color:#64748b;margin-bottom:5px;">{{ __('Matière') }}</label>
             <select wire:model.live="subjectId" style="border:1px solid #dde3ea;border-radius:8px;padding:8px 12px;font-size:14px;min-width:180px;background:#fff;color:#0f172a;">
-                @forelse($subjects as $id => $name)<option value="{{ $id }}">{{ $name }}</option>@empty<option value="">— aucune —</option>@endforelse
+                @forelse($subjects as $id => $name)<option value="{{ $id }}">{{ $name }}</option>@empty<option value="">— {{ __('aucune') }} —</option>@endforelse
             </select>
         </div>
         <div>
-            <label style="display:block;font-size:12px;font-weight:600;color:#64748b;margin-bottom:5px;">Trimestre</label>
+            <label style="display:block;font-size:12px;font-weight:600;color:#64748b;margin-bottom:5px;">{{ __('Trimestre') }}</label>
             <select wire:model.live="term" style="border:1px solid #dde3ea;border-radius:8px;padding:8px 12px;font-size:14px;background:#fff;color:#0f172a;">
-                <option value="T1">1er trimestre</option><option value="T2">2e trimestre</option><option value="T3">3e trimestre</option>
+                <option value="T1">{{ __('1er trimestre') }}</option><option value="T2">{{ __('2e trimestre') }}</option><option value="T3">{{ __('3e trimestre') }}</option>
             </select>
         </div>
         <div style="flex:1;"></div>
-        <button wire:click="save" type="button" style="background:#2563eb;color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:13.5px;font-weight:600;cursor:pointer;box-shadow:0 1px 3px rgba(37,99,235,.3);">Enregistrer les notes</button>
+        <button wire:click="save" type="button" style="background:#2563eb;color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:13.5px;font-weight:600;cursor:pointer;box-shadow:0 1px 3px rgba(37,99,235,.3);">{{ __('Enregistrer les notes') }}</button>
     </div>
 
     {{-- Roster --}}
     @if($subjects->isEmpty())
-        <div style="background:#fff;border:1px solid #e5e9f0;border-radius:14px;padding:36px;text-align:center;color:#94a3b8;">Vous n'enseignez aucune matière dans cette classe.</div>
+        <div style="background:#fff;border:1px solid #e5e9f0;border-radius:14px;padding:36px;text-align:center;color:#94a3b8;">{{ __("Vous n'enseignez aucune matière dans cette classe.") }}</div>
     @else
     <div style="background:#fff;border:1px solid #e5e9f0;border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(16,24,40,.05);">
         @forelse($this->students as $student)
@@ -53,7 +53,7 @@
             </div>
         </div>
         @empty
-        <div style="padding:36px;text-align:center;color:#94a3b8;font-size:14px;">Aucun élève dans cette classe.</div>
+        <div style="padding:36px;text-align:center;color:#94a3b8;font-size:14px;">{{ __('Aucun élève dans cette classe.') }}</div>
         @endforelse
     </div>
     @endif

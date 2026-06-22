@@ -231,7 +231,7 @@ html.dark .ts-empty-title{color:#cbd5e1}
     <table class="ts-table">
         <thead>
             <tr>
-                <th class="ts-th-day">Jour</th>
+                <th class="ts-th-day">{{ __('Jour') }}</th>
                 @foreach($data['slots'] as $slot)
                 <th class="ts-th-slot">
                     <span class="ts-slot-time">{{ $slot['start'] }}</span>
@@ -243,7 +243,7 @@ html.dark .ts-empty-title{color:#cbd5e1}
         <tbody>
             @foreach($data['grid'] as $row)
             <tr class="ts-tr">
-                <td class="ts-td-day">{{ $row['day'] }}</td>
+                <td class="ts-td-day">{{ __($row['day']) }}</td>
                 @foreach($row['cells'] as $cell)
                 <td class="ts-td-cell">
                     @if($cell)

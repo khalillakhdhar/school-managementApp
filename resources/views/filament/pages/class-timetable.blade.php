@@ -302,7 +302,7 @@ $totalSubjects  = $cl->sum('subjects');
     <table class="ct-table">
         <thead>
             <tr>
-                <th class="ct-th-day">Jour</th>
+                <th class="ct-th-day">{{ __('Jour') }}</th>
                 @foreach($data['slots'] as $slot)
                 <th class="ct-th-slot">
                     <span class="ct-slot-time">{{ $slot['start'] }}</span>
@@ -314,7 +314,7 @@ $totalSubjects  = $cl->sum('subjects');
         <tbody>
             @foreach($data['grid'] as $row)
             <tr class="ct-tr">
-                <td class="ct-td-day">{{ $row['day'] }}</td>
+                <td class="ct-td-day">{{ __($row['day']) }}</td>
                 @foreach($row['cells'] as $cell)
                 <td class="ct-td-cell">
                     @if($cell)
