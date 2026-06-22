@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Changer mon mot de passe — EliteCampus</title>
+    <title>{{ __('Changer mon mot de passe') }} — EliteCampus</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -27,8 +27,8 @@
 <body>
     <div class="card">
         <div class="badge">🔒</div>
-        <h1>Changer votre mot de passe</h1>
-        <p class="sub">Pour votre sécurité, vous devez définir un nouveau mot de passe avant d'accéder à votre espace.</p>
+        <h1>{{ __('Changer votre mot de passe') }}</h1>
+        <p class="sub">{{ __("Pour votre sécurité, vous devez définir un nouveau mot de passe avant d'accéder à votre espace.") }}</p>
 
         @if($errors->any())
             <div class="err">{{ $errors->first() }}</div>
@@ -36,22 +36,22 @@
 
         <form method="POST" action="{{ route('password.change.update') }}">
             @csrf
-            <label for="current_password">Mot de passe actuel</label>
+            <label for="current_password">{{ __('Mot de passe actuel') }}</label>
             <input id="current_password" type="password" name="current_password" required autofocus>
 
-            <label for="password">Nouveau mot de passe</label>
+            <label for="password">{{ __('Nouveau mot de passe') }}</label>
             <input id="password" type="password" name="password" required>
-            <div class="hint">Au moins 8 caractères.</div>
+            <div class="hint">{{ __('Au moins 8 caractères.') }}</div>
 
-            <label for="password_confirmation">Confirmer le nouveau mot de passe</label>
+            <label for="password_confirmation">{{ __('Confirmer le nouveau mot de passe') }}</label>
             <input id="password_confirmation" type="password" name="password_confirmation" required>
 
-            <button type="submit">Mettre à jour et continuer</button>
+            <button type="submit">{{ __('Mettre à jour et continuer') }}</button>
         </form>
 
         <form method="POST" action="{{ $logoutUrl }}">
             @csrf
-            <button type="submit" class="logout" style="background:none;color:#94a3b8;font-weight:500;margin-top:14px;padding:6px;">Se déconnecter</button>
+            <button type="submit" class="logout" style="background:none;color:#94a3b8;font-weight:500;margin-top:14px;padding:6px;">{{ __('Se déconnecter') }}</button>
         </form>
     </div>
 </body>

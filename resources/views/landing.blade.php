@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="scroll-smooth">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     {{-- ── SEO ─────────────────────────────────────────────────────────── --}}
-    <title>{{ $appName }} — Logiciel de gestion scolaire tout-en-un</title>
-    <meta name="description" content="{{ $appName }} est la plateforme tout-en-un pour gérer votre établissement : élèves, personnel, paie, présences, notes & bulletins, paiements, emplois du temps, et portails parents/enseignants.">
-    <meta name="keywords" content="gestion scolaire, ERP école, logiciel école Tunisie, gestion élèves, bulletins, paie, présences, portail parents">
+    <title>{{ $appName }} — {{ __('Logiciel de gestion scolaire tout-en-un') }}</title>
+    <meta name="description" content="{{ __(':app est la plateforme tout-en-un pour gérer votre établissement : élèves, personnel, paie, présences, notes & bulletins, paiements, emplois du temps, et portails parents/enseignants.', ['app' => $appName]) }}">
+    <meta name="keywords" content="{{ __('gestion scolaire, ERP école, logiciel école Tunisie, gestion élèves, bulletins, paie, présences, portail parents') }}">
     <meta name="author" content="{{ $appName }}">
     <link rel="canonical" href="{{ url('/') }}">
 
     {{-- Open Graph --}}
     <meta property="og:type" content="website">
-    <meta property="og:title" content="{{ $appName }} — Logiciel de gestion scolaire tout-en-un">
-    <meta property="og:description" content="La plateforme moderne pour piloter votre établissement scolaire de A à Z.">
+    <meta property="og:title" content="{{ $appName }} — {{ __('Logiciel de gestion scolaire tout-en-un') }}">
+    <meta property="og:description" content="{{ __("La plateforme moderne pour piloter votre établissement scolaire de A à Z.") }}">
     <meta property="og:url" content="{{ url('/') }}">
     <meta name="theme-color" content="#0f172a">
     <link rel="icon" href="{{ asset('favicon.svg') }}">
@@ -61,17 +61,17 @@
             </a>
             <div class="hidden lg:flex items-center gap-8 text-sm font-semibold"
                  :class="scrolled ? 'text-slate-600' : 'text-slate-200'">
-                <a href="#accueil" class="hover:text-brand-600">Accueil</a>
-                <a href="#fonctionnalites" class="hover:text-brand-600">Fonctionnalités</a>
-                <a href="#avantages" class="hover:text-brand-600">Avantages</a>
-                <a href="#tarifs" class="hover:text-brand-600">Tarifs</a>
+                <a href="#accueil" class="hover:text-brand-600">{{ __('Accueil') }}</a>
+                <a href="#fonctionnalites" class="hover:text-brand-600">{{ __('Fonctionnalités') }}</a>
+                <a href="#avantages" class="hover:text-brand-600">{{ __('Avantages') }}</a>
+                <a href="#tarifs" class="hover:text-brand-600">{{ __('Tarifs') }}</a>
                 <a href="#faq" class="hover:text-brand-600">FAQ</a>
-                <a href="#contact" class="hover:text-brand-600">Contact</a>
+                <a href="#contact" class="hover:text-brand-600">{{ __('Contact') }}</a>
             </div>
             <div class="hidden lg:flex items-center gap-3">
                 <a href="/admin/login" class="text-sm font-semibold px-4 py-2 rounded-lg transition"
-                   :class="scrolled ? 'text-slate-700 hover:bg-slate-100' : 'text-white hover:bg-white/10'">Connexion</a>
-                <a href="#contact" class="text-sm font-semibold px-4 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700 shadow-sm shadow-brand-600/30">Demander une démo</a>
+                   :class="scrolled ? 'text-slate-700 hover:bg-slate-100' : 'text-white hover:bg-white/10'">{{ __('Connexion') }}</a>
+                <a href="#contact" class="text-sm font-semibold px-4 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700 shadow-sm shadow-brand-600/30">{{ __('Demander une démo') }}</a>
             </div>
             <button @click="open=!open" class="lg:hidden p-2 rounded-lg" :class="scrolled ? 'text-ink' : 'text-white'">
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -81,14 +81,14 @@
     {{-- mobile menu --}}
     <div x-show="open" x-cloak @click.away="open=false" x-transition class="lg:hidden bg-white border-b border-slate-200 shadow-lg">
         <div class="px-5 py-4 flex flex-col gap-1 text-sm font-semibold text-slate-700">
-            <a href="#fonctionnalites" @click="open=false" class="py-2.5 hover:text-brand-600">Fonctionnalités</a>
-            <a href="#avantages" @click="open=false" class="py-2.5 hover:text-brand-600">Avantages</a>
-            <a href="#tarifs" @click="open=false" class="py-2.5 hover:text-brand-600">Tarifs</a>
+            <a href="#fonctionnalites" @click="open=false" class="py-2.5 hover:text-brand-600">{{ __('Fonctionnalités') }}</a>
+            <a href="#avantages" @click="open=false" class="py-2.5 hover:text-brand-600">{{ __('Avantages') }}</a>
+            <a href="#tarifs" @click="open=false" class="py-2.5 hover:text-brand-600">{{ __('Tarifs') }}</a>
             <a href="#faq" @click="open=false" class="py-2.5 hover:text-brand-600">FAQ</a>
-            <a href="#contact" @click="open=false" class="py-2.5 hover:text-brand-600">Contact</a>
+            <a href="#contact" @click="open=false" class="py-2.5 hover:text-brand-600">{{ __('Contact') }}</a>
             <div class="flex gap-3 pt-3">
-                <a href="/admin/login" class="flex-1 text-center py-2.5 rounded-lg border border-slate-200">Connexion</a>
-                <a href="#contact" class="flex-1 text-center py-2.5 rounded-lg bg-brand-600 text-white">Démo</a>
+                <a href="/admin/login" class="flex-1 text-center py-2.5 rounded-lg border border-slate-200">{{ __('Connexion') }}</a>
+                <a href="#contact" class="flex-1 text-center py-2.5 rounded-lg bg-brand-600 text-white">{{ __('Démo') }}</a>
             </div>
         </div>
     </div>
@@ -99,29 +99,27 @@
     <div class="mx-auto max-w-7xl px-5 lg:px-8 grid lg:grid-cols-2 gap-14 items-center">
         <div>
             <span class="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-3.5 py-1.5 text-xs font-semibold text-brand-100">
-                ✨ Plateforme de gestion scolaire nouvelle génération
+                ✨ {{ __('Plateforme de gestion scolaire nouvelle génération') }}
             </span>
             <h1 class="mt-6 text-4xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.05]">
-                Pilotez toute votre école <span class="grad-text">depuis un seul endroit</span>
+                {{ __('Pilotez toute votre école') }} <span class="grad-text">{{ __('depuis un seul endroit') }}</span>
             </h1>
             <p class="mt-6 text-lg text-slate-300 leading-relaxed max-w-xl">
-                {{ $appName }} réunit élèves, personnel, finances, présences, notes et communication
-                dans une plateforme unique, moderne et sécurisée. Moins de paperasse, plus de temps
-                pour l'essentiel : l'éducation.
+                {{ __(":app réunit élèves, personnel, finances, présences, notes et communication dans une plateforme unique, moderne et sécurisée. Moins de paperasse, plus de temps pour l'essentiel : l'éducation.", ['app' => $appName]) }}
             </p>
             <div class="mt-9 flex flex-wrap gap-4">
                 <a href="#contact" class="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3.5 text-sm font-bold text-white hover:bg-brand-700 shadow-lg shadow-brand-600/40 transition">
-                    Demander une démonstration
+                    {{ __('Demander une démonstration') }}
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M9 18l6-6-6-6"/></svg>
                 </a>
                 <a href="/admin/login" class="inline-flex items-center gap-2 rounded-xl bg-white/10 border border-white/20 px-6 py-3.5 text-sm font-bold text-white hover:bg-white/15 transition">
-                    Se connecter
+                    {{ __('Se connecter') }}
                 </a>
             </div>
             <div class="mt-10 flex items-center gap-8 text-slate-400 text-sm">
-                <div><span class="block text-2xl font-extrabold text-white">3</span> espaces dédiés</div>
-                <div><span class="block text-2xl font-extrabold text-white">10+</span> modules intégrés</div>
-                <div><span class="block text-2xl font-extrabold text-white">100%</span> responsive</div>
+                <div><span class="block text-2xl font-extrabold text-white">3</span> {{ __('espaces dédiés') }}</div>
+                <div><span class="block text-2xl font-extrabold text-white">10+</span> {{ __('modules intégrés') }}</div>
+                <div><span class="block text-2xl font-extrabold text-white">100%</span> {{ __('responsive') }}</div>
             </div>
         </div>
         {{-- Visual mockup --}}
@@ -133,10 +131,10 @@
                         <span class="h-3 w-3 rounded-full bg-rose-400"></span>
                         <span class="h-3 w-3 rounded-full bg-amber-400"></span>
                         <span class="h-3 w-3 rounded-full bg-emerald-400"></span>
-                        <span class="ml-3 text-[11px] text-slate-400 font-medium">{{ $appName }} — Tableau de bord</span>
+                        <span class="ml-3 text-[11px] text-slate-400 font-medium">{{ $appName }} — {{ __('Tableau de bord') }}</span>
                     </div>
                     <div class="p-4 grid grid-cols-3 gap-3">
-                        @foreach([['Élèves','1 248','#2563eb'],['Présence','96%','#10b981'],['Recettes','82k','#8b5cf6']] as $kpi)
+                        @foreach([[__('Élèves'),'1 248','#2563eb'],[__('Présence'),'96%','#10b981'],[__('Recettes'),'82k','#8b5cf6']] as $kpi)
                         <div class="rounded-lg bg-white border border-slate-100 p-3">
                             <div class="text-[10px] font-semibold text-slate-400 uppercase">{{ $kpi[0] }}</div>
                             <div class="text-xl font-extrabold text-slate-800 mt-1">{{ $kpi[1] }}</div>
@@ -144,7 +142,7 @@
                         </div>
                         @endforeach
                         <div class="col-span-3 rounded-lg bg-white border border-slate-100 p-4">
-                            <div class="text-xs font-bold text-slate-700 mb-3">Évolution des inscriptions</div>
+                            <div class="text-xs font-bold text-slate-700 mb-3">{{ __('Évolution des inscriptions') }}</div>
                             <div class="flex items-end gap-2 h-24">
                                 @foreach([40,55,48,70,65,85,78,95] as $h)
                                 <div class="flex-1 rounded-t bg-brand-500/80" style="height:{{ $h }}%"></div>
@@ -162,19 +160,17 @@
 <section class="py-20 lg:py-28 bg-white">
     <div class="mx-auto max-w-7xl px-5 lg:px-8">
         <div class="max-w-3xl">
-            <span class="text-sm font-bold uppercase tracking-wider text-brand-600">Pourquoi {{ $appName }}</span>
-            <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-ink tracking-tight">Fini les tableurs, les cahiers et les outils éparpillés</h2>
+            <span class="text-sm font-bold uppercase tracking-wider text-brand-600">{{ __('Pourquoi :app', ['app' => $appName]) }}</span>
+            <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-ink tracking-tight">{{ __('Fini les tableurs, les cahiers et les outils éparpillés') }}</h2>
             <p class="mt-5 text-lg text-slate-600 leading-relaxed">
-                Les établissements jonglent entre fichiers Excel, registres papier et logiciels qui ne se parlent pas.
-                {{ $appName }} centralise toute la gestion administrative, pédagogique et financière au même endroit —
-                accessible à l'administration, aux enseignants et aux parents.
+                {{ __("Les établissements jonglent entre fichiers Excel, registres papier et logiciels qui ne se parlent pas. :app centralise toute la gestion administrative, pédagogique et financière au même endroit — accessible à l'administration, aux enseignants et aux parents.", ['app' => $appName]) }}
             </p>
         </div>
         <div class="mt-14 grid md:grid-cols-3 gap-6">
             @foreach([
-                ['🎯','Le problème résolu','Données dispersées, ressaisies, erreurs et perte de temps. Tout est désormais unifié et fiable.'],
-                ['🚀','Vos bénéfices','Gain de temps, suivi en temps réel, communication fluide avec les familles, décisions basées sur des chiffres.'],
-                ['📈','Productivité','Automatisation des paiements, des présences, des bulletins et de la paie. Vos équipes se concentrent sur l\'essentiel.'],
+                ['🎯',__('Le problème résolu'),__('Données dispersées, ressaisies, erreurs et perte de temps. Tout est désormais unifié et fiable.')],
+                ['🚀',__('Vos bénéfices'),__('Gain de temps, suivi en temps réel, communication fluide avec les familles, décisions basées sur des chiffres.')],
+                ['📈',__('Productivité'),__("Automatisation des paiements, des présences, des bulletins et de la paie. Vos équipes se concentrent sur l'essentiel.")],
             ] as $b)
             <div class="rounded-2xl border border-slate-200 p-7 card-hover bg-white">
                 <div class="text-3xl">{{ $b[0] }}</div>

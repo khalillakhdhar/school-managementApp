@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,40 +34,40 @@
             <div class="brand-icon">EC</div>
             <div class="brand-name">Elite<span style="color:#93c5fd;">Campus</span></div>
             <div class="brand-sub">Smart School Management Platform</div>
-            <div class="portal-badge">PORTAIL PARENTS</div>
+            <div class="portal-badge">{{ __('PORTAIL PARENTS') }}</div>
         </div>
 
         <div class="body">
             <p class="intro">
-                Bonjour <strong>{{ $parent->full_name }}</strong>,<br><br>
-                Votre compte d'accès au portail parents EliteCampus a été créé. Vous pouvez désormais suivre la scolarité et les paiements de vos enfants depuis n'importe quel appareil.
+                {{ __('Bonjour') }} <strong>{{ $parent->full_name }}</strong>,<br><br>
+                {{ __("Votre compte d'accès au portail parents EliteCampus a été créé. Vous pouvez désormais suivre la scolarité et les paiements de vos enfants depuis n'importe quel appareil.") }}
             </p>
 
             <div class="box">
-                <h3>🔐 Vos identifiants de connexion</h3>
+                <h3>🔐 {{ __('Vos identifiants de connexion') }}</h3>
                 <div class="credential-row">
-                    <div class="cred-label">Adresse email</div>
+                    <div class="cred-label">{{ __('Adresse email') }}</div>
                     <code class="credential">{{ $parent->email }}</code>
                 </div>
                 <div class="credential-row">
-                    <div class="cred-label">Mot de passe temporaire</div>
+                    <div class="cred-label">{{ __('Mot de passe temporaire') }}</div>
                     <code class="credential">{{ $temporaryPassword }}</code>
                 </div>
                 <div class="warning-box">
-                    ⚠️ <strong>Important :</strong> Veuillez modifier votre mot de passe dès votre première connexion pour sécuriser votre compte.
+                    ⚠️ <strong>{{ __('Important') }} :</strong> {{ __('Veuillez modifier votre mot de passe dès votre première connexion pour sécuriser votre compte.') }}
                 </div>
             </div>
 
-            <a href="{{ $loginUrl }}" class="btn">Accéder au portail →</a>
+            <a href="{{ $loginUrl }}" class="btn">{{ __('Accéder au portail') }} →</a>
 
             <p class="note" style="margin-top: 24px;">
-                Si vous n'êtes pas à l'origine de cette demande, veuillez contacter l'administration de l'établissement immédiatement.
+                {{ __("Si vous n'êtes pas à l'origine de cette demande, veuillez contacter l'administration de l'établissement immédiatement.") }}
             </p>
         </div>
 
         <div class="footer">
             <div class="footer-brand">Elite<span>Campus</span> — Smart School Management Platform</div>
-            <div class="footer-sub">by EliteTech Consulting · Ce message est automatique, merci de ne pas y répondre.</div>
+            <div class="footer-sub">by EliteTech Consulting · {{ __('Ce message est automatique, merci de ne pas y répondre.') }}</div>
         </div>
     </div>
 </body>

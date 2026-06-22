@@ -27,14 +27,14 @@ class PasswordChangeController extends Controller
             'current_password' => ['required'],
             'password'         => ['required', 'confirmed', Password::min(8)],
         ], [], [
-            'current_password' => 'mot de passe actuel',
-            'password'         => 'nouveau mot de passe',
+            'current_password' => __('mot de passe actuel'),
+            'password'         => __('nouveau mot de passe'),
         ]);
 
         $user = $request->user();
 
         if (! Hash::check($validated['current_password'], $user->password)) {
-            return back()->withErrors(['current_password' => 'Le mot de passe actuel est incorrect.']);
+            return back()->withErrors(['current_password' => __('Le mot de passe actuel est incorrect.')]);
         }
 
         $user->forceFill([
@@ -42,7 +42,7 @@ class PasswordChangeController extends Controller
             'must_change_password' => false,
         ])->save();
 
-        return redirect($this->homeFor($user))->with('status', 'Mot de passe mis à jour avec succès.');
+        return redirect($this->homeFor($user))->with('status', __('Mot de passe mis à jour avec succès.'));
     }
 
     protected function homeFor($user): string

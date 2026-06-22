@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,42 +34,40 @@
             <div class="brand-icon">EC</div>
             <div class="brand-name">Elite<span style="color:#93c5fd;">Campus</span></div>
             <div class="brand-sub">Smart School Management Platform</div>
-            <div class="portal-badge">ESPACE PERSONNEL</div>
+            <div class="portal-badge">{{ __('ESPACE PERSONNEL') }}</div>
         </div>
 
         <div class="body">
             <p class="intro">
-                Bonjour <strong>{{ $employee->full_name }}</strong>,<br><br>
-                Votre compte d'accès à l'Espace Personnel EliteCampus a été créé.
-                Vous pouvez désormais consulter votre emploi du temps, faire l'appel,
-                saisir les notes, suivre vos fiches de paie et votre pointage.
+                {{ __('Bonjour') }} <strong>{{ $employee->full_name }}</strong>,<br><br>
+                {{ __("Votre compte d'accès à l'Espace Personnel EliteCampus a été créé. Vous pouvez désormais consulter votre emploi du temps, faire l'appel, saisir les notes, suivre vos fiches de paie et votre pointage.") }}
             </p>
 
             <div class="box">
-                <h3>🔐 Vos identifiants de connexion</h3>
+                <h3>🔐 {{ __('Vos identifiants de connexion') }}</h3>
                 <div class="credential-row">
-                    <div class="cred-label">Adresse email</div>
+                    <div class="cred-label">{{ __('Adresse email') }}</div>
                     <code class="credential">{{ $email }}</code>
                 </div>
                 <div class="credential-row">
-                    <div class="cred-label">Mot de passe temporaire</div>
+                    <div class="cred-label">{{ __('Mot de passe temporaire') }}</div>
                     <code class="credential">{{ $temporaryPassword }}</code>
                 </div>
                 <div class="warning-box">
-                    ⚠️ <strong>Important :</strong> Vous devrez modifier ce mot de passe dès votre première connexion.
+                    ⚠️ <strong>{{ __('Important') }} :</strong> {{ __('Vous devrez modifier ce mot de passe dès votre première connexion.') }}
                 </div>
             </div>
 
-            <a href="{{ $loginUrl }}" class="btn">Accéder à mon espace →</a>
+            <a href="{{ $loginUrl }}" class="btn">{{ __('Accéder à mon espace') }} →</a>
 
             <p class="note" style="margin-top: 24px;">
-                Si vous n'êtes pas concerné par cette demande, veuillez contacter l'administration de l'établissement.
+                {{ __("Si vous n'êtes pas concerné par cette demande, veuillez contacter l'administration de l'établissement.") }}
             </p>
         </div>
 
         <div class="footer">
             <div class="footer-brand">Elite<span>Campus</span> — Smart School Management Platform</div>
-            <div class="footer-sub">Ce message est automatique, merci de ne pas y répondre.</div>
+            <div class="footer-sub">{{ __('Ce message est automatique, merci de ne pas y répondre.') }}</div>
         </div>
     </div>
 </body>

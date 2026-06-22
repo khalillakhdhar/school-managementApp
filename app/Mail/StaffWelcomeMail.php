@@ -23,7 +23,7 @@ class StaffWelcomeMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Votre accès à l\'Espace Personnel EliteCampus',
+            subject: __('Votre accès à l\'Espace Personnel EliteCampus'),
         );
     }
 

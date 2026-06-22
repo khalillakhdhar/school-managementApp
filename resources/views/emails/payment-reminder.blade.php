@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,46 +45,46 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
             </svg>
-            <h2>Rappel de Paiement</h2>
+            <h2>{{ __('Rappel de Paiement') }}</h2>
         </div>
 
         <div class="body">
             <p class="intro">
-                Bonjour <strong>{{ $parent->full_name }}</strong>,<br>
-                Nous vous rappelons qu'un paiement est en attente pour votre enfant <strong>{{ $payment->student?->full_name }}</strong>.
+                {{ __('Bonjour') }} <strong>{{ $parent->full_name }}</strong>,<br>
+                {{ __('Nous vous rappelons qu\'un paiement est en attente pour votre enfant :student.', ['student' => $payment->student?->full_name]) }}
             </p>
 
             <div class="box">
                 <div class="field">
-                    <div class="label">Montant dû</div>
+                    <div class="label">{{ __('Montant dû') }}</div>
                     <div class="amount">{{ number_format($payment->amount, 3) }} <span class="currency">TND</span></div>
                 </div>
                 <div class="field">
-                    <div class="label">Date d'échéance</div>
-                    <div class="value">{{ $payment->due_date?->format('d/m/Y') ?? 'Non définie' }}</div>
+                    <div class="label">{{ __("Date d'échéance") }}</div>
+                    <div class="value">{{ $payment->due_date?->format('d/m/Y') ?? __('Non définie') }}</div>
                 </div>
                 @if($daysOverdue > 0)
                 <div class="field">
-                    <div class="label">Retard</div>
-                    <div class="value overdue">{{ $daysOverdue }} jour(s) de retard</div>
+                    <div class="label">{{ __('Retard') }}</div>
+                    <div class="value overdue">{{ __(':n jour(s) de retard', ['n' => $daysOverdue]) }}</div>
                 </div>
                 @endif
             </div>
 
             @if($daysOverdue >= 30)
             <div class="warning-box">
-                ⚠️ <strong>Attention :</strong> Au-delà de 45 jours de retard, certains services pourraient être suspendus. Veuillez régulariser votre situation dans les plus brefs délais.
+                ⚠️ <strong>{{ __('Attention') }} :</strong> {{ __('Au-delà de 45 jours de retard, certains services pourraient être suspendus. Veuillez régulariser votre situation dans les plus brefs délais.') }}
             </div>
             @endif
 
             <p class="note" style="margin-top: 20px;">
-                Veuillez procéder au règlement dans les meilleurs délais ou contacter l'administration pour tout arrangement de paiement.
+                {{ __('Veuillez procéder au règlement dans les meilleurs délais ou contacter l\'administration pour tout arrangement de paiement.') }}
             </p>
         </div>
 
         <div class="footer">
             <div class="footer-brand">Elite<span>Campus</span> — Smart School Management Platform</div>
-            <div class="footer-sub">by EliteTech Consulting · Ce message est automatique, merci de ne pas y répondre.</div>
+            <div class="footer-sub">by EliteTech Consulting · {{ __('Ce message est automatique, merci de ne pas y répondre.') }}</div>
         </div>
     </div>
 </body>

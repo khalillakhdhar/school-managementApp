@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,51 +44,51 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
             </svg>
-            <h2>Rapport d'Incident</h2>
+            <h2>{{ __("Rapport d'Incident") }}</h2>
         </div>
 
         <div class="body">
             <p class="intro">
-                Bonjour <strong>{{ $parent->full_name }}</strong>,<br>
-                Nous vous informons d'un incident concernant votre enfant <strong>{{ $incident->student?->full_name }}</strong>.
+                {{ __('Bonjour') }} <strong>{{ $parent->full_name }}</strong>,<br>
+                {{ __('Nous vous informons d\'un incident concernant votre enfant :student.', ['student' => $incident->student?->full_name]) }}
             </p>
 
             <div class="box">
                 <div class="field">
-                    <div class="label">Date de l'incident</div>
+                    <div class="label">{{ __("Date de l'incident") }}</div>
                     <div class="value">{{ $incident->incident_date->format('d/m/Y') }}</div>
                 </div>
                 <div class="field">
-                    <div class="label">Type</div>
+                    <div class="label">{{ __('Type') }}</div>
                     <div class="value">{{ $incident->title }}</div>
                 </div>
                 <div class="field">
-                    <div class="label">Sévérité</div>
+                    <div class="label">{{ __('Sévérité') }}</div>
                     <div class="value severity-{{ $incident->severity }}">
-                        {{ match($incident->severity) { 'high' => '🔴 Élevée', 'medium' => '🟡 Moyenne', default => '🟢 Faible' } }}
+                        {{ match($incident->severity) { 'high' => '🔴 ' . __('Élevée'), 'medium' => '🟡 ' . __('Moyenne'), default => '🟢 ' . __('Faible') } }}
                     </div>
                 </div>
                 <div class="field">
-                    <div class="label">Description</div>
+                    <div class="label">{{ __('Description') }}</div>
                     <div class="value">{{ $incident->description }}</div>
                 </div>
                 @if($incident->action_taken)
                 <div class="field">
-                    <div class="label">Mesures prises</div>
+                    <div class="label">{{ __('Mesures prises') }}</div>
                     <div class="value">{{ $incident->action_taken }}</div>
                 </div>
                 @endif
             </div>
 
             <p class="note">
-                Nous restons disponibles pour tout renseignement complémentaire.<br>
-                N'hésitez pas à contacter l'administration de l'établissement.
+                {{ __('Nous restons disponibles pour tout renseignement complémentaire.') }}<br>
+                {{ __("N'hésitez pas à contacter l'administration de l'établissement.") }}
             </p>
         </div>
 
         <div class="footer">
             <div class="footer-brand">Elite<span>Campus</span> — Smart School Management Platform</div>
-            <div class="footer-sub">by EliteTech Consulting · Ce message est automatique, merci de ne pas y répondre.</div>
+            <div class="footer-sub">by EliteTech Consulting · {{ __('Ce message est automatique, merci de ne pas y répondre.') }}</div>
         </div>
     </div>
 </body>
