@@ -14,7 +14,7 @@
             <div style="font-size:18px;font-weight:800;color:#0f172a;">{{ $schoolName ?? 'EliteCampus' }}</div>
             <div style="font-size:12px;color:#64748b;">{{ __('Bulletin de notes — :term', ['term' => $report['termLabel']]) }}</div>
         </div>
-        <div style="text-align:right;">
+        <div style="text-align:end;">
             <div style="font-size:15px;font-weight:700;color:#0f172a;">{{ $report['student']->full_name }}</div>
             <div style="font-size:12px;color:#64748b;">{{ __('Classe :class', ['class' => $report['student']->classroom?->name ?? '—']) }}</div>
         </div>
@@ -27,10 +27,10 @@
     <table style="width:100%;border-collapse:collapse;margin-bottom:22px;">
         <thead>
             <tr style="background:#fafbfc;">
-                <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #eaeef3;">{{ __('Matière') }}</th>
+                <th style="text-align:start;padding:10px 14px;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #eaeef3;">{{ __('Matière') }}</th>
                 <th style="text-align:center;padding:10px 14px;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #eaeef3;">{{ __('Note /20') }}</th>
                 <th style="text-align:center;padding:10px 14px;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #eaeef3;">{{ __('Coeff.') }}</th>
-                <th style="text-align:right;padding:10px 14px;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #eaeef3;">{{ __('Points') }}</th>
+                <th style="text-align:end;padding:10px 14px;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #eaeef3;">{{ __('Points') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -39,14 +39,14 @@
                 <td style="padding:11px 14px;font-size:13.5px;font-weight:600;color:#0f172a;">{{ $line['subject'] }}</td>
                 <td style="padding:11px 14px;text-align:center;font-size:14px;font-weight:700;color:{{ $line['note']>=10 ? '#059669':'#dc2626' }};">{{ number_format($line['note'],2) }}</td>
                 <td style="padding:11px 14px;text-align:center;font-size:13px;color:#64748b;">{{ rtrim(rtrim(number_format($line['coef'],2),'0'),'.') }}</td>
-                <td style="padding:11px 14px;text-align:right;font-size:13px;font-weight:600;color:#475569;">{{ number_format($line['points'],2) }}</td>
+                <td style="padding:11px 14px;text-align:end;font-size:13px;font-weight:600;color:#475569;">{{ number_format($line['points'],2) }}</td>
             </tr>
             @endforeach
             <tr style="background:#f8fafc;border-top:2px solid #e5e9f0;">
                 <td style="padding:11px 14px;font-size:13px;font-weight:700;color:#0f172a;">{{ __('Total') }}</td>
                 <td></td>
                 <td style="padding:11px 14px;text-align:center;font-size:13px;font-weight:700;color:#0f172a;">{{ rtrim(rtrim(number_format($report['totalCoef'],2),'0'),'.') }}</td>
-                <td style="padding:11px 14px;text-align:right;font-size:13px;font-weight:700;color:#0f172a;">{{ number_format($report['totalPoints'],2) }}</td>
+                <td style="padding:11px 14px;text-align:end;font-size:13px;font-weight:700;color:#0f172a;">{{ number_format($report['totalPoints'],2) }}</td>
             </tr>
         </tbody>
     </table>

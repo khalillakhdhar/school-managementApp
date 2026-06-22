@@ -16,10 +16,10 @@
         <table style="width:100%;border-collapse:collapse;">
             <thead>
                 <tr style="background:#fafbfc;">
-                    <th style="text-align:left;padding:12px 22px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.5px;">{{ __('Élève') }}</th>
-                    <th style="text-align:left;padding:12px 14px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">{{ __('N°') }}</th>
+                    <th style="text-align:start;padding:12px 22px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.5px;">{{ __('Élève') }}</th>
+                    <th style="text-align:start;padding:12px 14px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">{{ __('N°') }}</th>
                     <th style="text-align:center;padding:12px 14px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">{{ __('Statut') }}</th>
-                    <th style="text-align:right;padding:12px 22px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">{{ __('Présence (mois)') }}</th>
+                    <th style="text-align:end;padding:12px 22px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">{{ __('Présence (mois)') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,7 +30,7 @@
                     <td style="padding:13px 14px;text-align:center;">
                         <span style="font-size:11px;font-weight:700;padding:2px 9px;border-radius:7px;background:{{ $s['status']==='active' ? '#ecfdf5':'#f1f5f9' }};color:{{ $s['status']==='active' ? '#059669':'#64748b' }};">{{ $s['status']==='active' ? __('Active'):__('Inactive') }}</span>
                     </td>
-                    <td style="padding:13px 22px;text-align:right;font-size:13px;font-weight:700;color:{{ $s['rate']===null ? '#94a3b8' : ($s['rate']>=90 ? '#059669' : ($s['rate']>=75 ? '#b45309' : '#dc2626')) }};">
+                    <td style="padding:13px 22px;text-align:end;font-size:13px;font-weight:700;color:{{ $s['rate']===null ? '#94a3b8' : ($s['rate']>=90 ? '#059669' : ($s['rate']>=75 ? '#b45309' : '#dc2626')) }};">
                         {{ $s['rate']===null ? '—' : $s['rate'].'%' }}
                     </td>
                 </tr>

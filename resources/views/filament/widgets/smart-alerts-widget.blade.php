@@ -79,7 +79,7 @@
                 default    => ['accent'=>'#0ea5e9','bg'=>'#f0f9ff','badge_bg'=>'#0ea5e9','text'=>'#0369a1','icon_bg'=>'#e0f2fe','label'=>'Info','label_color'=>'#0284c7','label_bg'=>'#f0f9ff','label_border'=>'#bae6fd'],
             };
         @endphp
-        <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 20px;border-left:3px solid {{ $colors['accent'] }};{{ !$isLast ? 'border-bottom:1px solid #f1f5f9;' : '' }}background:{{ $notif['level'] === 'critical' ? '#fffafa' : 'white' }};">
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 20px;border-inline-start:3px solid {{ $colors['accent'] }};{{ !$isLast ? 'border-bottom:1px solid #f1f5f9;' : '' }}background:{{ $notif['level'] === 'critical' ? '#fffafa' : 'white' }};">
             {{-- Icon --}}
             <div style="width:36px;height:36px;background:{{ $colors['icon_bg'] }};border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
                 @if($notif['icon'] === 'banknote')

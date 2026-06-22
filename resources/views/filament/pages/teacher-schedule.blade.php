@@ -80,27 +80,27 @@ html.dark .ts-table-outer{background:#1e293b;border-color:#334155}
 
 .ts-th-day{padding:12px 16px;background:#f8fafc;font-size:11px;font-weight:700;text-transform:uppercase;
   letter-spacing:.7px;color:#64748b;border-bottom:1.5px solid #e2e8f0;white-space:nowrap;
-  min-width:90px;position:sticky;left:0;z-index:2}
+  min-width:90px;position:sticky;inset-inline-start:0;z-index:2}
 html.dark .ts-th-day{background:#0f172a;color:#94a3b8;border-color:#334155}
 
 .ts-th-slot{padding:10px 14px;background:#f8fafc;font-size:11px;font-weight:700;color:#374151;
-  border-bottom:1.5px solid #e2e8f0;text-align:center;min-width:150px;border-left:1px solid #f1f5f9}
-html.dark .ts-th-slot{background:#0f172a;color:#94a3b8;border-color:#334155;border-left-color:#1e293b}
+  border-bottom:1.5px solid #e2e8f0;text-align:center;min-width:150px;border-inline-start:1px solid #f1f5f9}
+html.dark .ts-th-slot{background:#0f172a;color:#94a3b8;border-color:#334155;border-inline-start-color:#1e293b}
 .ts-slot-time{font-size:13px;font-weight:800;color:#0f172a;display:block;line-height:1.3}
 html.dark .ts-slot-time{color:#f1f5f9}
 .ts-slot-end{font-size:10px;color:#94a3b8;font-weight:500}
 
 .ts-td-day{padding:10px 16px;background:#f8fafc;font-size:12px;font-weight:700;color:#374151;
-  border-bottom:1px solid #f1f5f9;white-space:nowrap;position:sticky;left:0;z-index:1}
+  border-bottom:1px solid #f1f5f9;white-space:nowrap;position:sticky;inset-inline-start:0;z-index:1}
 html.dark .ts-td-day{background:#0f172a;color:#94a3b8;border-color:#1e293b}
 
 .ts-td-cell{padding:6px 8px;vertical-align:top;border-bottom:1px solid #f1f5f9;
-  border-left:1px solid #f1f5f9;min-width:150px}
+  border-inline-start:1px solid #f1f5f9;min-width:150px}
 html.dark .ts-td-cell{border-color:#1e293b}
 .ts-tr:last-child .ts-td-day,.ts-tr:last-child .ts-td-cell{border-bottom:none}
 
 .ts-session{background:#ffffff;border:1px solid #e2e8f0;border-radius:9px;padding:10px 12px;
-  border-left:3px solid #7c3aed;transition:box-shadow .12s}
+  border-inline-start:3px solid #7c3aed;transition:box-shadow .12s}
 .ts-session:hover{box-shadow:0 3px 12px rgba(0,0,0,.09)}
 html.dark .ts-session{background:#1e293b;border-color:#334155}
 .ts-session-subj{font-size:12.5px;font-weight:700;color:#0f172a;margin-bottom:3px;line-height:1.3}
@@ -247,7 +247,7 @@ html.dark .ts-empty-title{color:#cbd5e1}
                 @foreach($row['cells'] as $cell)
                 <td class="ts-td-cell">
                     @if($cell)
-                    <div class="ts-session" style="border-left-color:{{ $cell->subject?->color ?? '#7c3aed' }}">
+                    <div class="ts-session" style="border-inline-start-color:{{ $cell->subject?->color ?? '#7c3aed' }}">
                         <div class="ts-session-subj">{{ $cell->subject?->name ?? '—' }}</div>
                         <div class="ts-session-class">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

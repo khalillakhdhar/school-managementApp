@@ -13,7 +13,7 @@
                 <div style="font-size:12.5px;color:#64748b;">{{ __('Classe :class', ['class' => $child['class']]) }} · {{ now()->locale(app()->getLocale())->isoFormat('MMMM YYYY') }}</div>
             </div>
             @if($child['rate'] !== null)
-            <div style="text-align:right;">
+            <div style="text-align:end;">
                 <div style="font-size:26px;font-weight:800;color:{{ $child['rate']>=90 ? '#059669' : ($child['rate']>=75 ? '#b45309':'#dc2626') }};">{{ $child['rate'] }}%</div>
                 <div style="font-size:11px;color:#94a3b8;font-weight:600;">{{ __('PRÉSENCE') }}</div>
             </div>
@@ -39,7 +39,7 @@
         @else
             <div style="display:flex;flex-direction:column;gap:8px;">
                 @foreach($child['incidents'] as $inc)
-                <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f8fafc;border-radius:10px;border-left:3px solid {{ $inc['severity']==='high' ? '#ef4444' : ($inc['severity']==='medium' ? '#f59e0b':'#94a3b8') }};">
+                <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f8fafc;border-radius:10px;border-inline-start:3px solid {{ $inc['severity']==='high' ? '#ef4444' : ($inc['severity']==='medium' ? '#f59e0b':'#94a3b8') }};">
                     <div style="flex:1;">
                         <div style="font-size:13.5px;font-weight:600;color:#0f172a;">{{ $inc['title'] }}</div>
                         <div style="font-size:11.5px;color:#94a3b8;">{{ $inc['date'] }}</div>

@@ -22,17 +22,17 @@
                 <div style="font-size:12.5px;color:#64748b;">{{ __('Classe :class', ['class' => $child['class']]) }}</div>
             </div>
             <div style="display:flex;gap:20px;">
-                <div style="text-align:right;"><div style="font-size:11px;color:#94a3b8;font-weight:600;">{{ __('PAYÉ') }}</div><div style="font-size:15px;font-weight:800;color:#059669;">{{ number_format($child['paid'],3) }}</div></div>
-                <div style="text-align:right;"><div style="font-size:11px;color:#94a3b8;font-weight:600;">{{ __('EN ATTENTE') }}</div><div style="font-size:15px;font-weight:800;color:#b45309;">{{ number_format($child['pending'],3) }}</div></div>
-                <div style="text-align:right;"><div style="font-size:11px;color:#94a3b8;font-weight:600;">{{ __('EN RETARD') }}</div><div style="font-size:15px;font-weight:800;color:{{ $child['overdue']>0 ? '#dc2626':'#94a3b8' }};">{{ number_format($child['overdue'],3) }}</div></div>
+                <div style="text-align:end;"><div style="font-size:11px;color:#94a3b8;font-weight:600;">{{ __('PAYÉ') }}</div><div style="font-size:15px;font-weight:800;color:#059669;">{{ number_format($child['paid'],3) }}</div></div>
+                <div style="text-align:end;"><div style="font-size:11px;color:#94a3b8;font-weight:600;">{{ __('EN ATTENTE') }}</div><div style="font-size:15px;font-weight:800;color:#b45309;">{{ number_format($child['pending'],3) }}</div></div>
+                <div style="text-align:end;"><div style="font-size:11px;color:#94a3b8;font-weight:600;">{{ __('EN RETARD') }}</div><div style="font-size:15px;font-weight:800;color:{{ $child['overdue']>0 ? '#dc2626':'#94a3b8' }};">{{ number_format($child['overdue'],3) }}</div></div>
             </div>
         </div>
         <table style="width:100%;border-collapse:collapse;">
             <thead>
                 <tr style="background:#fafbfc;">
-                    <th style="text-align:left;padding:11px 22px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">{{ __('Échéance') }}</th>
-                    <th style="text-align:left;padding:11px 14px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">{{ __('Date limite') }}</th>
-                    <th style="text-align:right;padding:11px 14px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">{{ __('Montant') }}</th>
+                    <th style="text-align:start;padding:11px 22px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">{{ __('Échéance') }}</th>
+                    <th style="text-align:start;padding:11px 14px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">{{ __('Date limite') }}</th>
+                    <th style="text-align:end;padding:11px 14px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">{{ __('Montant') }}</th>
                     <th style="text-align:center;padding:11px 22px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;">{{ __('Statut') }}</th>
                 </tr>
             </thead>
@@ -41,7 +41,7 @@
                 <tr style="border-top:1px solid #f1f4f8;">
                     <td style="padding:12px 22px;font-size:13px;font-weight:600;color:#0f172a;">{{ $p['label'] }}</td>
                     <td style="padding:12px 14px;font-size:12.5px;color:#64748b;">{{ $p['due'] }}</td>
-                    <td style="padding:12px 14px;text-align:right;font-size:13px;font-weight:700;color:#0f172a;font-variant-numeric:tabular-nums;">{{ number_format($p['amount'],3) }}</td>
+                    <td style="padding:12px 14px;text-align:end;font-size:13px;font-weight:700;color:#0f172a;font-variant-numeric:tabular-nums;">{{ number_format($p['amount'],3) }}</td>
                     <td style="padding:12px 22px;text-align:center;">
                         <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:7px;
                             background:{{ ['paid'=>'#ecfdf5','pending'=>'#fffbeb','overdue'=>'#fef2f2'][$p['status']] }};

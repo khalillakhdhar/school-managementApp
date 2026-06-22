@@ -15,7 +15,7 @@
 @endphp
 
 <a href="{{ $dashUrl }}" title="Centre de notifications{{ $totalAlerts > 0 ? ' — '.$totalAlerts.' alerte'.($totalAlerts > 1 ? 's' : '') : '' }}"
-   style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;border:1px solid #e2e8f0;background:white;color:#475569;text-decoration:none;margin-right:4px;transition:background .12s,border-color .12s;"
+   style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;border:1px solid #e2e8f0;background:white;color:#475569;text-decoration:none;margin-inline-end:4px;transition:background .12s,border-color .12s;"
    onmouseover="this.style.background='#f8fafc';this.style.borderColor='#cbd5e1';"
    onmouseout="this.style.background='white';this.style.borderColor='#e2e8f0';">
     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

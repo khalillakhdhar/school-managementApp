@@ -18,7 +18,7 @@
     {{-- Students --}}
     <div style="background:white;border-radius:14px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04);display:flex;flex-direction:column;gap:10px;">
         <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;">Élèves actifs</span>
+            <span style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;">{{ __('Élèves actifs') }}</span>
             <div style="width:34px;height:34px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
@@ -28,7 +28,7 @@
         </div>
         <div style="font-size:30px;font-weight:800;color:#0f172a;letter-spacing:-1px;line-height:1;">{{ $activeStudents }}</div>
         <div style="font-size:11px;font-weight:600;color:{{ $studentTrend >= 0 ? '#10b981' : '#ef4444' }};">
-            {{ $studentTrend >= 0 ? '+' : '' }}{{ $studentTrend }}% · {{ $newThisMonth }} ce mois
+            {{ __(':trend% · :new ce mois', ['trend' => ($studentTrend >= 0 ? '+' : '') . $studentTrend, 'new' => $newThisMonth]) }}
         </div>
         <div style="display:flex;align-items:flex-end;gap:2px;height:24px;margin-top:2px;">
             @foreach($evolution['counts'] as $count)
@@ -41,7 +41,7 @@
     {{-- Teachers --}}
     <div style="background:white;border-radius:14px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04);display:flex;flex-direction:column;gap:10px;">
         <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;">Enseignants</span>
+            <span style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;">{{ __('Enseignants') }}</span>
             <div style="width:34px;height:34px;background:#f0fdf4;border-radius:10px;display:flex;align-items:center;justify-content:center;">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/>
@@ -50,14 +50,14 @@
             </div>
         </div>
         <div style="font-size:30px;font-weight:800;color:#0f172a;letter-spacing:-1px;line-height:1;">{{ $teachersCount }}</div>
-        <div style="font-size:11px;color:#64748b;">actifs dans l'établissement</div>
+        <div style="font-size:11px;color:#64748b;">{{ __("actifs dans l'établissement") }}</div>
         <div style="height:24px;background:#d1fae5;border-radius:4px;margin-top:2px;"></div>
     </div>
 
     {{-- Classes --}}
     <div style="background:white;border-radius:14px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04);display:flex;flex-direction:column;gap:10px;">
         <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;">Classes</span>
+            <span style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;">{{ __('Classes') }}</span>
             <div style="width:34px;height:34px;background:#faf5ff;border-radius:10px;display:flex;align-items:center;justify-content:center;">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
@@ -65,14 +65,14 @@
             </div>
         </div>
         <div style="font-size:30px;font-weight:800;color:#0f172a;letter-spacing:-1px;line-height:1;">{{ $classesCount }}</div>
-        <div style="font-size:11px;color:#64748b;">{{ $activeStudents > 0 && $classesCount > 0 ? round($activeStudents/$classesCount) : 0 }} élèves/classe en moy.</div>
+        <div style="font-size:11px;color:#64748b;">{{ __(':avg élèves/classe en moy.', ['avg' => $activeStudents > 0 && $classesCount > 0 ? round($activeStudents/$classesCount) : 0]) }}</div>
         <div style="height:24px;background:#ede9fe;border-radius:4px;margin-top:2px;"></div>
     </div>
 
     {{-- Attendance --}}
     <div style="background:white;border-radius:14px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04);display:flex;flex-direction:column;gap:10px;">
         <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;">Taux présence</span>
+            <span style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;">{{ __('Taux présence') }}</span>
             <div style="width:34px;height:34px;background:#fff7ed;border-radius:10px;display:flex;align-items:center;justify-content:center;">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
@@ -80,7 +80,7 @@
             </div>
         </div>
         <div style="font-size:30px;font-weight:800;color:#0f172a;letter-spacing:-1px;line-height:1;">{{ $attendanceRate }}<span style="font-size:16px;color:#64748b;font-weight:600;">%</span></div>
-        <div style="font-size:11px;color:#64748b;">{{ $totalAtt }} enregistrements ce mois</div>
+        <div style="font-size:11px;color:#64748b;">{{ __(':n enregistrements ce mois', ['n' => $totalAtt]) }}</div>
         <div style="background:#fef3c7;border-radius:4px;height:24px;overflow:hidden;position:relative;margin-top:2px;">
             <div style="position:absolute;left:0;top:0;bottom:0;width:{{ $attendanceRate }}%;background:#f59e0b;border-radius:4px;transition:width .6s;"></div>
         </div>
@@ -89,7 +89,7 @@
     {{-- Revenue --}}
     <div style="background:white;border-radius:14px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04);display:flex;flex-direction:column;gap:10px;">
         <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;">Recettes mois</span>
+            <span style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;">{{ __('Recettes mois') }}</span>
             <div style="width:34px;height:34px;background:#f0fdf4;border-radius:10px;display:flex;align-items:center;justify-content:center;">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
@@ -98,7 +98,7 @@
         </div>
         <div style="font-size:22px;font-weight:800;color:#0f172a;letter-spacing:-0.5px;line-height:1.1;">{{ number_format($revenueMonth,0,',',' ') }} TND</div>
         <div style="font-size:11px;font-weight:600;color:{{ $revenueTrend >= 0 ? '#10b981' : '#ef4444' }};">
-            {{ $revenueTrend >= 0 ? '↑' : '↓' }} {{ abs($revenueTrend) }}% vs mois précédent
+            {{ $revenueTrend >= 0 ? '↑' : '↓' }} {{ __(':pct% vs mois précédent', ['pct' => abs($revenueTrend)]) }}
         </div>
         <div style="display:flex;align-items:flex-end;gap:2px;height:24px;margin-top:2px;">
             @php $maxRev = max(max($revenueChart['revenue'] ?: [1]),1); @endphp
@@ -112,7 +112,7 @@
     {{-- Overdue --}}
     <div style="background:{{ $overdueCount > 0 ? '#fff1f2' : 'white' }};border-radius:14px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,0.06),0 0 0 1px {{ $overdueCount > 0 ? 'rgba(239,68,68,0.15)' : 'rgba(0,0,0,0.04)' }};display:flex;flex-direction:column;gap:10px;">
         <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;">Impayés</span>
+            <span style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;">{{ __('Impayés') }}</span>
             <div style="width:34px;height:34px;background:#fff1f2;border-radius:10px;display:flex;align-items:center;justify-content:center;">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="{{ $overdueCount > 0 ? '#ef4444' : '#94a3b8' }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -214,10 +214,10 @@
             <table style="width:100%;border-collapse:collapse;">
                 <thead>
                     <tr style="border-bottom:1px solid #f1f5f9;">
-                        <th style="text-align:left;font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:0 0 10px;">Élève</th>
-                        <th style="text-align:left;font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:0 0 10px;">Classe</th>
-                        <th style="text-align:right;font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:0 0 10px;">Montant</th>
-                        <th style="text-align:right;font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:0 0 10px;">Retard</th>
+                        <th style="text-align:start;font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:0 0 10px;">Élève</th>
+                        <th style="text-align:start;font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:0 0 10px;">Classe</th>
+                        <th style="text-align:end;font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:0 0 10px;">Montant</th>
+                        <th style="text-align:end;font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:0 0 10px;">Retard</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -227,8 +227,8 @@
                         <td style="padding:9px 0;font-size:12px;color:#64748b;">
                             <span style="background:#f1f5f9;padding:2px 8px;border-radius:4px;font-weight:500;">{{ $row['class'] }}</span>
                         </td>
-                        <td style="padding:9px 0;font-size:13px;font-weight:700;color:#0f172a;text-align:right;font-variant-numeric:tabular-nums;">{{ number_format($row['amount'],3) }}</td>
-                        <td style="padding:9px 0;text-align:right;">
+                        <td style="padding:9px 0;font-size:13px;font-weight:700;color:#0f172a;text-align:end;font-variant-numeric:tabular-nums;">{{ number_format($row['amount'],3) }}</td>
+                        <td style="padding:9px 0;text-align:end;">
                             <span style="font-size:11px;font-weight:700;color:white;padding:2px 8px;border-radius:20px;
                                 background:{{ $row['days'] > 60 ? '#dc2626' : ($row['days'] > 30 ? '#f59e0b' : '#ef4444') }};">
                                 {{ $row['days'] }}j

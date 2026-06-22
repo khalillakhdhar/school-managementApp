@@ -73,12 +73,12 @@
                         <div style="font-size:14px;font-weight:700;color:#0f172a;">{{ $c['name'] }}</div>
                         <div style="font-size:12px;color:#64748b;">{{ __('Classe :class', ['class' => $c['class']]) }}</div>
                     </div>
-                    <div style="text-align:right;">
+                    <div style="text-align:end;">
                         <div style="font-size:15px;font-weight:800;color:{{ $c['rate']===null ? '#94a3b8' : ($c['rate']>=90?'#059669':($c['rate']>=75?'#b45309':'#dc2626')) }};">{{ $c['rate']===null ? '—' : $c['rate'].'%' }}</div>
                         <div style="font-size:10.5px;color:#94a3b8;font-weight:600;">{{ __('PRÉSENCE') }}</div>
                     </div>
                     @if($c['outstanding']>0)
-                    <div style="text-align:right;">
+                    <div style="text-align:end;">
                         <div style="font-size:14px;font-weight:800;color:#b45309;">{{ number_format($c['outstanding'],3) }}</div>
                         <div style="font-size:10.5px;color:#94a3b8;font-weight:600;">{{ __('DÛ') }}</div>
                     </div>

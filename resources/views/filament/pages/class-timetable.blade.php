@@ -100,27 +100,27 @@ html.dark .ct-table-outer{background:#1e293b;border-color:#334155}
 
 .ct-th-day{padding:12px 16px;background:#f8fafc;font-size:11px;font-weight:700;text-transform:uppercase;
   letter-spacing:.7px;color:#64748b;border-bottom:1.5px solid #e2e8f0;white-space:nowrap;
-  min-width:90px;position:sticky;left:0;z-index:2}
+  min-width:90px;position:sticky;inset-inline-start:0;z-index:2}
 html.dark .ct-th-day{background:#0f172a;color:#94a3b8;border-color:#334155}
 
 .ct-th-slot{padding:10px 14px;background:#f8fafc;font-size:11px;font-weight:700;color:#374151;
-  border-bottom:1.5px solid #e2e8f0;text-align:center;min-width:140px;border-left:1px solid #f1f5f9}
-html.dark .ct-th-slot{background:#0f172a;color:#94a3b8;border-color:#334155;border-left-color:#1e293b}
+  border-bottom:1.5px solid #e2e8f0;text-align:center;min-width:140px;border-inline-start:1px solid #f1f5f9}
+html.dark .ct-th-slot{background:#0f172a;color:#94a3b8;border-color:#334155;border-inline-start-color:#1e293b}
 .ct-slot-time{font-size:13px;font-weight:800;color:#0f172a;display:block;line-height:1.3}
 html.dark .ct-slot-time{color:#f1f5f9}
 .ct-slot-end{font-size:10px;color:#94a3b8;font-weight:500}
 
 .ct-td-day{padding:10px 16px;background:#f8fafc;font-size:12px;font-weight:700;color:#374151;
-  border-bottom:1px solid #f1f5f9;white-space:nowrap;position:sticky;left:0;z-index:1}
+  border-bottom:1px solid #f1f5f9;white-space:nowrap;position:sticky;inset-inline-start:0;z-index:1}
 html.dark .ct-td-day{background:#0f172a;color:#94a3b8;border-color:#1e293b}
 
 .ct-td-cell{padding:6px 8px;vertical-align:top;border-bottom:1px solid #f1f5f9;
-  border-left:1px solid #f1f5f9;min-width:140px}
+  border-inline-start:1px solid #f1f5f9;min-width:140px}
 html.dark .ct-td-cell{border-color:#1e293b}
 .ct-tr:last-child .ct-td-day,.ct-tr:last-child .ct-td-cell{border-bottom:none}
 
 .ct-session{background:#ffffff;border:1px solid #e2e8f0;border-radius:9px;padding:10px 12px;
-  border-left:3px solid #1d4ed8;transition:box-shadow .12s}
+  border-inline-start:3px solid #1d4ed8;transition:box-shadow .12s}
 .ct-session:hover{box-shadow:0 3px 12px rgba(0,0,0,.09)}
 html.dark .ct-session{background:#1e293b;border-color:#334155}
 .ct-session-subj{font-size:12.5px;font-weight:700;color:#0f172a;margin-bottom:3px;line-height:1.3}
@@ -318,7 +318,7 @@ $totalSubjects  = $cl->sum('subjects');
                 @foreach($row['cells'] as $cell)
                 <td class="ct-td-cell">
                     @if($cell)
-                    <div class="ct-session" style="border-left-color:{{ $cell->subject?->color ?? '#1d4ed8' }}">
+                    <div class="ct-session" style="border-inline-start-color:{{ $cell->subject?->color ?? '#1d4ed8' }}">
                         <div class="ct-session-subj">{{ $cell->subject?->name ?? '—' }}</div>
                         <div class="ct-session-teacher">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

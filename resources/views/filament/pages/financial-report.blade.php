@@ -312,17 +312,17 @@
         {{-- Summary row --}}
         <div style="display:flex;align-items:center;gap:20px;">
             @php $totalRev=$expenses6m=0; foreach($chartData['revenue'] as $v){$totalRev+=$v;} foreach($chartData['expenses'] as $v){$expenses6m+=$v;} $netFlow=$totalRev-$expenses6m; @endphp
-            <div style="text-align:right;">
+            <div style="text-align:end;">
                 <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#64748b;">Entrées 6 mois</div>
                 <div style="font-size:16px;font-weight:800;color:#10b981;">{{ number_format($totalRev,0,'.',' ') }} TND</div>
             </div>
             <div style="width:1px;height:36px;background:#e2e8f0;"></div>
-            <div style="text-align:right;">
+            <div style="text-align:end;">
                 <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#64748b;">Sorties 6 mois</div>
                 <div style="font-size:16px;font-weight:800;color:#ef4444;">{{ number_format($expenses6m,0,'.',' ') }} TND</div>
             </div>
             <div style="width:1px;height:36px;background:#e2e8f0;"></div>
-            <div style="text-align:right;">
+            <div style="text-align:end;">
                 <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#64748b;">Flux net</div>
                 <div style="font-size:16px;font-weight:800;color:{{ $netFlow>=0?'#1d4ed8':'#ef4444' }};">{{ $netFlow>=0?'+':'' }}{{ number_format($netFlow,0,'.',' ') }} TND</div>
             </div>
@@ -439,10 +439,10 @@
         <table style="width:100%;border-collapse:collapse;">
             <thead>
                 <tr style="background:#f8fafc;">
-                    <th style="padding:10px 24px 10px 24px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;white-space:nowrap;">#</th>
-                    <th style="padding:10px 16px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Élève</th>
-                    <th style="padding:10px 16px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Classe</th>
-                    <th style="padding:10px 16px;text-align:right;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Montant dû</th>
+                    <th style="padding:10px 24px 10px 24px;text-align:start;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;white-space:nowrap;">#</th>
+                    <th style="padding:10px 16px;text-align:start;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Élève</th>
+                    <th style="padding:10px 16px;text-align:start;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Classe</th>
+                    <th style="padding:10px 16px;text-align:end;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Montant dû</th>
                     <th style="padding:10px 16px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Échéance</th>
                     <th style="padding:10px 16px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Retard</th>
                     <th style="padding:10px 24px 10px 16px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Statut</th>
@@ -465,7 +465,7 @@
                         @else —
                         @endif
                     </td>
-                    <td style="padding:12px 16px;text-align:right;font-size:13px;font-weight:800;color:#dc2626;font-variant-numeric:tabular-nums;">{{ number_format($row['amount'],3) }} <span style="font-size:10px;font-weight:500;color:#94a3b8;">TND</span></td>
+                    <td style="padding:12px 16px;text-align:end;font-size:13px;font-weight:800;color:#dc2626;font-variant-numeric:tabular-nums;">{{ number_format($row['amount'],3) }} <span style="font-size:10px;font-weight:500;color:#94a3b8;">TND</span></td>
                     <td style="padding:12px 16px;text-align:center;font-size:12px;color:#475569;font-variant-numeric:tabular-nums;">{{ $row['due_date'] }}</td>
                     <td style="padding:12px 16px;text-align:center;font-size:12px;font-weight:700;color:{{ $sClr }};font-variant-numeric:tabular-nums;">{{ $days }}j</td>
                     <td style="padding:12px 24px 12px 16px;text-align:center;">

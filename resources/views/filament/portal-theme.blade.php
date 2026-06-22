@@ -43,7 +43,7 @@ html:not(.dark) .fi-badge{border-radius:7px!important;font-weight:600!important;
 
 /* ═══ Sidebar — dark navy ═══ */
 :root{--sidebar-width:18rem!important}
-.fi-sidebar,html.dark .fi-sidebar{background:#0f172a!important;border-right:1px solid rgba(255,255,255,.05)!important}
+.fi-sidebar,html.dark .fi-sidebar{background:#0f172a!important;border-inline-end:1px solid rgba(255,255,255,.05)!important}
 .fi-sidebar-header,.fi-sidebar-nav,.fi-sidebar-footer,.fi-sidebar-group,.fi-sidebar-group-btn,.fi-sidebar-group-items,.fi-sidebar-item,.fi-sidebar-item-btn,.fi-sidebar-nav-groups{background:transparent!important}
 .fi-sidebar-header{border-bottom:1px solid rgba(255,255,255,.07)!important}
 .fi-sidebar-footer{border-top:1px solid rgba(255,255,255,.06)!important}

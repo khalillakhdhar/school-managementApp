@@ -58,7 +58,7 @@ class ExpenseCategoryResource extends Resource
                     ->label(__('Nb. Dépenses'))
                     ->fontFamily(\Filament\Support\Enums\FontFamily::Mono)
                     ->sortable()
-                    ->alignRight()
+                    ->alignEnd()
                     ->badge()
                     ->color('gray'),
             ])
