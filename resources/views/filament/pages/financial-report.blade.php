@@ -212,12 +212,12 @@
                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
             @if($overdueCount > 0)
-            <span style="padding:3px 8px;background:#fee2e2;color:#dc2626;border-radius:20px;font-size:11px;font-weight:700;">{{ $overdueCount }} en retard</span>
+            <span style="padding:3px 8px;background:#fee2e2;color:#dc2626;border-radius:20px;font-size:11px;font-weight:700;">{{ __(':count en retard', ['count' => $overdueCount]) }}</span>
             @endif
         </div>
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">Impayés</div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">{{ __('Impayés') }}</div>
         <div style="font-size:26px;font-weight:800;color:#d97706;letter-spacing:-0.8px;line-height:1.1;margin:4px 0 2px;">{{ number_format($overdue, 3) }}</div>
-        <div style="font-size:11px;color:#94a3b8;">TND · total en retard</div>
+        <div style="font-size:11px;color:#94a3b8;">{{ __('TND · total en retard') }}</div>
         <svg viewBox="0 0 100 34" style="width:100%;height:34px;margin-top:12px;" preserveAspectRatio="none">
             <defs><linearGradient id="gOvd" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f59e0b" stop-opacity="0.18"/><stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/></linearGradient></defs>
             @php $p = $spark(array_values($aging)); @endphp
@@ -233,11 +233,11 @@
             <div style="width:40px;height:40px;background:{{ $netBg }};border-radius:12px;display:flex;align-items:center;justify-content:center;">
                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="{{ $netColor }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="{{ $net >= 0 ? '23 6 13.5 15.5 8.5 10.5 1 18' : '1 6 10.5 15.5 15.5 10.5 23 18' }}"/></svg>
             </div>
-            <span style="padding:3px 8px;background:{{ $nBadge['bg'] }};color:{{ $nBadge['clr'] }};border-radius:20px;font-size:11px;font-weight:700;">{{ $net >= 0 ? 'Bénéfice' : 'Déficit' }}</span>
+            <span style="padding:3px 8px;background:{{ $nBadge['bg'] }};color:{{ $nBadge['clr'] }};border-radius:20px;font-size:11px;font-weight:700;">{{ $net >= 0 ? __('Bénéfice') : __('Déficit') }}</span>
         </div>
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">Résultat Net</div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">{{ __('Résultat Net') }}</div>
         <div style="font-size:26px;font-weight:800;color:{{ $netColor }};letter-spacing:-0.8px;line-height:1.1;margin:4px 0 2px;">{{ $net >= 0 ? '+' : '' }}{{ number_format($net, 3) }}</div>
-        <div style="font-size:11px;color:#94a3b8;">TND · recettes − dépenses</div>
+        <div style="font-size:11px;color:#94a3b8;">{{ __('TND · recettes − dépenses') }}</div>
         <svg viewBox="0 0 100 34" style="width:100%;height:34px;margin-top:12px;" preserveAspectRatio="none">
             <defs><linearGradient id="gNet" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="{{ $netColor }}" stop-opacity="0.18"/><stop offset="100%" stop-color="{{ $netColor }}" stop-opacity="0"/></linearGradient></defs>
             @php $p = $spark($netArr); @endphp
@@ -256,12 +256,12 @@
     <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:22px 24px;">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;">
             <div>
-                <div style="font-size:14px;font-weight:700;color:#0f172a;">Évolution des revenus</div>
-                <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Tendance sur les 6 derniers mois</div>
+                <div style="font-size:14px;font-weight:700;color:#0f172a;">{{ __('Évolution des revenus') }}</div>
+                <div style="font-size:12px;color:#94a3b8;margin-top:2px;">{{ __('Tendance sur les 6 derniers mois') }}</div>
             </div>
             <div style="display:flex;align-items:center;gap:14px;font-size:12px;color:#64748b;">
-                <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:3px;background:#10b981;border-radius:2px;display:inline-block;"></span>Revenus</span>
-                <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:3px;background:#ef4444;border-radius:2px;display:inline-block;"></span>Dépenses</span>
+                <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:3px;background:#10b981;border-radius:2px;display:inline-block;"></span>{{ __('Revenus') }}</span>
+                <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:3px;background:#ef4444;border-radius:2px;display:inline-block;"></span>{{ __('Dépenses') }}</span>
             </div>
         </div>
         <div style="position:relative;height:220px;">
@@ -272,13 +272,13 @@
     {{-- Expense Distribution Donut --}}
     <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:22px 24px;">
         <div style="margin-bottom:16px;">
-            <div style="font-size:14px;font-weight:700;color:#0f172a;">Répartition des dépenses</div>
-            <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Par catégorie · période en cours</div>
+            <div style="font-size:14px;font-weight:700;color:#0f172a;">{{ __('Répartition des dépenses') }}</div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:2px;">{{ __('Par catégorie · période en cours') }}</div>
         </div>
         @if(empty($expByCat))
         <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;color:#94a3b8;">
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:10px;"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-            <span style="font-size:13px;">Aucune dépense sur cette période</span>
+            <span style="font-size:13px;">{{ __('Aucune dépense sur cette période') }}</span>
         </div>
         @else
         <div style="position:relative;height:170px;">
@@ -306,24 +306,24 @@
 <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:22px 24px;">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
         <div>
-            <div style="font-size:14px;font-weight:700;color:#0f172a;">Flux de trésorerie</div>
-            <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Revenus, dépenses et résultat net par mois</div>
+            <div style="font-size:14px;font-weight:700;color:#0f172a;">{{ __('Flux de trésorerie') }}</div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:2px;">{{ __('Revenus, dépenses et résultat net par mois') }}</div>
         </div>
         {{-- Summary row --}}
         <div style="display:flex;align-items:center;gap:20px;">
             @php $totalRev=$expenses6m=0; foreach($chartData['revenue'] as $v){$totalRev+=$v;} foreach($chartData['expenses'] as $v){$expenses6m+=$v;} $netFlow=$totalRev-$expenses6m; @endphp
             <div style="text-align:end;">
-                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#64748b;">Entrées 6 mois</div>
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#64748b;">{{ __('Entrées 6 mois') }}</div>
                 <div style="font-size:16px;font-weight:800;color:#10b981;">{{ number_format($totalRev,0,'.',' ') }} TND</div>
             </div>
             <div style="width:1px;height:36px;background:#e2e8f0;"></div>
             <div style="text-align:end;">
-                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#64748b;">Sorties 6 mois</div>
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#64748b;">{{ __('Sorties 6 mois') }}</div>
                 <div style="font-size:16px;font-weight:800;color:#ef4444;">{{ number_format($expenses6m,0,'.',' ') }} TND</div>
             </div>
             <div style="width:1px;height:36px;background:#e2e8f0;"></div>
             <div style="text-align:end;">
-                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#64748b;">Flux net</div>
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#64748b;">{{ __('Flux net') }}</div>
                 <div style="font-size:16px;font-weight:800;color:{{ $netFlow>=0?'#1d4ed8':'#ef4444' }};">{{ $netFlow>=0?'+':'' }}{{ number_format($netFlow,0,'.',' ') }} TND</div>
             </div>
         </div>
@@ -340,17 +340,17 @@
 
     {{-- Payment Methods --}}
     <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:22px 24px;">
-        <div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:4px;">Revenus par mode de paiement</div>
-        <div style="font-size:12px;color:#94a3b8;margin-bottom:18px;">Répartition des encaissements</div>
+        <div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:4px;">{{ __('Revenus par mode de paiement') }}</div>
+        <div style="font-size:12px;color:#94a3b8;margin-bottom:18px;">{{ __('Répartition des encaissements') }}</div>
         @if(empty($byMethod))
-        <div style="color:#94a3b8;font-size:13px;padding:20px 0;">Aucun revenu sur cette période</div>
+        <div style="color:#94a3b8;font-size:13px;padding:20px 0;">{{ __('Aucun revenu sur cette période') }}</div>
         @else
         @php
             $methodMeta = [
-                'cash'          => ['icon'=>'💵','label'=>'Espèces',         'color'=>'#10b981'],
-                'bank_transfer' => ['icon'=>'🏦','label'=>'Virement bancaire','color'=>'#1d4ed8'],
-                'cheque'        => ['icon'=>'📋','label'=>'Chèque',          'color'=>'#f59e0b'],
-                'app'           => ['icon'=>'📱','label'=>'Application',     'color'=>'#8b5cf6'],
+                'cash'          => ['icon'=>'💵','label'=>__('Espèces'),         'color'=>'#10b981'],
+                'bank_transfer' => ['icon'=>'🏦','label'=>__('Virement bancaire'),'color'=>'#1d4ed8'],
+                'cheque'        => ['icon'=>'📋','label'=>__('Chèque'),          'color'=>'#f59e0b'],
+                'app'           => ['icon'=>'📱','label'=>__('Application'),     'color'=>'#8b5cf6'],
             ];
         @endphp
         <div style="display:flex;flex-direction:column;gap:14px;">
@@ -375,18 +375,18 @@
     {{-- Aging Analysis --}}
     <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:22px 24px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-            <div style="font-size:14px;font-weight:700;color:#0f172a;">Analyse par ancienneté des impayés</div>
+            <div style="font-size:14px;font-weight:700;color:#0f172a;">{{ __('Analyse par ancienneté des impayés') }}</div>
             @if(array_sum($aging)>0)
             <span style="padding:2px 8px;background:#fee2e2;color:#dc2626;border-radius:12px;font-size:11px;font-weight:700;">{{ number_format(array_sum($aging),0,'.',' ') }} TND</span>
             @endif
         </div>
-        <div style="font-size:12px;color:#94a3b8;margin-bottom:18px;">Répartition des retards de paiement</div>
+        <div style="font-size:12px;color:#94a3b8;margin-bottom:18px;">{{ __('Répartition des retards de paiement') }}</div>
         @php
             $agingBuckets = [
-                ['label'=>'1–30 jours',   'key'=>'1_30',  'color'=>'#f59e0b','bg'=>'#fffbeb','text'=>'#92400e'],
-                ['label'=>'31–60 jours',  'key'=>'31_60', 'color'=>'#f97316','bg'=>'#fff7ed','text'=>'#9a3412'],
-                ['label'=>'61–90 jours',  'key'=>'61_90', 'color'=>'#ef4444','bg'=>'#fff1f2','text'=>'#b91c1c'],
-                ['label'=>'90+ jours',    'key'=>'90p',   'color'=>'#dc2626','bg'=>'#fef2f2','text'=>'#991b1b'],
+                ['label'=>__('1–30 jours'),   'key'=>'1_30',  'color'=>'#f59e0b','bg'=>'#fffbeb','text'=>'#92400e'],
+                ['label'=>__('31–60 jours'),  'key'=>'31_60', 'color'=>'#f97316','bg'=>'#fff7ed','text'=>'#9a3412'],
+                ['label'=>__('61–90 jours'),  'key'=>'61_90', 'color'=>'#ef4444','bg'=>'#fff1f2','text'=>'#b91c1c'],
+                ['label'=>__('90+ jours'),    'key'=>'90p',   'color'=>'#dc2626','bg'=>'#fef2f2','text'=>'#991b1b'],
             ];
             $agingTotal = array_sum($aging) ?: 1;
         @endphp
@@ -424,13 +424,13 @@
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </div>
             <div>
-                <div style="font-size:14px;font-weight:700;color:#0f172a;">Paiements en retard</div>
-                <div style="font-size:12px;color:#94a3b8;">{{ count($overdueDetail) }} élève{{ count($overdueDetail)>1?'s':'' }} · total {{ number_format($overdue,0,'.',' ') }} TND</div>
+                <div style="font-size:14px;font-weight:700;color:#0f172a;">{{ __('Paiements en retard') }}</div>
+                <div style="font-size:12px;color:#94a3b8;">{{ __(':count élève(s) · total :total TND', ['count' => count($overdueDetail), 'total' => number_format($overdue,0,'.',' ')]) }}</div>
             </div>
         </div>
         <a href="{{ \App\Filament\Resources\PaymentResource::getUrl('index') }}"
             style="display:flex;align-items:center;gap:5px;padding:7px 14px;background:#fff1f2;border:1px solid #fecdd3;border-radius:8px;font-size:12px;font-weight:600;color:#dc2626;text-decoration:none;">
-            Voir tous
+            {{ __('Voir tous') }}
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </a>
     </div>
@@ -440,21 +440,21 @@
             <thead>
                 <tr style="background:#f8fafc;">
                     <th style="padding:10px 24px 10px 24px;text-align:start;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;white-space:nowrap;">#</th>
-                    <th style="padding:10px 16px;text-align:start;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Élève</th>
-                    <th style="padding:10px 16px;text-align:start;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Classe</th>
-                    <th style="padding:10px 16px;text-align:end;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Montant dû</th>
-                    <th style="padding:10px 16px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Échéance</th>
-                    <th style="padding:10px 16px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Retard</th>
-                    <th style="padding:10px 24px 10px 16px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">Statut</th>
+                    <th style="padding:10px 16px;text-align:start;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">{{ __('Élève') }}</th>
+                    <th style="padding:10px 16px;text-align:start;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">{{ __('Classe') }}</th>
+                    <th style="padding:10px 16px;text-align:end;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">{{ __('Montant dû') }}</th>
+                    <th style="padding:10px 16px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">{{ __('Échéance') }}</th>
+                    <th style="padding:10px 16px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">{{ __('Retard') }}</th>
+                    <th style="padding:10px 24px 10px 16px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;">{{ __('Statut') }}</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($overdueDetail as $idx => $row)
                 @php
                     $days = $row['days_overdue'];
-                    if ($days > 60)      { $sLabel='Critique'; $sBg='#fef2f2'; $sClr='#dc2626'; $sBorder='#fecaca'; }
-                    elseif ($days > 30)  { $sLabel='Urgent';   $sBg='#fff7ed'; $sClr='#c2410c'; $sBorder='#fed7aa'; }
-                    else                 { $sLabel='En retard'; $sBg='#fffbeb'; $sClr='#d97706'; $sBorder='#fde68a'; }
+                    if ($days > 60)      { $sLabel=__('Critique'); $sBg='#fef2f2'; $sClr='#dc2626'; $sBorder='#fecaca'; }
+                    elseif ($days > 30)  { $sLabel=__('Urgent');   $sBg='#fff7ed'; $sClr='#c2410c'; $sBorder='#fed7aa'; }
+                    else                 { $sLabel=__('En retard'); $sBg='#fffbeb'; $sClr='#d97706'; $sBorder='#fde68a'; }
                 @endphp
                 <tr style="border-top:1px solid #f8fafc;transition:background .1s;" onmouseover="this.style.background='#fafbfc'" onmouseout="this.style.background=''">
                     <td style="padding:12px 24px;font-size:12px;color:#94a3b8;font-variant-numeric:tabular-nums;">{{ $idx+1 }}</td>
@@ -467,7 +467,7 @@
                     </td>
                     <td style="padding:12px 16px;text-align:end;font-size:13px;font-weight:800;color:#dc2626;font-variant-numeric:tabular-nums;">{{ number_format($row['amount'],3) }} <span style="font-size:10px;font-weight:500;color:#94a3b8;">TND</span></td>
                     <td style="padding:12px 16px;text-align:center;font-size:12px;color:#475569;font-variant-numeric:tabular-nums;">{{ $row['due_date'] }}</td>
-                    <td style="padding:12px 16px;text-align:center;font-size:12px;font-weight:700;color:{{ $sClr }};font-variant-numeric:tabular-nums;">{{ $days }}j</td>
+                    <td style="padding:12px 16px;text-align:center;font-size:12px;font-weight:700;color:{{ $sClr }};font-variant-numeric:tabular-nums;">{{ __(':n j', ['n' => $days]) }}</td>
                     <td style="padding:12px 24px 12px 16px;text-align:center;">
                         <span style="display:inline-flex;align-items:center;padding:3px 10px;background:{{ $sBg }};border:1px solid {{ $sBorder }};border-radius:20px;font-size:10px;font-weight:700;color:{{ $sClr }};">{{ $sLabel }}</span>
                     </td>
@@ -488,20 +488,20 @@
     @php $rateColor = $rate>=80?'#10b981':($rate>=50?'#f59e0b':'#ef4444'); @endphp
     <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:20px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">Taux de recouvrement</div>
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">{{ __('Collection Rate') }}</div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ $rateColor }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
         </div>
         <div style="font-size:30px;font-weight:900;color:{{ $rateColor }};letter-spacing:-1px;line-height:1;">{{ $rate }}<span style="font-size:18px;">%</span></div>
         <div style="margin-top:12px;width:100%;background:#f1f5f9;border-radius:4px;height:6px;">
             <div style="width:{{ $rate }}%;background:{{ $rateColor }};height:6px;border-radius:4px;transition:width .8s;"></div>
         </div>
-        <div style="font-size:11px;color:#94a3b8;margin-top:6px;">du total dû est encaissé</div>
+        <div style="font-size:11px;color:#94a3b8;margin-top:6px;">{{ __('du total dû est encaissé') }}</div>
     </div>
 
     {{-- Revenue Growth --}}
     <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:20px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">Croissance revenus</div>
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">{{ __('Croissance revenus') }}</div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
         </div>
         @if($revenueGrowth != 0)
@@ -509,16 +509,16 @@
         @else
         <div style="font-size:30px;font-weight:900;color:#64748b;letter-spacing:-1px;line-height:1;">→ 0%</div>
         @endif
-        <div style="font-size:11px;color:#94a3b8;margin-top:8px;">vs période précédente</div>
+        <div style="font-size:11px;color:#94a3b8;margin-top:8px;">{{ __('vs période précédente') }}</div>
         <div style="margin-top:10px;padding:8px 12px;background:{{ $rBadge['bg'] }};border-radius:8px;">
-            <div style="font-size:12px;font-weight:600;color:{{ $rBadge['clr'] }};">{{ number_format($revenue,0,'.',' ') }} TND cette période</div>
+            <div style="font-size:12px;font-weight:600;color:{{ $rBadge['clr'] }};">{{ __(':amount TND cette période', ['amount' => number_format($revenue,0,'.',' ')]) }}</div>
         </div>
     </div>
 
     {{-- Expense Growth --}}
     <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:20px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">Croissance dépenses</div>
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">{{ __('Croissance dépenses') }}</div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
         </div>
         @if($expenseGrowth != 0)
@@ -526,9 +526,9 @@
         @else
         <div style="font-size:30px;font-weight:900;color:#64748b;letter-spacing:-1px;line-height:1;">→ 0%</div>
         @endif
-        <div style="font-size:11px;color:#94a3b8;margin-top:8px;">vs période précédente</div>
+        <div style="font-size:11px;color:#94a3b8;margin-top:8px;">{{ __('vs période précédente') }}</div>
         <div style="margin-top:10px;padding:8px 12px;background:{{ $eBadge['bg'] }};border-radius:8px;">
-            <div style="font-size:12px;font-weight:600;color:{{ $eBadge['clr'] }};">{{ number_format($expenses,0,'.',' ') }} TND cette période</div>
+            <div style="font-size:12px;font-weight:600;color:{{ $eBadge['clr'] }};">{{ __(':amount TND cette période', ['amount' => number_format($expenses,0,'.',' ')]) }}</div>
         </div>
     </div>
 
@@ -536,14 +536,14 @@
     @php $perfColor = $payPerf>=80?'#1d4ed8':($payPerf>=50?'#0ea5e9':'#94a3b8'); @endphp
     <div style="background:white;border-radius:16px;border:1px solid #e8edf2;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:20px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">Performance paiements</div>
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">{{ __('Performance paiements') }}</div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ $perfColor }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         </div>
         <div style="font-size:30px;font-weight:900;color:{{ $perfColor }};letter-spacing:-1px;line-height:1;">{{ $payPerf }}<span style="font-size:18px;">%</span></div>
         <div style="margin-top:12px;width:100%;background:#f1f5f9;border-radius:4px;height:6px;">
             <div style="width:{{ $payPerf }}%;background:{{ $perfColor }};height:6px;border-radius:4px;transition:width .8s;"></div>
         </div>
-        <div style="font-size:11px;color:#94a3b8;margin-top:6px;">des paiements sont soldés</div>
+        <div style="font-size:11px;color:#94a3b8;margin-top:6px;">{{ __('des paiements sont soldés') }}</div>
     </div>
 </div>
 
@@ -583,7 +583,7 @@
                 labels,
                 datasets: [
                     {
-                        label: 'Revenus',
+                        label: '{{ __('Revenus') }}',
                         data: revenue,
                         borderColor: '#10b981',
                         backgroundColor: 'rgba(16,185,129,0.08)',
@@ -596,7 +596,7 @@
                         tension: 0.4,
                     },
                     {
-                        label: 'Dépenses',
+                        label: '{{ __('Dépenses') }}',
                         data: expenses,
                         borderColor: '#ef4444',
                         backgroundColor: 'rgba(239,68,68,0.06)',
@@ -672,7 +672,7 @@
                 labels,
                 datasets: [
                     {
-                        label: 'Revenus',
+                        label: '{{ __('Revenus') }}',
                         data: revenue,
                         backgroundColor: 'rgba(16,185,129,0.7)',
                         borderColor: '#10b981',
@@ -681,7 +681,7 @@
                         borderSkipped: false,
                     },
                     {
-                        label: 'Dépenses',
+                        label: '{{ __('Dépenses') }}',
                         data: expenses,
                         backgroundColor: 'rgba(239,68,68,0.65)',
                         borderColor: '#ef4444',
@@ -690,7 +690,7 @@
                         borderSkipped: false,
                     },
                     {
-                        label: 'Flux net',
+                        label: '{{ __('Flux net') }}',
                         data: netFlow,
                         type: 'line',
                         borderColor: '#1d4ed8',
@@ -737,11 +737,11 @@
     window.ecExportCsv = function() {
         const rows = @json($overdueDetail);
         if (!rows || rows.length === 0) {
-            alert('Aucun impayé à exporter.');
+            alert('{{ __('Aucun impayé à exporter.') }}');
             return;
         }
         let csv = '﻿'; // UTF-8 BOM
-        csv += 'Élève,Classe,Montant dû (TND),Date d\'échéance,Jours de retard\n';
+        csv += '{{ __('Élève') }},{{ __('Classe') }},{{ __('Montant dû') }} (TND),{{ __("Date d'échéance") }},{{ __('Jours de retard') }}\n';
         rows.forEach(r => {
             csv += `"${r.student_name}","${r.classroom}","${parseFloat(r.amount).toFixed(3)}","${r.due_date}","${r.days_overdue}"\n`;
         });

@@ -17,7 +17,7 @@ class SchoolSettings extends Page
 
     public static function getNavigationGroup(): ?string { return __('Paramètres'); }
     public static function getNavigationLabel(): string  { return __('Établissement'); }
-    public function getTitle(): string                   { return 'Paramètres de l\'établissement'; }
+    public function getTitle(): string                   { return __('Paramètres de l\'établissement'); }
 
     public string $school_name   = '';
     public string $slogan        = '';
