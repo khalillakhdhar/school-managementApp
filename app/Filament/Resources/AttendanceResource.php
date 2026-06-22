@@ -59,7 +59,7 @@ class AttendanceResource extends Resource
     {
         return $schema->components([
             Section::make(__('Pointage de présence'))
-                ->description('Enregistrez la présence ou l\'absence d\'un employé pour une journée donnée')
+                ->description(__("Enregistrez la présence ou l'absence d'un employé pour une journée donnée"))
                 ->icon('heroicon-o-calendar-days')
                 ->schema([
                     Forms\Components\Select::make('employee_id')
@@ -72,13 +72,13 @@ class AttendanceResource extends Resource
                     Forms\Components\Select::make('status')
                         ->label(__('Statut de présence'))
                         ->options([
-                            'present' => 'Présent',
-                            'absent'  => 'Absent',
-                            'late'    => 'En retard',
-                            'leave'   => 'Congé',
+                            'present' => __('Présent'),
+                            'absent'  => __('Absent'),
+                            'late'    => __('En retard'),
+                            'leave'   => __('Congé'),
                         ])
                         ->required()->default('present'),
-                    Forms\Components\TimePicker::make('time_in')->label('Heure d\'arrivée'),
+                    Forms\Components\TimePicker::make('time_in')->label(__("Heure d'arrivée")),
                     Forms\Components\TimePicker::make('time_out')->label(__('Heure de départ')),
                     Forms\Components\TextInput::make('total_hours')->label(__('Heures travaillées'))->numeric()->suffix('h'),
                     Forms\Components\TextInput::make('overtime_hours')->label(__('Heures supplémentaires'))->numeric()->default(0)->suffix('h'),
@@ -109,10 +109,10 @@ class AttendanceResource extends Resource
                         default   => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'present' => 'Présent',
-                        'absent'  => 'Absent',
-                        'late'    => 'En retard',
-                        'leave'   => 'Congé',
+                        'present' => __('Présent'),
+                        'absent'  => __('Absent'),
+                        'late'    => __('En retard'),
+                        'leave'   => __('Congé'),
                         default   => $state,
                     }),
                 Tables\Columns\TextColumn::make('time_in')->label(__('Arrivée')),
@@ -128,26 +128,26 @@ class AttendanceResource extends Resource
                 Tables\Filters\SelectFilter::make('status')
                     ->label(__('Statut'))
                     ->options([
-                        'present' => 'Présent',
-                        'absent'  => 'Absent',
-                        'late'    => 'En retard',
-                        'leave'   => 'Congé',
+                        'present' => __('Présent'),
+                        'absent'  => __('Absent'),
+                        'late'    => __('En retard'),
+                        'leave'   => __('Congé'),
                     ]),
                 Tables\Filters\SelectFilter::make('employee')
                     ->label(__('Employé'))
                     ->relationship('employee', 'first_name'),
             ])
             ->emptyStateIcon('heroicon-o-calendar-days')
-            ->emptyStateHeading('Aucune présence enregistrée')
-            ->emptyStateDescription('Les pointages des employés apparaîtront ici.')
+            ->emptyStateHeading(__('Aucune présence enregistrée'))
+            ->emptyStateDescription(__('Les pointages des employés apparaîtront ici.'))
             ->headerActions([
                 Actions\Action::make('mark_all_present_today')
-                    ->label('Marquer tous présents aujourd\'hui')
+                    ->label(__("Marquer tous présents aujourd'hui"))
                     ->icon('heroicon-o-user-group')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->modalHeading('Pointage global — ' . now()->format('d/m/Y'))
-                    ->modalDescription('Crée un enregistrement "Présent" pour chaque employé actif sans pointage aujourd\'hui.')
+                    ->modalHeading(__('Pointage global — :date', ['date' => now()->format('d/m/Y')]))
+                    ->modalDescription(__('Crée un enregistrement "Présent" pour chaque employé actif sans pointage aujourd\'hui.'))
                     ->action(function (): void {
                         $today     = now()->toDateString();
                         $employees = Employee::where('is_active', true)->get();

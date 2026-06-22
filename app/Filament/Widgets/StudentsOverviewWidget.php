@@ -38,7 +38,7 @@ class StudentsOverviewWidget extends StatsOverviewWidget
                 ->color('success'),
 
             Stat::make(__('New This Month'), $newThis)
-                ->description(now()->locale('fr')->isoFormat('MMMM YYYY'))
+                ->description(ucfirst(now()->locale(app()->getLocale())->isoFormat('MMMM YYYY')))
                 ->descriptionIcon('heroicon-m-user-plus')
                 ->color('info'),
         ];

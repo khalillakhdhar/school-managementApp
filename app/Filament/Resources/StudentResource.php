@@ -74,7 +74,7 @@ class StudentResource extends Resource
     {
         return $schema->components([
             Section::make(__('Informations personnelles'))
-                ->description('Identité civile de l\'élève')
+                ->description(__("Identité civile de l'élève"))
                 ->icon('heroicon-o-user')
                 ->schema([
                     Forms\Components\TextInput::make('first_name')
@@ -101,14 +101,14 @@ class StudentResource extends Resource
                         )
                         ->nullable()->searchable()->placeholder(__('Sélectionner une classe')),
                     Forms\Components\DatePicker::make('enrollment_date')
-                        ->label('Date d\'inscription')->displayFormat('d/m/Y'),
+                        ->label(__("Date d'inscription"))->displayFormat('d/m/Y'),
                     Forms\Components\Select::make('status')
                         ->label(__('Statut'))
                         ->options([
-                            'active'    => 'Actif',
-                            'inactive'  => 'Inactif',
-                            'suspended' => 'Suspendu',
-                            'graduated' => 'Diplômé',
+                            'active'    => __('Actif'),
+                            'inactive'  => __('Inactif'),
+                            'suspended' => __('Suspendu'),
+                            'graduated' => __('Diplômé'),
                         ])
                         ->default('active')->required(),
                     Forms\Components\Textarea::make('address')
@@ -155,10 +155,10 @@ class StudentResource extends Resource
                         default     => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'active'    => 'Actif',
-                        'inactive'  => 'Inactif',
-                        'suspended' => 'Suspendu',
-                        'graduated' => 'Diplômé',
+                        'active'    => __('Actif'),
+                        'inactive'  => __('Inactif'),
+                        'suspended' => __('Suspendu'),
+                        'graduated' => __('Diplômé'),
                         default     => $state,
                     }),
                 Tables\Columns\TextColumn::make('pending_balance')
@@ -189,18 +189,18 @@ class StudentResource extends Resource
                 Tables\Filters\SelectFilter::make('status')
                     ->label(__('Statut'))
                     ->options([
-                        'active'    => 'Actif',
-                        'inactive'  => 'Inactif',
-                        'suspended' => 'Suspendu',
-                        'graduated' => 'Diplômé',
+                        'active'    => __('Actif'),
+                        'inactive'  => __('Inactif'),
+                        'suspended' => __('Suspendu'),
+                        'graduated' => __('Diplômé'),
                     ]),
                 Tables\Filters\SelectFilter::make('classroom_id')
                     ->label(__('Classe'))
                     ->relationship('classroom', 'name'),
             ])
             ->emptyStateIcon('heroicon-o-academic-cap')
-            ->emptyStateHeading('Aucun élève inscrit')
-            ->emptyStateDescription('Commencez par inscrire le premier élève de l\'établissement.')
+            ->emptyStateHeading(__('Aucun élève inscrit'))
+            ->emptyStateDescription(__("Commencez par inscrire le premier élève de l'établissement."))
             ->emptyStateActions([Actions\CreateAction::make()->label(__('Inscrire un élève'))])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);

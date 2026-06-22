@@ -34,23 +34,23 @@ class AttendancesListStatsWidget extends StatsOverviewWidget
         $rate = $totalMonth > 0 ? round($presentMonth / $totalMonth * 100, 1) : 0;
 
         return [
-            Stat::make('Présents aujourd\'hui', $presentToday)
-                ->description($totalEmp > 0 ? "sur {$totalEmp} employés actifs" : 'Aucun employé')
+            Stat::make(__("Présents aujourd'hui"), $presentToday)
+                ->description($totalEmp > 0 ? __('sur :n employés actifs', ['n' => $totalEmp]) : __('Aucun employé'))
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
 
-            Stat::make('Absents aujourd\'hui', $absentToday)
-                ->description($absentToday > 0 ? 'Absence(s) signalée(s)' : 'Aucune absence')
+            Stat::make(__("Absents aujourd'hui"), $absentToday)
+                ->description($absentToday > 0 ? __('Absence(s) signalée(s)') : __('Aucune absence'))
                 ->descriptionIcon('heroicon-m-x-circle')
                 ->color($absentToday > 0 ? 'danger' : 'gray'),
 
-            Stat::make('Non pointés', $notMarked)
-                ->description($notMarked > 0 ? 'En attente de pointage' : 'Tous pointés')
+            Stat::make(__('Non pointés'), $notMarked)
+                ->description($notMarked > 0 ? __('En attente de pointage') : __('Tous pointés'))
                 ->descriptionIcon('heroicon-m-question-mark-circle')
                 ->color($notMarked > 0 ? 'warning' : 'success'),
 
-            Stat::make('Taux de présence (mois)', $rate.'%')
-                ->description($totalMonth.' pointages ce mois')
+            Stat::make(__('Taux de présence (mois)'), $rate.'%')
+                ->description(__(':n pointages ce mois', ['n' => $totalMonth]))
                 ->descriptionIcon('heroicon-m-chart-bar')
                 ->color($rate >= 90 ? 'success' : ($rate >= 75 ? 'warning' : 'danger')),
         ];

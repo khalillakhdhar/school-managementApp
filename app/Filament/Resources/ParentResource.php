@@ -43,7 +43,7 @@ class ParentResource extends Resource
                 ])->columns(2),
 
             Section::make(__('Élèves rattachés'))
-                ->description('Associez ce parent aux enfants scolarisés dans l\'établissement')
+                ->description(__("Associez ce parent aux enfants scolarisés dans l'établissement"))
                 ->icon('heroicon-o-academic-cap')
                 ->schema([
                     Forms\Components\Select::make('students')
@@ -88,8 +88,8 @@ class ParentResource extends Resource
                 Tables\Filters\TernaryFilter::make('is_payer')->label(__('Payeur principal')),
             ])
             ->emptyStateIcon('heroicon-o-users')
-            ->emptyStateHeading('Aucun parent enregistré')
-            ->emptyStateDescription('Ajoutez les parents des élèves pour activer le portail parents.')
+            ->emptyStateHeading(__('Aucun parent enregistré'))
+            ->emptyStateDescription(__('Ajoutez les parents des élèves pour activer le portail parents.'))
             ->emptyStateActions([Actions\CreateAction::make()->label(__('Ajouter un parent'))])
             ->actions([
                 Actions\Action::make('create_account')

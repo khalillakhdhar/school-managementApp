@@ -23,23 +23,23 @@ class ParentsListStatsWidget extends StatsOverviewWidget
         $linkedChildren = SchoolParent::has('students')->count();
 
         return [
-            Stat::make('Total parents', $total)
-                ->description("{$linkedChildren} avec enfant(s) lié(s)")
+            Stat::make(__('Total parents'), $total)
+                ->description(__(':n avec enfant(s) lié(s)', ['n' => $linkedChildren]))
                 ->descriptionIcon('heroicon-m-users')
                 ->color('primary'),
 
-            Stat::make('Responsables payeurs', $payers)
-                ->description($total > 0 ? round($payers / $total * 100).'% des parents' : '—')
+            Stat::make(__('Responsables payeurs'), $payers)
+                ->description($total > 0 ? __(':pct% des parents', ['pct' => round($payers / $total * 100)]) : '—')
                 ->descriptionIcon('heroicon-m-banknotes')
                 ->color('success'),
 
-            Stat::make('Comptes portail actifs', $withAccount)
-                ->description($total > 0 ? round($withAccount / $total * 100).'% connectés' : '—')
+            Stat::make(__('Comptes portail actifs'), $withAccount)
+                ->description($total > 0 ? __(':pct% connectés', ['pct' => round($withAccount / $total * 100)]) : '—')
                 ->descriptionIcon('heroicon-m-key')
                 ->color('info'),
 
-            Stat::make('Sans accès portail', $withoutAccount)
-                ->description($withoutAccount > 0 ? 'Inviter au portail parents' : 'Tous ont un accès')
+            Stat::make(__('Sans accès portail'), $withoutAccount)
+                ->description($withoutAccount > 0 ? __('Inviter au portail parents') : __('Tous ont un accès'))
                 ->descriptionIcon('heroicon-m-user-plus')
                 ->color($withoutAccount > 0 ? 'warning' : 'gray'),
         ];

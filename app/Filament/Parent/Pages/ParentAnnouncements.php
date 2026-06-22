@@ -21,7 +21,7 @@ class ParentAnnouncements extends Page
                 'title'   => $p->title,
                 'excerpt' => $p->excerpt,
                 'content' => $p->content,
-                'date'    => $p->published_at?->locale('fr')->isoFormat('D MMMM YYYY') ?? '',
+                'date'    => $p->published_at?->locale(app()->getLocale())->isoFormat('D MMMM YYYY') ?? '',
             ])->toArray();
 
         return ['posts' => $posts];

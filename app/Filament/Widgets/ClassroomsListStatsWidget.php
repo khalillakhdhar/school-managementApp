@@ -25,22 +25,22 @@ class ClassroomsListStatsWidget extends StatsOverviewWidget
         $occupancyRate  = $totalCapacity > 0 ? round($activeStudents / $totalCapacity * 100, 1) : 0;
 
         return [
-            Stat::make('Total classes', $totalClasses)
-                ->description("{$noTeacher} sans enseignant")
+            Stat::make(__('Total classes'), $totalClasses)
+                ->description(__(':n sans enseignant', ['n' => $noTeacher]))
                 ->descriptionIcon('heroicon-m-building-office')
                 ->color($noTeacher > 0 ? 'warning' : 'success'),
 
-            Stat::make('Capacité totale', $totalCapacity.' places')
-                ->description($activeStudents.' élèves inscrits')
+            Stat::make(__('Capacité totale'), __(':n places', ['n' => $totalCapacity]))
+                ->description(__(':n élèves inscrits', ['n' => $activeStudents]))
                 ->descriptionIcon('heroicon-m-users')
                 ->color('primary'),
 
-            Stat::make('Taux d\'occupation', $occupancyRate.'%')
-                ->description($activeStudents.' / '.$totalCapacity.' places')
+            Stat::make(__("Taux d'occupation"), $occupancyRate.'%')
+                ->description(__(':a / :b places', ['a' => $activeStudents, 'b' => $totalCapacity]))
                 ->descriptionIcon('heroicon-m-chart-bar')
                 ->color($occupancyRate >= 90 ? 'danger' : ($occupancyRate >= 70 ? 'warning' : 'success')),
 
-            Stat::make('Moy. élèves/classe', $avgPerClass)
+            Stat::make(__('Moy. élèves/classe'), $avgPerClass)
                 ->description(__('Répartition par classe'))
                 ->descriptionIcon('heroicon-m-calculator')
                 ->color('info'),

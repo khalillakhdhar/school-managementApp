@@ -47,24 +47,24 @@ class PaymentsListStatsWidget extends StatsOverviewWidget
         )->toArray();
 
         return [
-            Stat::make('Recettes ce mois', number_format($revenueMonth, 3).' TND')
-                ->description(($trend >= 0 ? '+' : '').$trend.'% vs mois précédent')
+            Stat::make(__('Recettes ce mois'), number_format($revenueMonth, 3).' TND')
+                ->description(__(':pct% vs mois précédent', ['pct' => ($trend >= 0 ? '+' : '').$trend]))
                 ->descriptionIcon($trend >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($trend >= 0 ? 'success' : 'warning')
                 ->chart($revenueChart),
 
-            Stat::make('Recettes '.$year, number_format($revenueYear, 3).' TND')
+            Stat::make(__('Recettes :year', ['year' => $year]), number_format($revenueYear, 3).' TND')
                 ->description(__('Total encaissé cette année'))
                 ->descriptionIcon('heroicon-m-banknotes')
                 ->color('primary'),
 
-            Stat::make('Impayés en retard', number_format($overdueTotal, 3).' TND')
-                ->description($overdueCount.' paiement(s) échu(s)')
+            Stat::make(__('Impayés en retard'), number_format($overdueTotal, 3).' TND')
+                ->description(__(':n paiement(s) échu(s)', ['n' => $overdueCount]))
                 ->descriptionIcon('heroicon-m-exclamation-triangle')
                 ->color($overdueCount > 0 ? 'danger' : 'success'),
 
-            Stat::make('Taux de recouvrement', $collectRate.'%')
-                ->description(number_format($invoiced, 3).' TND facturé')
+            Stat::make(__('Collection Rate'), $collectRate.'%')
+                ->description(__(':amount TND facturé', ['amount' => number_format($invoiced, 3)]))
                 ->descriptionIcon('heroicon-m-chart-pie')
                 ->color($collectRate >= 80 ? 'success' : ($collectRate >= 50 ? 'warning' : 'danger')),
         ];

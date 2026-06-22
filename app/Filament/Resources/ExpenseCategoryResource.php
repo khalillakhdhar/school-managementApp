@@ -32,7 +32,7 @@ class ExpenseCategoryResource extends Resource
     {
         return $schema->components([
             Section::make(__('Catégorie de dépense'))
-                ->description('Créez une catégorie pour regrouper et analyser les dépenses de l\'établissement')
+                ->description(__("Créez une catégorie pour regrouper et analyser les dépenses de l'établissement"))
                 ->icon('heroicon-o-tag')
                 ->schema([
                     Forms\Components\TextInput::make('name')
@@ -63,8 +63,8 @@ class ExpenseCategoryResource extends Resource
                     ->color('gray'),
             ])
             ->emptyStateIcon('heroicon-o-tag')
-            ->emptyStateHeading('Aucune catégorie de dépense')
-            ->emptyStateDescription('Créez des catégories pour organiser les dépenses (salaires, matériel, etc.).')
+            ->emptyStateHeading(__('Aucune catégorie de dépense'))
+            ->emptyStateDescription(__('Créez des catégories pour organiser les dépenses (salaires, matériel, etc.).'))
             ->emptyStateActions([Actions\CreateAction::make()->label(__('Créer une catégorie'))])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);

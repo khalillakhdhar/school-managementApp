@@ -36,9 +36,9 @@ class LevelResource extends Resource
                     Forms\Components\TextInput::make('name')
                         ->label(__('Intitulé du niveau'))
                         ->required()->maxLength(100)
-                        ->placeholder('1ère Année Primaire'),
+                        ->placeholder(__('1ère Année Primaire')),
                     Forms\Components\TextInput::make('order')
-                        ->label('Ordre d\'affichage')
+                        ->label(__("Ordre d'affichage"))
                         ->numeric()->required()->default(1)->minValue(1)->maxValue(10),
                     Forms\Components\Textarea::make('description')
                         ->label(__('Description'))
@@ -64,8 +64,8 @@ class LevelResource extends Resource
             ])
             ->defaultSort('order')
             ->emptyStateIcon('heroicon-o-academic-cap')
-            ->emptyStateHeading('Aucun niveau créé')
-            ->emptyStateDescription('Créez les niveaux scolaires (CP, CE1, etc.) pour organiser les classes.')
+            ->emptyStateHeading(__('Aucun niveau créé'))
+            ->emptyStateDescription(__('Créez les niveaux scolaires (CP, CE1, etc.) pour organiser les classes.'))
             ->emptyStateActions([Actions\CreateAction::make()->label(__('Créer un niveau'))])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);

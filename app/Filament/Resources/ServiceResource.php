@@ -48,10 +48,10 @@ class ServiceResource extends Resource
                     Forms\Components\Select::make('type')
                         ->label(__('Périodicité de facturation'))
                         ->options([
-                            'annual'  => 'Annuelle',
-                            'monthly' => 'Mensuelle',
-                            'daily'   => 'Journalière',
-                            'custom'  => 'Personnalisée',
+                            'annual'  => __('Annuelle'),
+                            'monthly' => __('Mensuelle'),
+                            'daily'   => __('Journalière'),
+                            'custom'  => __('Personnalisée'),
                         ])
                         ->required(),
                     Forms\Components\TextInput::make('amount')->label(__('Montant'))->required()->numeric()->prefix('TND'),
@@ -79,10 +79,10 @@ class ServiceResource extends Resource
                         default   => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'annual'  => 'Annuel',
-                        'monthly' => 'Mensuel',
-                        'daily'   => 'Quotidien',
-                        'custom'  => 'Personnalisé',
+                        'annual'  => __('Annuel'),
+                        'monthly' => __('Mensuel'),
+                        'daily'   => __('Quotidien'),
+                        'custom'  => __('Personnalisé'),
                         default   => $state,
                     }),
                 Tables\Columns\TextColumn::make('amount')
@@ -98,15 +98,15 @@ class ServiceResource extends Resource
                 Tables\Filters\SelectFilter::make('type')
                     ->label(__('Type'))
                     ->options([
-                        'annual'  => 'Annuel',
-                        'monthly' => 'Mensuel',
-                        'daily'   => 'Quotidien',
-                        'custom'  => 'Personnalisé',
+                        'annual'  => __('Annuel'),
+                        'monthly' => __('Mensuel'),
+                        'daily'   => __('Quotidien'),
+                        'custom'  => __('Personnalisé'),
                     ]),
             ])
             ->emptyStateIcon('heroicon-o-clipboard-document-list')
-            ->emptyStateHeading('Aucun service configuré')
-            ->emptyStateDescription('Créez les services proposés aux élèves (scolarité, transport, etc.).')
+            ->emptyStateHeading(__('Aucun service configuré'))
+            ->emptyStateDescription(__('Créez les services proposés aux élèves (scolarité, transport, etc.).'))
             ->emptyStateActions([Actions\CreateAction::make()->label(__('Créer un service'))])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);

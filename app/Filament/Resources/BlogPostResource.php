@@ -26,8 +26,8 @@ class BlogPostResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Contenu de l\'article')
-                ->description('Titre, résumé et corps du texte de l\'article')
+            Section::make(__("Contenu de l'article"))
+                ->description(__("Titre, résumé et corps du texte de l'article"))
                 ->icon('heroicon-o-document-text')
                 ->schema([
                     Forms\Components\TextInput::make('title')
@@ -98,8 +98,8 @@ class BlogPostResource extends Resource
                 Tables\Filters\TernaryFilter::make('is_published')->label(__('Publié')),
             ])
             ->emptyStateIcon('heroicon-o-newspaper')
-            ->emptyStateHeading('Aucun article publié')
-            ->emptyStateDescription('Rédigez des annonces et actualités pour le portail parents.')
+            ->emptyStateHeading(__('Aucun article publié'))
+            ->emptyStateDescription(__('Rédigez des annonces et actualités pour le portail parents.'))
             ->emptyStateActions([Actions\CreateAction::make()->label(__('Rédiger un article'))])
             ->actions([
                 Actions\Action::make('publish')

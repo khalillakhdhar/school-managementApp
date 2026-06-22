@@ -29,24 +29,24 @@ class IncidentsListStatsWidget extends StatsOverviewWidget
         )->toArray();
 
         return [
-            Stat::make('Total incidents', $total)
-                ->description("{$thisMonth} ce mois")
+            Stat::make(__('Total incidents'), $total)
+                ->description(__(':n ce mois', ['n' => $thisMonth]))
                 ->descriptionIcon('heroicon-m-exclamation-triangle')
                 ->color('primary')
                 ->chart($monthlyTrend),
 
-            Stat::make('Parents non notifiés', $unnotified)
+            Stat::make(__('Parents non notifiés'), $unnotified)
                 ->description(__('Notifications en attente'))
                 ->descriptionIcon('heroicon-m-bell-alert')
                 ->color($unnotified > 0 ? 'warning' : 'success'),
 
-            Stat::make('Incidents graves', $highSeverity)
-                ->description("{$mediumSeverity} de gravité moyenne")
+            Stat::make(__('Incidents graves'), $highSeverity)
+                ->description(__(':n de gravité moyenne', ['n' => $mediumSeverity]))
                 ->descriptionIcon('heroicon-m-fire')
                 ->color($highSeverity > 0 ? 'danger' : 'success'),
 
-            Stat::make('Ce mois', $thisMonth)
-                ->description(now()->locale('fr')->isoFormat('MMMM YYYY'))
+            Stat::make(__('Ce mois'), $thisMonth)
+                ->description(ucfirst(now()->locale(app()->getLocale())->isoFormat('MMMM YYYY')))
                 ->descriptionIcon('heroicon-m-calendar-days')
                 ->color($thisMonth > 5 ? 'danger' : ($thisMonth > 2 ? 'warning' : 'success')),
         ];

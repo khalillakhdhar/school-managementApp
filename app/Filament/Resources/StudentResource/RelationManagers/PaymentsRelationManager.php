@@ -7,11 +7,16 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class PaymentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'payments';
-    protected static ?string $title       = 'Paiements';
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('Paiements');
+    }
 
     public function form(Schema $schema): Schema
     {
@@ -20,19 +25,19 @@ class PaymentsRelationManager extends RelationManager
                 ->label(__('Montant (TND)'))->numeric()->required()->minValue(0)->prefix('TND'),
             Forms\Components\Select::make('status')
                 ->label(__('Statut'))
-                ->options(['pending' => 'En attente', 'paid' => 'Payé', 'cancelled' => 'Annulé'])
+                ->options(['pending' => __('En attente'), 'paid' => __('Payé'), 'cancelled' => __('Annulé')])
                 ->default('pending')->required(),
             Forms\Components\DatePicker::make('due_date')
-                ->label('Date d\'échéance')->displayFormat('d/m/Y'),
+                ->label(__("Date d'échéance"))->displayFormat('d/m/Y'),
             Forms\Components\DatePicker::make('payment_date')
                 ->label(__('Date de paiement'))->displayFormat('d/m/Y'),
             Forms\Components\Select::make('payment_method')
                 ->label(__('Mode de paiement'))
                 ->options([
-                    'cash'          => 'Espèces',
-                    'bank_transfer' => 'Virement bancaire',
-                    'check'         => 'Chèque',
-                    'card'          => 'Carte bancaire',
+                    'cash'          => __('Espèces'),
+                    'bank_transfer' => __('Virement bancaire'),
+                    'check'         => __('Chèque'),
+                    'card'          => __('Carte bancaire'),
                 ])
                 ->nullable(),
             Forms\Components\TextInput::make('reference_number')
@@ -61,9 +66,9 @@ class PaymentsRelationManager extends RelationManager
                         default     => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'paid'      => 'Payé',
-                        'pending'   => 'En attente',
-                        'cancelled' => 'Annulé',
+                        'paid'      => __('Payé'),
+                        'pending'   => __('En attente'),
+                        'cancelled' => __('Annulé'),
                         default     => $state,
                     }),
                 Tables\Columns\TextColumn::make('due_date')

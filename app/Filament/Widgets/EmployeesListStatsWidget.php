@@ -38,23 +38,23 @@ class EmployeesListStatsWidget extends StatsOverviewWidget
         $pendingPayroll = Payroll::whereIn('status', ['draft', 'finalized'])->count();
 
         return [
-            Stat::make('Total employés', $total)
-                ->description("{$active} actif(s) · {$teachers} enseignant(s)")
+            Stat::make(__('Total employés'), $total)
+                ->description(__(':active actif(s) · :teachers enseignant(s)', ['active' => $active, 'teachers' => $teachers]))
                 ->descriptionIcon('heroicon-m-identification')
                 ->color('primary'),
 
-            Stat::make('Présents aujourd\'hui', $presentToday)
-                ->description($notMarked > 0 ? "{$notMarked} non pointé(s)" : 'Tous pointés')
+            Stat::make(__("Présents aujourd'hui"), $presentToday)
+                ->description($notMarked > 0 ? __(':n non pointé(s)', ['n' => $notMarked]) : __('Tous pointés'))
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
 
-            Stat::make('Absents aujourd\'hui', $absentToday)
-                ->description($absentToday > 0 ? 'Absence(s) signalée(s)' : 'Aucune absence')
+            Stat::make(__("Absents aujourd'hui"), $absentToday)
+                ->description($absentToday > 0 ? __('Absence(s) signalée(s)') : __('Aucune absence'))
                 ->descriptionIcon('heroicon-m-x-circle')
                 ->color($absentToday > 0 ? 'danger' : 'gray'),
 
-            Stat::make('Coût paie ce mois', number_format($payrollCost, 3).' TND')
-                ->description($pendingPayroll > 0 ? "{$pendingPayroll} fiche(s) en attente" : 'Paie à jour')
+            Stat::make(__('Coût paie ce mois'), number_format($payrollCost, 3).' TND')
+                ->description($pendingPayroll > 0 ? __(':n fiche(s) en attente', ['n' => $pendingPayroll]) : __('Paie à jour'))
                 ->descriptionIcon('heroicon-m-banknotes')
                 ->color($pendingPayroll > 0 ? 'warning' : 'success'),
         ];

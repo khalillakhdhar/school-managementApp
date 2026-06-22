@@ -28,7 +28,7 @@ class ClassroomResource extends Resource
     {
         return $schema->components([
             Section::make(__('Informations de la classe'))
-                ->description('Niveau, nom, capacité d\'accueil et enseignant titulaire')
+                ->description(__("Niveau, nom, capacité d'accueil et enseignant titulaire"))
                 ->icon('heroicon-o-building-office')
                 ->schema([
                     Forms\Components\Select::make('level_id')
@@ -95,8 +95,8 @@ class ClassroomResource extends Resource
                     ->query(fn ($query) => $query->whereNull('teacher_id')),
             ])
             ->emptyStateIcon('heroicon-o-building-office')
-            ->emptyStateHeading('Aucune classe créée')
-            ->emptyStateDescription('Créez les classes de l\'établissement et assignez-leur un enseignant.')
+            ->emptyStateHeading(__('Aucune classe créée'))
+            ->emptyStateDescription(__("Créez les classes de l'établissement et assignez-leur un enseignant."))
             ->emptyStateActions([Actions\CreateAction::make()->label(__('Créer une classe'))])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);

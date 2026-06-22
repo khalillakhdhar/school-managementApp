@@ -39,24 +39,24 @@ class StudentsListStatsWidget extends StatsOverviewWidget
         )->toArray();
 
         return [
-            Stat::make('Total élèves', $total)
-                ->description("{$active} actifs · {$inactive} inactifs")
+            Stat::make(__('Total élèves'), $total)
+                ->description(__(':active actifs · :inactive inactifs', ['active' => $active, 'inactive' => $inactive]))
                 ->descriptionIcon('heroicon-m-academic-cap')
                 ->color('primary')
                 ->chart($trend),
 
-            Stat::make('Élèves actifs', $active)
-                ->description($total > 0 ? round($active / $total * 100).'% du total' : '—')
+            Stat::make(__('Élèves actifs'), $active)
+                ->description($total > 0 ? __(':pct% du total', ['pct' => round($active / $total * 100)]) : '—')
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
 
-            Stat::make('Nouveaux ce mois', $newMonth)
-                ->description(now()->locale('fr')->isoFormat('MMMM YYYY'))
+            Stat::make(__('Nouveaux ce mois'), $newMonth)
+                ->description(ucfirst(now()->locale(app()->getLocale())->isoFormat('MMMM YYYY')))
                 ->descriptionIcon('heroicon-m-user-plus')
                 ->color('info'),
 
-            Stat::make('Taux de présence', $attendanceRate.'%')
-                ->description($totalAtt.' présences saisies ce mois')
+            Stat::make(__('Taux de présence'), $attendanceRate.'%')
+                ->description(__(':n présences saisies ce mois', ['n' => $totalAtt]))
                 ->descriptionIcon('heroicon-m-chart-bar')
                 ->color($attendanceRate >= 80 ? 'success' : ($attendanceRate >= 60 ? 'warning' : 'danger')),
         ];

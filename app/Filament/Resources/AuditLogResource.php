@@ -14,17 +14,20 @@ class AuditLogResource extends Resource
     protected static ?int $navigationSort = 90;
 
     public static function getNavigationGroup(): ?string { return __('Paramètres'); }
-    public static function getNavigationLabel(): string  { return 'Journal d\'audit'; }
-    public static function getModelLabel(): string       { return 'Entrée d\'audit'; }
-    public static function getPluralModelLabel(): string { return 'Journal d\'audit'; }
+    public static function getNavigationLabel(): string  { return __("Journal d'audit"); }
+    public static function getModelLabel(): string       { return __("Entrée d'audit"); }
+    public static function getPluralModelLabel(): string { return __("Journal d'audit"); }
 
     public static function canCreate(): bool { return false; }
 
-    protected static array $typeLabels = [
-        \App\Models\Payment::class => 'Paiement',
-        \App\Models\Payroll::class => 'Fiche de paie',
-        \App\Models\Grade::class   => 'Note',
-    ];
+    protected static function typeLabels(): array
+    {
+        return [
+            \App\Models\Payment::class => __('Paiement'),
+            \App\Models\Payroll::class => __('Fiche de paie'),
+            \App\Models\Grade::class   => __('Note'),
+        ];
+    }
 
     public static function table(Table $table): Table
     {
@@ -34,7 +37,7 @@ class AuditLogResource extends Resource
                     ->label(__('Date'))->dateTime('d/m/Y H:i')->sortable(),
                 Tables\Columns\TextColumn::make('user_name')
                     ->label(__('Utilisateur'))
-                    ->formatStateUsing(fn ($state) => $state ?: 'Système')
+                    ->formatStateUsing(fn ($state) => $state ?: __('Système'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('event')
                     ->label(__('Action'))->badge()
@@ -42,11 +45,11 @@ class AuditLogResource extends Resource
                         'created' => 'success', 'updated' => 'warning', 'deleted' => 'danger', default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state) => match ($state) {
-                        'created' => 'Création', 'updated' => 'Modification', 'deleted' => 'Suppression', default => $state,
+                        'created' => __('Création'), 'updated' => __('Modification'), 'deleted' => __('Suppression'), default => $state,
                     }),
                 Tables\Columns\TextColumn::make('auditable_type')
                     ->label(__('Type'))->badge()->color('gray')
-                    ->formatStateUsing(fn ($state) => self::$typeLabels[$state] ?? class_basename($state)),
+                    ->formatStateUsing(fn ($state) => self::typeLabels()[$state] ?? class_basename($state)),
                 Tables\Columns\TextColumn::make('label')
                     ->label(__('Élément'))->wrap()->searchable(),
                 Tables\Columns\TextColumn::make('changes_summary')
@@ -56,7 +59,7 @@ class AuditLogResource extends Resource
                         if ($record->event === 'updated' && $new) {
                             return collect($new)->map(fn ($v, $k) => $k . ': ' . (is_scalar($v) ? $v : json_encode($v)))->implode(' · ');
                         }
-                        return $record->event === 'deleted' ? 'Élément supprimé' : 'Nouvel élément';
+                        return $record->event === 'deleted' ? __('Élément supprimé') : __('Nouvel élément');
                     })
                     ->limit(80)->wrap()->toggleable(),
                 Tables\Columns\TextColumn::make('ip_address')
@@ -66,14 +69,14 @@ class AuditLogResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('event')
                     ->label(__('Action'))
-                    ->options(['created' => 'Création', 'updated' => 'Modification', 'deleted' => 'Suppression']),
+                    ->options(['created' => __('Création'), 'updated' => __('Modification'), 'deleted' => __('Suppression')]),
                 Tables\Filters\SelectFilter::make('auditable_type')
                     ->label(__('Type'))
-                    ->options(self::$typeLabels),
+                    ->options(self::typeLabels()),
             ])
             ->emptyStateIcon('heroicon-o-shield-check')
-            ->emptyStateHeading('Aucune activité enregistrée')
-            ->emptyStateDescription('Les créations, modifications et suppressions financières apparaîtront ici.')
+            ->emptyStateHeading(__('Aucune activité enregistrée'))
+            ->emptyStateDescription(__('Les créations, modifications et suppressions financières apparaîtront ici.'))
             ->actions([])
             ->bulkActions([]);
     }

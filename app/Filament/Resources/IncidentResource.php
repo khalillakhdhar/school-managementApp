@@ -40,8 +40,8 @@ class IncidentResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Signalement de l\'incident')
-                ->description('Renseignez les détails de l\'événement pour le dossier de l\'élève')
+            Section::make(__("Signalement de l'incident"))
+                ->description(__("Renseignez les détails de l'événement pour le dossier de l'élève"))
                 ->icon('heroicon-o-exclamation-triangle')
                 ->schema([
                     Forms\Components\Select::make('student_id')
@@ -52,29 +52,29 @@ class IncidentResource extends Resource
                         )
                         ->required()->searchable()->placeholder(__('Rechercher un élève...')),
                     Forms\Components\DatePicker::make('incident_date')
-                        ->label('Date de l\'incident')
+                        ->label(__("Date de l'incident"))
                         ->required()->default(now())->displayFormat('d/m/Y'),
                     Forms\Components\Select::make('type')
-                        ->label('Type d\'incident')
+                        ->label(__("Type d'incident"))
                         ->options([
-                            'accident'     => 'Accident',
-                            'health'       => 'Santé',
-                            'disciplinary' => 'Disciplinaire',
-                            'absence'      => 'Absence',
-                            'behavioral'   => 'Comportement',
-                            'other'        => 'Autre',
+                            'accident'     => __('Accident'),
+                            'health'       => __('Santé'),
+                            'disciplinary' => __('Disciplinaire'),
+                            'absence'      => __('Absence'),
+                            'behavioral'   => __('Comportement'),
+                            'other'        => __('Autre'),
                         ])
                         ->required()->default('other'),
                     Forms\Components\Select::make('severity')
                         ->label(__('Gravité'))
                         ->options([
-                            'low'    => '🟢 Faible',
-                            'medium' => '🟡 Moyenne',
-                            'high'   => '🔴 Élevée',
+                            'low'    => '🟢 ' . __('Faible'),
+                            'medium' => '🟡 ' . __('Moyenne'),
+                            'high'   => '🔴 ' . __('Élevée'),
                         ])
                         ->required()->default('low'),
                     Forms\Components\TextInput::make('title')
-                        ->label('Titre de l\'incident')
+                        ->label(__("Titre de l'incident"))
                         ->required()->maxLength(255)->columnSpanFull(),
                     Forms\Components\Textarea::make('description')
                         ->label(__('Description détaillée'))
@@ -84,7 +84,7 @@ class IncidentResource extends Resource
                         ->rows(3)->columnSpanFull(),
                     Forms\Components\Toggle::make('parent_notified')
                         ->label(__('Parents notifiés'))
-                        ->disabled()->helperText('Géré automatiquement par l\'envoi d\'email'),
+                        ->disabled()->helperText(__("Géré automatiquement par l'envoi d'email")),
                 ])->columns(2),
         ]);
     }
@@ -114,12 +114,12 @@ class IncidentResource extends Resource
                         default        => 'gray',
                     })
                     ->formatStateUsing(fn ($state) => match($state) {
-                        'accident'     => 'Accident',
-                        'health'       => 'Santé',
-                        'disciplinary' => 'Discipline',
-                        'absence'      => 'Absence',
-                        'behavioral'   => 'Comportement',
-                        default        => 'Autre',
+                        'accident'     => __('Accident'),
+                        'health'       => __('Santé'),
+                        'disciplinary' => __('Discipline'),
+                        'absence'      => __('Absence'),
+                        'behavioral'   => __('Comportement'),
+                        default        => __('Autre'),
                     }),
                 Tables\Columns\TextColumn::make('severity')
                     ->label(__('Gravité'))
@@ -130,9 +130,9 @@ class IncidentResource extends Resource
                         default  => 'success',
                     })
                     ->formatStateUsing(fn ($state) => match($state) {
-                        'high'   => 'Élevée',
-                        'medium' => 'Moyenne',
-                        default  => 'Faible',
+                        'high'   => __('Élevée'),
+                        'medium' => __('Moyenne'),
+                        default  => __('Faible'),
                     }),
                 Tables\Columns\IconColumn::make('parent_notified')
                     ->label(__('Parent notifié'))
@@ -142,8 +142,8 @@ class IncidentResource extends Resource
             ])
             ->defaultSort('incident_date', 'desc')
             ->emptyStateIcon('heroicon-o-exclamation-triangle')
-            ->emptyStateHeading('Aucun incident enregistré')
-            ->emptyStateDescription('Les incidents signalés apparaîtront ici.')
+            ->emptyStateHeading(__('Aucun incident enregistré'))
+            ->emptyStateDescription(__('Les incidents signalés apparaîtront ici.'))
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
                     ->label(__('Type'))

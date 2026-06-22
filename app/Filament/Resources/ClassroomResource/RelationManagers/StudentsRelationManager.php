@@ -6,11 +6,16 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class StudentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'students';
-    protected static ?string $title       = 'Élèves de la classe';
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('Élèves de la classe');
+    }
 
     public function form(Schema $schema): Schema
     {
@@ -24,14 +29,14 @@ class StudentsRelationManager extends RelationManager
             Forms\Components\TextInput::make('id_number')
                 ->label(__('N° identité'))->maxLength(255),
             Forms\Components\DatePicker::make('enrollment_date')
-                ->label('Date d\'inscription')->displayFormat('d/m/Y'),
+                ->label(__("Date d'inscription"))->displayFormat('d/m/Y'),
             Forms\Components\Select::make('status')
                 ->label(__('Statut'))
                 ->options([
-                    'active'    => 'Actif',
-                    'inactive'  => 'Inactif',
-                    'suspended' => 'Suspendu',
-                    'graduated' => 'Diplômé',
+                    'active'    => __('Actif'),
+                    'inactive'  => __('Inactif'),
+                    'suspended' => __('Suspendu'),
+                    'graduated' => __('Diplômé'),
                 ])
                 ->default('active')->required(),
         ]);
@@ -57,10 +62,10 @@ class StudentsRelationManager extends RelationManager
                         default     => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'active'    => 'Actif',
-                        'inactive'  => 'Inactif',
-                        'suspended' => 'Suspendu',
-                        'graduated' => 'Diplômé',
+                        'active'    => __('Actif'),
+                        'inactive'  => __('Inactif'),
+                        'suspended' => __('Suspendu'),
+                        'graduated' => __('Diplômé'),
                         default     => $state,
                     }),
                 Tables\Columns\TextColumn::make('date_of_birth')

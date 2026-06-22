@@ -6,11 +6,16 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class ServicesRelationManager extends RelationManager
 {
     protected static string $relationship = 'services';
-    protected static ?string $title       = 'Services souscrits';
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('Services souscrits');
+    }
 
     public function form(Schema $schema): Schema
     {

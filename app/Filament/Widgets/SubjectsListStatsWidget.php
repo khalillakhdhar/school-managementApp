@@ -24,18 +24,18 @@ class SubjectsListStatsWidget extends StatsOverviewWidget
         $avgCoef  = round((float) Subject::avg('coefficient') ?? 0, 1);
 
         return [
-            Stat::make('Total matières', $total)
-                ->description("{$active} active(s)")
+            Stat::make(__('Total matières'), $total)
+                ->description(__(':n active(s)', ['n' => $active]))
                 ->descriptionIcon('heroicon-m-book-open')
                 ->color('primary'),
 
-            Stat::make('Matières planifiées', $scheduled)
-                ->description($active > 0 ? round($scheduled / max($active, 1) * 100).'% couvertes' : '—')
+            Stat::make(__('Matières planifiées'), $scheduled)
+                ->description($active > 0 ? __(':pct% couvertes', ['pct' => round($scheduled / max($active, 1) * 100)]) : '—')
                 ->descriptionIcon('heroicon-m-calendar-days')
                 ->color('success'),
 
-            Stat::make('Non planifiées', $unscheduled)
-                ->description($unscheduled > 0 ? 'Aucun créneau assigné' : 'Toutes planifiées')
+            Stat::make(__('Non planifiées'), $unscheduled)
+                ->description($unscheduled > 0 ? __('Aucun créneau assigné') : __('Toutes planifiées'))
                 ->descriptionIcon('heroicon-m-exclamation-triangle')
                 ->color($unscheduled > 0 ? 'warning' : 'gray'),
 

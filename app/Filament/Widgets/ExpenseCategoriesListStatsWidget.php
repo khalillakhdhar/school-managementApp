@@ -26,23 +26,23 @@ class ExpenseCategoriesListStatsWidget extends StatsOverviewWidget
             ->orderByDesc('total')->first();
 
         return [
-            Stat::make('Catégories', $total)
-                ->description("{$used} utilisée(s)")
+            Stat::make(__('Catégories'), $total)
+                ->description(__(':n utilisée(s)', ['n' => $used]))
                 ->descriptionIcon('heroicon-m-rectangle-stack')
                 ->color('primary'),
 
-            Stat::make('Dépenses '.$year, number_format($spentYear, 3).' TND')
+            Stat::make(__('Dépenses :year', ['year' => $year]), number_format($spentYear, 3).' TND')
                 ->description(__('Toutes catégories confondues'))
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->color('danger'),
 
-            Stat::make('Poste principal', $topCategory?->name ?? '—')
-                ->description($topCategory && $topCategory->total ? number_format((float) $topCategory->total, 3).' TND' : 'Aucune dépense')
+            Stat::make(__('Poste principal'), $topCategory?->name ?? '—')
+                ->description($topCategory && $topCategory->total ? number_format((float) $topCategory->total, 3).' TND' : __('Aucune dépense'))
                 ->descriptionIcon('heroicon-m-chart-pie')
                 ->color('warning'),
 
-            Stat::make('Catégories vides', $total - $used)
-                ->description(($total - $used) > 0 ? 'Sans dépense enregistrée' : 'Toutes utilisées')
+            Stat::make(__('Catégories vides'), $total - $used)
+                ->description(($total - $used) > 0 ? __('Sans dépense enregistrée') : __('Toutes utilisées'))
                 ->descriptionIcon('heroicon-m-inbox')
                 ->color($total - $used > 0 ? 'gray' : 'success'),
         ];

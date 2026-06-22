@@ -6,11 +6,16 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class PayrollsRelationManager extends RelationManager
 {
     protected static string $relationship = 'payrolls';
-    protected static ?string $title       = 'Historique des fiches de paie';
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('Historique des fiches de paie');
+    }
 
     public function form(Schema $schema): Schema
     {
@@ -56,9 +61,9 @@ class PayrollsRelationManager extends RelationManager
                         default     => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'paid'      => 'Payé',
-                        'finalized' => 'Finalisé',
-                        'draft'     => 'Brouillon',
+                        'paid'      => __('Payé'),
+                        'finalized' => __('Finalisé'),
+                        'draft'     => __('Brouillon'),
                         default     => $state,
                     }),
                 Tables\Columns\TextColumn::make('created_at')
@@ -68,7 +73,7 @@ class PayrollsRelationManager extends RelationManager
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->label(__('Statut'))
-                    ->options(['draft' => 'Brouillon', 'finalized' => 'Finalisé', 'paid' => 'Payé']),
+                    ->options(['draft' => __('Brouillon'), 'finalized' => __('Finalisé'), 'paid' => __('Payé')]),
             ])
             ->headerActions([])
             ->actions([

@@ -70,23 +70,23 @@ class PaymentResource extends Resource
                     Forms\Components\DatePicker::make('payment_date')
                         ->label(__('Date du paiement'))->required()->default(now())->displayFormat('d/m/Y'),
                     Forms\Components\DatePicker::make('due_date')
-                        ->label('Date d\'échéance')->nullable()->displayFormat('d/m/Y'),
+                        ->label(__("Date d'échéance"))->nullable()->displayFormat('d/m/Y'),
                     Forms\Components\Select::make('payment_method')
                         ->label(__('Mode de paiement'))
                         ->options([
-                            'cash'          => 'Espèces',
-                            'bank_transfer' => 'Virement bancaire',
-                            'cheque'        => 'Chèque',
-                            'app'           => 'Application',
+                            'cash'          => __('Espèces'),
+                            'bank_transfer' => __('Virement bancaire'),
+                            'cheque'        => __('Chèque'),
+                            'app'           => __('Application'),
                         ])
                         ->required()->default('cash'),
                     Forms\Components\Select::make('status')
                         ->label(__('Statut'))
                         ->options([
-                            'paid'      => 'Payé',
-                            'pending'   => 'En attente',
-                            'failed'    => 'Échoué',
-                            'cancelled' => 'Annulé',
+                            'paid'      => __('Payé'),
+                            'pending'   => __('En attente'),
+                            'failed'    => __('Échoué'),
+                            'cancelled' => __('Annulé'),
                         ])
                         ->required()->default('paid'),
                     Forms\Components\TextInput::make('reference_number')
@@ -130,10 +130,10 @@ class PaymentResource extends Resource
                         default         => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'cash'          => 'Espèces',
-                        'bank_transfer' => 'Virement',
-                        'cheque'        => 'Chèque',
-                        'app'           => 'Application',
+                        'cash'          => __('Espèces'),
+                        'bank_transfer' => __('Virement'),
+                        'cheque'        => __('Chèque'),
+                        'app'           => __('Application'),
                         default         => $state,
                     }),
                 Tables\Columns\TextColumn::make('status')
@@ -147,10 +147,10 @@ class PaymentResource extends Resource
                         default     => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'paid'      => 'Payé',
-                        'pending'   => 'En attente',
-                        'failed'    => 'Échoué',
-                        'cancelled' => 'Annulé',
+                        'paid'      => __('Payé'),
+                        'pending'   => __('En attente'),
+                        'failed'    => __('Échoué'),
+                        'cancelled' => __('Annulé'),
                         default     => $state,
                     }),
                 Tables\Columns\IconColumn::make('is_verified')
@@ -161,8 +161,9 @@ class PaymentResource extends Resource
                     ->trueColor('success')
                     ->falseColor('gray')
                     ->tooltip(fn (Payment $record) => $record->is_verified && $record->verified_at
-                        ? 'Validé le ' . $record->verified_at->format('d/m/Y') . ($record->verifier ? ' par ' . $record->verifier->name : '')
-                        : 'En attente de validation comptable'),
+                        ? __('Validé le :date', ['date' => $record->verified_at->format('d/m/Y')])
+                            . ($record->verifier ? ' ' . __('par :name', ['name' => $record->verifier->name]) : '')
+                        : __('En attente de validation comptable')),
                 Tables\Columns\TextColumn::make('reference_number')
                     ->label(__('Référence'))->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -171,28 +172,28 @@ class PaymentResource extends Resource
                 Tables\Filters\SelectFilter::make('status')
                     ->label(__('Statut'))
                     ->options([
-                        'paid'      => 'Payé',
-                        'pending'   => 'En attente',
-                        'failed'    => 'Échoué',
-                        'cancelled' => 'Annulé',
+                        'paid'      => __('Payé'),
+                        'pending'   => __('En attente'),
+                        'failed'    => __('Échoué'),
+                        'cancelled' => __('Annulé'),
                     ]),
                 Tables\Filters\SelectFilter::make('payment_method')
                     ->label(__('Mode de paiement'))
                     ->options([
-                        'cash'          => 'Espèces',
-                        'bank_transfer' => 'Virement',
-                        'cheque'        => 'Chèque',
-                        'app'           => 'Application',
+                        'cash'          => __('Espèces'),
+                        'bank_transfer' => __('Virement'),
+                        'cheque'        => __('Chèque'),
+                        'app'           => __('Application'),
                     ]),
                 Tables\Filters\TernaryFilter::make('is_verified')
                     ->label(__('Validation comptable'))
                     ->placeholder(__('Tous'))
-                    ->trueLabel('Validés')
-                    ->falseLabel('À valider'),
+                    ->trueLabel(__('Validés'))
+                    ->falseLabel(__('À valider')),
             ])
             ->emptyStateIcon('heroicon-o-banknotes')
-            ->emptyStateHeading('Aucun paiement enregistré')
-            ->emptyStateDescription('Les paiements des élèves apparaîtront ici une fois enregistrés.')
+            ->emptyStateHeading(__('Aucun paiement enregistré'))
+            ->emptyStateDescription(__('Les paiements des élèves apparaîtront ici une fois enregistrés.'))
             ->actions([
                 Actions\Action::make('mark_paid')
                     ->label(__('Mark Paid'))

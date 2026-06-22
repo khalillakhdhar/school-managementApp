@@ -64,7 +64,7 @@ class ParentDashboard extends Page
         // ── Attendance trend (6 months, aggregate) ───────────────────────────
         $trendMonths = collect(range(5, 0))->map(fn ($i) => $now->copy()->subMonths($i));
         $attendanceTrend = [
-            'labels' => $trendMonths->map(fn ($m) => ucfirst(Carbon::create($m->year, $m->month)->locale('fr')->isoFormat('MMM')))->toArray(),
+            'labels' => $trendMonths->map(fn ($m) => ucfirst(Carbon::create($m->year, $m->month)->locale(app()->getLocale())->isoFormat('MMM')))->toArray(),
             'rates'  => $trendMonths->map(function ($m) use ($studentIds) {
                 $t = StudentAttendance::whereIn('student_id', $studentIds)->whereMonth('date', $m->month)->whereYear('date', $m->year)->count();
                 $p = StudentAttendance::whereIn('student_id', $studentIds)->whereMonth('date', $m->month)->whereYear('date', $m->year)->whereIn('status', ['present', 'late'])->count();
@@ -82,7 +82,7 @@ class ParentDashboard extends Page
         $recentPayments = Payment::whereIn('student_id', $studentIds)->where('status', 'paid')->with('student')
             ->orderByDesc('payment_date')->take(3)->get()
             ->map(fn ($p) => ['color' => '#10b981', 'icon' => '💳',
-                'text' => 'Paiement reçu — ' . ($p->student?->first_name ?? ''),
+                'text' => __('Paiement reçu — :name', ['name' => $p->student?->first_name ?? '']),
                 'meta' => number_format((float) $p->amount, 3) . ' TND', 'at' => $p->payment_date ?? $p->created_at]);
         $recentIncidents = Incident::whereIn('student_id', $studentIds)->with('student')
             ->orderByDesc('incident_date')->take(3)->get()
@@ -91,11 +91,11 @@ class ParentDashboard extends Page
                 'meta' => ucfirst($i->type), 'at' => $i->incident_date ?? $i->created_at]);
         $activities = $recentPayments->concat($recentIncidents)->sortByDesc('at')->take(6)
             ->map(fn ($a) => ['color' => $a['color'], 'icon' => $a['icon'], 'text' => $a['text'], 'meta' => $a['meta'],
-                'ago' => Carbon::parse($a['at'])->locale('fr')->diffForHumans()])->values()->toArray();
+                'ago' => Carbon::parse($a['at'])->locale(app()->getLocale())->diffForHumans()])->values()->toArray();
 
         // ── Announcements ────────────────────────────────────────────────────
         $announcements = BlogPost::where('is_published', true)->orderByDesc('published_at')->take(3)->get()
-            ->map(fn ($p) => ['title' => $p->title, 'date' => $p->published_at?->locale('fr')->isoFormat('D MMM') ?? ''])->toArray();
+            ->map(fn ($p) => ['title' => $p->title, 'date' => $p->published_at?->locale(app()->getLocale())->isoFormat('D MMM') ?? ''])->toArray();
 
         return [
             'parent'           => $parent,

@@ -30,24 +30,24 @@ class BlogStatsWidget extends StatsOverviewWidget
         )->toArray();
 
         return [
-            Stat::make('Total articles', $total)
-                ->description("{$thisMonth} créé(s) ce mois")
+            Stat::make(__('Total articles'), $total)
+                ->description(__(':n créé(s) ce mois', ['n' => $thisMonth]))
                 ->descriptionIcon('heroicon-m-newspaper')
                 ->color('primary')
                 ->chart($trend),
 
-            Stat::make('Articles publiés', $published)
-                ->description($total > 0 ? round($published / $total * 100).'% du contenu' : 'Aucun publié')
+            Stat::make(__('Articles publiés'), $published)
+                ->description($total > 0 ? __(':pct% du contenu', ['pct' => round($published / $total * 100)]) : __('Aucun publié'))
                 ->descriptionIcon('heroicon-m-check-badge')
                 ->color('success'),
 
-            Stat::make('Brouillons', $drafts)
-                ->description($drafts > 0 ? 'À finaliser et publier' : 'Tout est publié')
+            Stat::make(__('Brouillons'), $drafts)
+                ->description($drafts > 0 ? __('À finaliser et publier') : __('Tout est publié'))
                 ->descriptionIcon('heroicon-m-pencil-square')
                 ->color($drafts > 0 ? 'warning' : 'gray'),
 
-            Stat::make('Dernière publication', $lastPublished?->published_at?->locale('fr')->isoFormat('D MMM') ?? '—')
-                ->description($lastPublished?->title ? \Illuminate\Support\Str::limit($lastPublished->title, 24) : 'Aucune annonce')
+            Stat::make(__('Dernière publication'), $lastPublished?->published_at?->locale(app()->getLocale())->isoFormat('D MMM') ?? '—')
+                ->description($lastPublished?->title ? \Illuminate\Support\Str::limit($lastPublished->title, 24) : __('Aucune annonce'))
                 ->descriptionIcon('heroicon-m-megaphone')
                 ->color('info'),
         ];

@@ -24,23 +24,23 @@ class LevelsListStatsWidget extends StatsOverviewWidget
         $activeStudents = Student::where('status', 'active')->count();
 
         return [
-            Stat::make('Niveaux scolaires', $total)
-                ->description("{$withClasses} avec classe(s)")
+            Stat::make(__('Niveaux scolaires'), $total)
+                ->description(__(':n avec classe(s)', ['n' => $withClasses]))
                 ->descriptionIcon('heroicon-m-academic-cap')
                 ->color('primary'),
 
-            Stat::make('Classes rattachées', $totalClasses)
-                ->description($total > 0 ? round($totalClasses / max($total, 1), 1).' classe(s) / niveau' : '—')
+            Stat::make(__('Classes rattachées'), $totalClasses)
+                ->description($total > 0 ? __(':n classe(s) / niveau', ['n' => round($totalClasses / max($total, 1), 1)]) : '—')
                 ->descriptionIcon('heroicon-m-building-office')
                 ->color('info'),
 
-            Stat::make('Élèves répartis', $activeStudents)
+            Stat::make(__('Élèves répartis'), $activeStudents)
                 ->description(__('Élèves actifs tous niveaux'))
                 ->descriptionIcon('heroicon-m-users')
                 ->color('success'),
 
-            Stat::make('Niveaux vides', $total - $withClasses)
-                ->description(($total - $withClasses) > 0 ? 'Aucune classe créée' : 'Tous utilisés')
+            Stat::make(__('Niveaux vides'), $total - $withClasses)
+                ->description(($total - $withClasses) > 0 ? __('Aucune classe créée') : __('Tous utilisés'))
                 ->descriptionIcon('heroicon-m-exclamation-triangle')
                 ->color($total - $withClasses > 0 ? 'warning' : 'gray'),
         ];

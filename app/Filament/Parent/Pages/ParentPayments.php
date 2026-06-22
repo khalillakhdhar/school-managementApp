@@ -38,7 +38,7 @@ class ParentPayments extends Page
                 'pending'   => $pending,
                 'overdue'   => $overdue,
                 'payments'  => $payments->take(12)->map(fn ($p) => [
-                    'label'   => $p->notes ?: ($p->due_date?->locale('fr')->isoFormat('MMMM YYYY') ?? '—'),
+                    'label'   => $p->notes ?: ($p->due_date?->locale(app()->getLocale())->isoFormat('MMMM YYYY') ?? '—'),
                     'amount'  => (float) $p->amount,
                     'due'     => $p->due_date?->format('d/m/Y') ?? '—',
                     'status'  => $p->status === 'paid'

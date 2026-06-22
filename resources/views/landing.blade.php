@@ -186,21 +186,21 @@
 <section id="fonctionnalites" class="py-20 lg:py-28 bg-slate-50">
     <div class="mx-auto max-w-7xl px-5 lg:px-8">
         <div class="text-center max-w-2xl mx-auto">
-            <span class="text-sm font-bold uppercase tracking-wider text-brand-600">Fonctionnalités</span>
-            <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-ink tracking-tight">Tout ce dont votre établissement a besoin</h2>
-            <p class="mt-4 text-lg text-slate-600">Des modules intégrés qui couvrent l'ensemble du cycle de gestion scolaire.</p>
+            <span class="text-sm font-bold uppercase tracking-wider text-brand-600">{{ __('Fonctionnalités') }}</span>
+            <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-ink tracking-tight">{{ __('Tout ce dont votre établissement a besoin') }}</h2>
+            <p class="mt-4 text-lg text-slate-600">{{ __("Des modules intégrés qui couvrent l'ensemble du cycle de gestion scolaire.") }}</p>
         </div>
         <div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach([
-                ['🎓','Gestion des élèves','Inscriptions, dossiers, classes, statuts et historique complet de chaque élève.'],
-                ['👨‍🏫','Personnel & RH','Employés, enseignants, contrats, et fiches de paie conformes (CNSS, IRPP).'],
-                ['🗓️','Emplois du temps','Construction et consultation des emplois du temps par classe et par enseignant.'],
-                ['✅','Présences','Appel des élèves et pointage du personnel, avec taux et alertes automatiques.'],
-                ['📝','Notes & bulletins','Saisie des notes, moyennes pondérées, rang et bulletins trimestriels imprimables.'],
-                ['💳','Paiements & finances','Scolarité, services, rappels d\'impayés et rapports financiers détaillés.'],
-                ['👨‍👩‍👧','Portail parents','Les familles suivent paiements, présences, notes et annonces en temps réel.'],
-                ['📊','Tableau de bord & rapports','KPIs, graphiques et statistiques pour piloter l\'établissement d\'un coup d\'œil.'],
-                ['📣','Communication','Annonces, incidents et notifications vers les parents et le personnel.'],
+                ['🎓',__('Gestion des élèves'),__('Inscriptions, dossiers, classes, statuts et historique complet de chaque élève.')],
+                ['👨‍🏫',__('Personnel & RH'),__('Employés, enseignants, contrats, et fiches de paie conformes (CNSS, IRPP).')],
+                ['🗓️',__('Emplois du temps'),__('Construction et consultation des emplois du temps par classe et par enseignant.')],
+                ['✅',__('Présences'),__('Appel des élèves et pointage du personnel, avec taux et alertes automatiques.')],
+                ['📝',__('Notes & bulletins'),__('Saisie des notes, moyennes pondérées, rang et bulletins trimestriels imprimables.')],
+                ['💳',__('Paiements & finances'),__("Scolarité, services, rappels d'impayés et rapports financiers détaillés.")],
+                ['👨‍👩‍👧',__('Portail parents'),__('Les familles suivent paiements, présences, notes et annonces en temps réel.')],
+                ['📊',__('Tableau de bord & rapports'),__("KPIs, graphiques et statistiques pour piloter l'établissement d'un coup d'œil.")],
+                ['📣',__('Communication'),__('Annonces, incidents et notifications vers les parents et le personnel.')],
             ] as $f)
             <div class="rounded-2xl bg-white border border-slate-200 p-7 card-hover">
                 <div class="grid h-12 w-12 place-items-center rounded-xl bg-brand-50 text-2xl">{{ $f[0] }}</div>
@@ -216,17 +216,17 @@
 <section id="avantages" class="py-20 lg:py-28 bg-white">
     <div class="mx-auto max-w-7xl px-5 lg:px-8 grid lg:grid-cols-2 gap-14 items-center">
         <div>
-            <span class="text-sm font-bold uppercase tracking-wider text-brand-600">Avantages</span>
-            <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-ink tracking-tight">Conçu pour être simple, sûr et efficace</h2>
-            <p class="mt-5 text-lg text-slate-600 leading-relaxed">Une expérience pensée pour les équipes pédagogiques et administratives, sans formation technique.</p>
+            <span class="text-sm font-bold uppercase tracking-wider text-brand-600">{{ __('Avantages') }}</span>
+            <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-ink tracking-tight">{{ __('Conçu pour être simple, sûr et efficace') }}</h2>
+            <p class="mt-5 text-lg text-slate-600 leading-relaxed">{{ __('Une expérience pensée pour les équipes pédagogiques et administratives, sans formation technique.') }}</p>
             <div class="mt-8 grid sm:grid-cols-2 gap-5">
                 @foreach([
-                    ['Interface moderne','Une UI claire et agréable, inspirée des meilleurs logiciels SaaS.'],
-                    ['Sécurité des données','Accès cloisonnés par rôle : chacun ne voit que ce qui le concerne.'],
-                    ['Automatisation','Paies, présences, rappels et bulletins générés automatiquement.'],
-                    ['Multi-utilisateurs','Admin, enseignants et parents, chacun avec son espace dédié.'],
-                    ['Accessibilité','Disponible partout, sur ordinateur, tablette et mobile.'],
-                    ['100% Responsive','Un affichage impeccable sur tous les écrans.'],
+                    [__('Interface moderne'),__('Une UI claire et agréable, inspirée des meilleurs logiciels SaaS.')],
+                    [__('Sécurité des données'),__('Accès cloisonnés par rôle : chacun ne voit que ce qui le concerne.')],
+                    [__('Automatisation'),__('Paies, présences, rappels et bulletins générés automatiquement.')],
+                    [__('Multi-utilisateurs'),__('Admin, enseignants et parents, chacun avec son espace dédié.')],
+                    [__('Accessibilité'),__('Disponible partout, sur ordinateur, tablette et mobile.')],
+                    [__('100% Responsive'),__('Un affichage impeccable sur tous les écrans.')],
                 ] as $a)
                 <div class="flex gap-3">
                     <span class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-600">
@@ -242,9 +242,9 @@
         </div>
         <div class="rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 p-10 text-white shadow-2xl shadow-brand-600/30">
             <div class="text-5xl font-extrabold">+70%</div>
-            <p class="mt-2 text-brand-100">de temps administratif économisé grâce à l'automatisation.</p>
+            <p class="mt-2 text-brand-100">{{ __("de temps administratif économisé grâce à l'automatisation.") }}</p>
             <div class="mt-8 space-y-5">
-                @foreach([['Moins d\'erreurs de saisie','92%'],['Paiements suivis en temps réel','100%'],['Satisfaction des familles','4.8/5']] as $stat)
+                @foreach([[__('Moins d\'erreurs de saisie'),'92%'],[__('Paiements suivis en temps réel'),'100%'],[__('Satisfaction des familles'),'4.8/5']] as $stat)
                 <div>
                     <div class="flex justify-between text-sm font-semibold"><span>{{ $stat[0] }}</span><span>{{ $stat[1] }}</span></div>
                     <div class="mt-1.5 h-2 rounded-full bg-white/20"><div class="h-full rounded-full bg-white w-5/6"></div></div>
@@ -259,9 +259,9 @@
 <section class="py-20 lg:py-28 bg-slate-900">
     <div class="mx-auto max-w-7xl px-5 lg:px-8">
         <div class="text-center max-w-2xl mx-auto">
-            <span class="text-sm font-bold uppercase tracking-wider text-brand-400">Aperçu</span>
-            <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-white tracking-tight">Découvrez la plateforme en images</h2>
-            <p class="mt-4 text-lg text-slate-400">Un aperçu des espaces Administration, Enseignant et Parent.</p>
+            <span class="text-sm font-bold uppercase tracking-wider text-brand-400">{{ __('Aperçu') }}</span>
+            <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-white tracking-tight">{{ __('Découvrez la plateforme en images') }}</h2>
+            <p class="mt-4 text-lg text-slate-400">{{ __('Un aperçu des espaces Administration, Enseignant et Parent.') }}</p>
         </div>
         <div class="mt-14 grid md:grid-cols-3 gap-6">
 
@@ -269,7 +269,7 @@
             <figure class="rounded-2xl overflow-hidden border border-white/10 bg-white shadow-2xl">
                 <div class="flex items-center gap-1.5 px-3 py-2.5 bg-slate-100 border-b border-slate-200">
                     <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span><span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span><span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
-                    <span class="ml-2 text-[10px] text-slate-400">/admin · Tableau de bord</span>
+                    <span class="ml-2 text-[10px] text-slate-400">/admin · {{ __('Tableau de bord') }}</span>
                 </div>
                 <div class="flex h-56">
                     <div class="w-1/3 bg-slate-900 p-2.5 space-y-1.5">
@@ -290,14 +290,14 @@
                         </div>
                     </div>
                 </div>
-                <figcaption class="px-4 py-3 bg-slate-800 text-sm font-semibold text-white">Espace Administration</figcaption>
+                <figcaption class="px-4 py-3 bg-slate-800 text-sm font-semibold text-white">{{ __('Espace Administration') }}</figcaption>
             </figure>
 
             {{-- ── Mockup 2 : Faire l'appel (Enseignant) ── --}}
             <figure class="rounded-2xl overflow-hidden border border-white/10 bg-white shadow-2xl">
                 <div class="flex items-center gap-1.5 px-3 py-2.5 bg-slate-100 border-b border-slate-200">
                     <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span><span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span><span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
-                    <span class="ml-2 text-[10px] text-slate-400">/staff · Faire l'appel</span>
+                    <span class="ml-2 text-[10px] text-slate-400">/staff · {{ __("Faire l'appel") }}</span>
                 </div>
                 <div class="h-56 p-3 bg-slate-50 space-y-2">
                     <div class="grid grid-cols-4 gap-1.5">
@@ -315,38 +315,38 @@
                     </div>
                     @endforeach
                 </div>
-                <figcaption class="px-4 py-3 bg-slate-800 text-sm font-semibold text-white">Espace Enseignant</figcaption>
+                <figcaption class="px-4 py-3 bg-slate-800 text-sm font-semibold text-white">{{ __('Espace Enseignant') }}</figcaption>
             </figure>
 
             {{-- ── Mockup 3 : Portail Parent ── --}}
             <figure class="rounded-2xl overflow-hidden border border-white/10 bg-white shadow-2xl">
                 <div class="flex items-center gap-1.5 px-3 py-2.5 bg-slate-100 border-b border-slate-200">
                     <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span><span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span><span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
-                    <span class="ml-2 text-[10px] text-slate-400">/parent · Tableau de bord</span>
+                    <span class="ml-2 text-[10px] text-slate-400">/parent · {{ __('Tableau de bord') }}</span>
                 </div>
                 <div class="h-56 p-3 bg-slate-50 space-y-2">
                     <div class="rounded-lg p-2.5 text-white" style="background:linear-gradient(135deg,#2563eb,#1d4ed8)">
-                        <div class="text-[9px] opacity-80">Solde dû</div><div class="text-sm font-extrabold">220,000 TND</div>
+                        <div class="text-[9px] opacity-80">{{ __('Solde dû') }}</div><div class="text-sm font-extrabold">220,000 TND</div>
                     </div>
                     <div class="grid grid-cols-2 gap-1.5">
-                        @foreach([['Présence','92%','#10b981'],['Incidents','0','#10b981']] as $c)
+                        @foreach([[__('Présence'),'92%','#10b981'],[__('Incidents'),'0','#10b981']] as $c)
                         <div class="rounded-md bg-white border border-slate-100 p-2"><div class="text-[8px] text-slate-400 font-semibold uppercase">{{ $c[0] }}</div><div class="text-xs font-extrabold" style="color:{{ $c[2] }}">{{ $c[1] }}</div></div>
                         @endforeach
                     </div>
                     <div class="rounded-md bg-white border border-slate-100 p-2">
-                        <div class="text-[9px] font-bold text-slate-600 mb-1">Mes enfants</div>
+                        <div class="text-[9px] font-bold text-slate-600 mb-1">{{ __('Mes enfants') }}</div>
                         <div class="flex items-center gap-2">
                             <div class="h-6 w-6 rounded-lg bg-brand-50 text-brand-600 grid place-items-center text-[9px] font-bold">M</div>
-                            <div class="flex-1"><div class="text-[10px] font-semibold text-slate-700">Mohamed L.</div><div class="text-[8px] text-slate-400">Classe 1A</div></div>
+                            <div class="flex-1"><div class="text-[10px] font-semibold text-slate-700">Mohamed L.</div><div class="text-[8px] text-slate-400">{{ __('Classe 1A') }}</div></div>
                             <div class="text-[11px] font-extrabold text-emerald-600">92%</div>
                         </div>
                     </div>
                 </div>
-                <figcaption class="px-4 py-3 bg-slate-800 text-sm font-semibold text-white">Portail Parents</figcaption>
+                <figcaption class="px-4 py-3 bg-slate-800 text-sm font-semibold text-white">{{ __('Portail Parents') }}</figcaption>
             </figure>
 
         </div>
-        <p class="mt-8 text-center text-sm text-slate-500">Maquettes illustratives de l'interface réelle.</p>
+        <p class="mt-8 text-center text-sm text-slate-500">{{ __("Maquettes illustratives de l'interface réelle.") }}</p>
     </div>
 </section>
 
@@ -354,14 +354,14 @@
 <section class="py-20 lg:py-28 bg-white">
     <div class="mx-auto max-w-7xl px-5 lg:px-8">
         <div class="text-center max-w-2xl mx-auto">
-            <span class="text-sm font-bold uppercase tracking-wider text-brand-600">Témoignages</span>
-            <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-ink tracking-tight">Ils nous font confiance</h2>
+            <span class="text-sm font-bold uppercase tracking-wider text-brand-600">{{ __('Témoignages') }}</span>
+            <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-ink tracking-tight">{{ __('Ils nous font confiance') }}</h2>
         </div>
         <div class="mt-14 grid md:grid-cols-3 gap-6">
             @foreach([
-                ['« Nous avons divisé par trois le temps passé sur l\'administratif. Les parents adorent le portail. »','Mme Sonia B.','Directrice, École El Amana'],
-                ['« La paie et les présences du personnel sont enfin automatisées. Un vrai soulagement. »','M. Karim J.','Responsable RH'],
-                ['« Saisir les notes et générer les bulletins ne prend plus que quelques minutes. »','Mme Olfa M.','Enseignante'],
+                [__('« Nous avons divisé par trois le temps passé sur l\'administratif. Les parents adorent le portail. »'),'Mme Sonia B.',__('Directrice, École El Amana')],
+                [__('« La paie et les présences du personnel sont enfin automatisées. Un vrai soulagement. »'),'M. Karim J.',__('Responsable RH')],
+                [__('« Saisir les notes et générer les bulletins ne prend plus que quelques minutes. »'),'Mme Olfa M.',__('Enseignante')],
             ] as $t)
             <figure class="rounded-2xl border border-slate-200 p-7 bg-slate-50 card-hover">
                 <div class="text-amber-400 text-lg">★★★★★</div>
@@ -383,25 +383,25 @@
 <section id="tarifs" class="py-20 lg:py-28 bg-slate-50">
     <div class="mx-auto max-w-7xl px-5 lg:px-8">
         <div class="text-center max-w-2xl mx-auto">
-            <span class="text-sm font-bold uppercase tracking-wider text-brand-600">Tarifs</span>
-            <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-ink tracking-tight">Une offre adaptée à chaque établissement</h2>
-            <p class="mt-4 text-lg text-slate-600">Tarifs indicatifs. Contactez-nous pour un devis personnalisé.</p>
+            <span class="text-sm font-bold uppercase tracking-wider text-brand-600">{{ __('Tarifs') }}</span>
+            <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-ink tracking-tight">{{ __('Une offre adaptée à chaque établissement') }}</h2>
+            <p class="mt-4 text-lg text-slate-600">{{ __('Tarifs indicatifs. Contactez-nous pour un devis personnalisé.') }}</p>
         </div>
         <div class="mt-14 grid lg:grid-cols-3 gap-6 items-start">
             @foreach([
-                ['Starter','49','/ mois','Pour les petites écoles qui démarrent.',['Jusqu\'à 150 élèves','Gestion élèves & classes','Présences & emplois du temps','1 administrateur','Support par email'], false],
-                ['Business','99','/ mois','Le plus populaire — toutes les fonctions clés.',['Jusqu\'à 600 élèves','Tout Starter inclus','Paiements & finances','Notes & bulletins','Portails parents & enseignants','Support prioritaire'], true],
-                ['Enterprise','Sur devis','','Pour les groupes scolaires et grands établissements.',['Élèves illimités','Multi-établissements','Personnalisation avancée','Formation sur site','Accompagnement dédié'], false],
+                ['Starter','49',__('/ mois'),__('Pour les petites écoles qui démarrent.'),[__('Jusqu\'à 150 élèves'),__('Gestion élèves & classes'),__('Présences & emplois du temps'),__('1 administrateur'),__('Support par email')], false],
+                ['Business','99',__('/ mois'),__('Le plus populaire — toutes les fonctions clés.'),[__('Jusqu\'à 600 élèves'),__('Tout Starter inclus'),__('Paiements & finances'),__('Notes & bulletins'),__('Portails parents & enseignants'),__('Support prioritaire')], true],
+                ['Enterprise',__('Sur devis'),'',__('Pour les groupes scolaires et grands établissements.'),[__('Élèves illimités'),__('Multi-établissements'),__('Personnalisation avancée'),__('Formation sur site'),__('Accompagnement dédié')], false],
             ] as $plan)
             <div class="relative rounded-2xl border bg-white p-8 {{ $plan[5] ? 'border-brand-600 shadow-2xl shadow-brand-600/20 lg:-translate-y-3' : 'border-slate-200' }}">
-                @if($plan[5])<span class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 px-4 py-1 text-xs font-bold text-white">Le plus choisi</span>@endif
+                @if($plan[5])<span class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 px-4 py-1 text-xs font-bold text-white">{{ __('Le plus choisi') }}</span>@endif
                 <h3 class="text-lg font-extrabold text-ink">{{ $plan[0] }}</h3>
                 <p class="mt-1 text-sm text-slate-500 h-10">{{ $plan[3] }}</p>
                 <div class="mt-5 flex items-end gap-1">
                     <span class="text-4xl font-extrabold text-ink">{{ $plan[1] }}</span>
                     @if($plan[2])<span class="text-slate-500 font-semibold mb-1">{{ $plan[2] }}</span>@else <span class="text-slate-500 mb-1"> TND</span>@endif
                 </div>
-                <a href="#contact" class="mt-6 block text-center rounded-xl px-5 py-3 text-sm font-bold transition {{ $plan[5] ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-slate-100 text-ink hover:bg-slate-200' }}">Choisir cette offre</a>
+                <a href="#contact" class="mt-6 block text-center rounded-xl px-5 py-3 text-sm font-bold transition {{ $plan[5] ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-slate-100 text-ink hover:bg-slate-200' }}">{{ __('Choisir cette offre') }}</a>
                 <ul class="mt-7 space-y-3">
                     @foreach($plan[4] as $feat)
                     <li class="flex gap-2.5 text-sm text-slate-600">
@@ -421,16 +421,16 @@
     <div class="mx-auto max-w-3xl px-5 lg:px-8">
         <div class="text-center">
             <span class="text-sm font-bold uppercase tracking-wider text-brand-600">FAQ</span>
-            <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-ink tracking-tight">Questions fréquentes</h2>
+            <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-ink tracking-tight">{{ __('Questions fréquentes') }}</h2>
         </div>
         <div class="mt-12 space-y-3">
             @foreach([
-                ['Faut-il installer un logiciel ?','Non. '.$appName.' est une application web : un simple navigateur suffit, sur ordinateur, tablette ou mobile.'],
-                ['Mes données sont-elles sécurisées ?','Oui. Chaque utilisateur accède uniquement aux données qui le concernent grâce à un cloisonnement strict par rôle (admin, enseignant, parent).'],
-                ['Peut-on importer nos données existantes ?','Oui, nous accompagnons la reprise de vos listes d\'élèves, classes et personnel lors de la mise en route.'],
-                ['Les parents ont-ils un accès ?','Oui, un portail dédié leur permet de suivre paiements, présences, notes et annonces en temps réel.'],
-                ['La paie tunisienne est-elle gérée ?','Oui : calcul CNSS, IRPP, FOPROLOS et génération des fiches de paie conformes.'],
-                ['Proposez-vous une démonstration ?','Bien sûr. Cliquez sur « Demander une démonstration » et notre équipe vous recontacte rapidement.'],
+                [__('Faut-il installer un logiciel ?'),__('Non. :app est une application web : un simple navigateur suffit, sur ordinateur, tablette ou mobile.', ['app' => $appName])],
+                [__('Mes données sont-elles sécurisées ?'),__('Oui. Chaque utilisateur accède uniquement aux données qui le concernent grâce à un cloisonnement strict par rôle (admin, enseignant, parent).')],
+                [__('Peut-on importer nos données existantes ?'),__('Oui, nous accompagnons la reprise de vos listes d\'élèves, classes et personnel lors de la mise en route.')],
+                [__('Les parents ont-ils un accès ?'),__('Oui, un portail dédié leur permet de suivre paiements, présences, notes et annonces en temps réel.')],
+                [__('La paie tunisienne est-elle gérée ?'),__('Oui : calcul CNSS, IRPP, FOPROLOS et génération des fiches de paie conformes.')],
+                [__('Proposez-vous une démonstration ?'),__('Bien sûr. Cliquez sur « Demander une démonstration » et notre équipe vous recontacte rapidement.')],
             ] as $q)
             <details class="group rounded-xl border border-slate-200 bg-white px-5 open:bg-slate-50 open:border-brand-200">
                 <summary class="flex items-center justify-between py-4 font-bold text-ink">
@@ -447,27 +447,26 @@
 {{-- ══════════════════════════════ CTA / CONTACT ══════════════════════════════ --}}
 <section id="contact" class="py-20 lg:py-28 grad-hero">
     <div class="mx-auto max-w-4xl px-5 lg:px-8 text-center">
-        <h2 class="text-3xl lg:text-5xl font-extrabold text-white tracking-tight">Prêt à moderniser votre établissement ?</h2>
+        <h2 class="text-3xl lg:text-5xl font-extrabold text-white tracking-tight">{{ __('Prêt à moderniser votre établissement ?') }}</h2>
         <p class="mt-5 text-lg text-slate-300 max-w-2xl mx-auto">
-            Demandez une démonstration gratuite et personnalisée. Notre équipe vous montre comment
-            {{ $appName }} simplifie votre quotidien.
+            {{ __('Demandez une démonstration gratuite et personnalisée. Notre équipe vous montre comment :app simplifie votre quotidien.', ['app' => $appName]) }}
         </p>
         <div class="mt-9 flex flex-wrap justify-center gap-4">
             <a href="mailto:contact@elitecampus.tn?subject=Demande%20de%20démonstration%20{{ $appName }}"
                class="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-7 py-4 text-sm font-bold text-white hover:bg-brand-700 shadow-lg shadow-brand-600/40 transition">
-                Demander une démonstration
+                {{ __('Demander une démonstration') }}
             </a>
             <a href="mailto:contact@elitecampus.tn" class="inline-flex items-center gap-2 rounded-xl bg-white/10 border border-white/20 px-7 py-4 text-sm font-bold text-white hover:bg-white/15 transition">
-                Contacter l'équipe
+                {{ __("Contacter l'équipe") }}
             </a>
             <a href="/admin/login" class="inline-flex items-center gap-2 rounded-xl bg-white px-7 py-4 text-sm font-bold text-ink hover:bg-slate-100 transition">
-                Accéder à la plateforme
+                {{ __('Accéder à la plateforme') }}
             </a>
         </div>
         <div class="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-slate-400">
             <span>📧 contact@elitecampus.tn</span>
             <span>📞 +216 71 245 678</span>
-            <span>📍 Tunis, Tunisie</span>
+            <span>📍 {{ __('Tunis, Tunisie') }}</span>
         </div>
     </div>
 </section>
@@ -480,7 +479,7 @@
                 <span class="grid h-9 w-9 place-items-center rounded-xl bg-brand-600 text-white font-extrabold text-sm">EC</span>
                 <span class="text-lg font-extrabold text-white">{{ $appName }}</span>
             </div>
-            <p class="mt-4 text-sm leading-relaxed">La plateforme tout-en-un de gestion scolaire : administration, pédagogie, finances et communication réunies.</p>
+            <p class="mt-4 text-sm leading-relaxed">{{ __('La plateforme tout-en-un de gestion scolaire : administration, pédagogie, finances et communication réunies.') }}</p>
             <div class="mt-5 flex gap-3">
                 @foreach(['Facebook','LinkedIn','Instagram'] as $soc)
                 <a href="#" aria-label="{{ $soc }}" class="grid h-9 w-9 place-items-center rounded-lg bg-white/5 hover:bg-brand-600 hover:text-white transition text-slate-400">
@@ -490,37 +489,37 @@
             </div>
         </div>
         <div>
-            <h4 class="text-white font-bold text-sm mb-4">Produit</h4>
+            <h4 class="text-white font-bold text-sm mb-4">{{ __('Produit') }}</h4>
             <ul class="space-y-2.5 text-sm">
-                <li><a href="#fonctionnalites" class="hover:text-white">Fonctionnalités</a></li>
-                <li><a href="#avantages" class="hover:text-white">Avantages</a></li>
-                <li><a href="#tarifs" class="hover:text-white">Tarifs</a></li>
+                <li><a href="#fonctionnalites" class="hover:text-white">{{ __('Fonctionnalités') }}</a></li>
+                <li><a href="#avantages" class="hover:text-white">{{ __('Avantages') }}</a></li>
+                <li><a href="#tarifs" class="hover:text-white">{{ __('Tarifs') }}</a></li>
                 <li><a href="#faq" class="hover:text-white">FAQ</a></li>
             </ul>
         </div>
         <div>
-            <h4 class="text-white font-bold text-sm mb-4">Accès</h4>
+            <h4 class="text-white font-bold text-sm mb-4">{{ __('Accès') }}</h4>
             <ul class="space-y-2.5 text-sm">
-                <li><a href="/admin/login" class="hover:text-white">Espace Administration</a></li>
-                <li><a href="/staff/login" class="hover:text-white">Espace Enseignant</a></li>
-                <li><a href="/parent/login" class="hover:text-white">Portail Parents</a></li>
+                <li><a href="/admin/login" class="hover:text-white">{{ __('Espace Administration') }}</a></li>
+                <li><a href="/staff/login" class="hover:text-white">{{ __('Espace Enseignant') }}</a></li>
+                <li><a href="/parent/login" class="hover:text-white">{{ __('Portail Parents') }}</a></li>
             </ul>
         </div>
         <div>
-            <h4 class="text-white font-bold text-sm mb-4">Contact</h4>
+            <h4 class="text-white font-bold text-sm mb-4">{{ __('Contact') }}</h4>
             <ul class="space-y-2.5 text-sm">
                 <li>contact@elitecampus.tn</li>
                 <li>+216 71 245 678</li>
-                <li>Tunis, Tunisie</li>
+                <li>{{ __('Tunis, Tunisie') }}</li>
             </ul>
         </div>
     </div>
     <div class="border-t border-white/10">
         <div class="mx-auto max-w-7xl px-5 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-            <span>© {{ date('Y') }} {{ $appName }}. Tous droits réservés.</span>
+            <span>© {{ date('Y') }} {{ $appName }}. {{ __('Tous droits réservés.') }}</span>
             <div class="flex gap-5">
-                <a href="#" class="hover:text-white">Mentions légales</a>
-                <a href="#" class="hover:text-white">Confidentialité</a>
+                <a href="#" class="hover:text-white">{{ __('Mentions légales') }}</a>
+                <a href="#" class="hover:text-white">{{ __('Confidentialité') }}</a>
                 <a href="#" class="hover:text-white">CGU</a>
             </div>
         </div>

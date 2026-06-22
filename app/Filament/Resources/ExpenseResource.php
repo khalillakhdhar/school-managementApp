@@ -124,8 +124,8 @@ class ExpenseResource extends Resource
                     ),
             ])
             ->emptyStateIcon('heroicon-o-arrow-trending-down')
-            ->emptyStateHeading('Aucune dépense enregistrée')
-            ->emptyStateDescription('Enregistrez les dépenses de l\'établissement pour suivre les charges.')
+            ->emptyStateHeading(__('Aucune dépense enregistrée'))
+            ->emptyStateDescription(__("Enregistrez les dépenses de l'établissement pour suivre les charges."))
             ->emptyStateActions([Actions\CreateAction::make()->label(__('Ajouter une dépense'))])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);

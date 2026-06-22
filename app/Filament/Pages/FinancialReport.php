@@ -201,7 +201,7 @@ class FinancialReport extends Page
 
         return [
             'labels'   => $months->map(fn ($m) => ucfirst(
-                Carbon::create($m->year, $m->month, 1)->locale('fr')->isoFormat('MMM YY')
+                Carbon::create($m->year, $m->month, 1)->locale(app()->getLocale())->isoFormat('MMM YY')
             ))->toArray(),
             'revenue'  => $months->map(fn ($m) => (float) Payment::where('status', 'paid')
                 ->whereYear('payment_date', $m->year)

@@ -61,7 +61,7 @@ class MyAttendance extends Page
             ->whereMonth('date', $month)->whereYear('date', $year)
             ->orderByDesc('date')->get()
             ->map(fn ($a) => [
-                'date'   => $a->date->locale('fr')->isoFormat('ddd D MMM'),
+                'date'   => $a->date->locale(app()->getLocale())->isoFormat('ddd D MMM'),
                 'status' => $a->status,
                 'in'     => $a->time_in ? substr($a->time_in, 0, 5) : '—',
                 'out'    => $a->time_out ? substr($a->time_out, 0, 5) : '—',

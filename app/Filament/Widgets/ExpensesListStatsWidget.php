@@ -44,24 +44,24 @@ class ExpensesListStatsWidget extends StatsOverviewWidget
         )->toArray();
 
         return [
-            Stat::make('Dépenses ce mois', number_format($monthTotal, 3).' TND')
-                ->description(($trend >= 0 ? '+' : '').$trend.'% vs mois précédent')
+            Stat::make(__('Dépenses ce mois'), number_format($monthTotal, 3).' TND')
+                ->description(__(':pct% vs mois précédent', ['pct' => ($trend >= 0 ? '+' : '').$trend]))
                 ->descriptionIcon($trend >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($trend >= 0 ? 'danger' : 'success')
                 ->chart($expenseChart),
 
-            Stat::make('Dépenses '.$year, number_format($yearTotal, 3).' TND')
-                ->description($count.' opérations ce mois')
+            Stat::make(__('Dépenses :year', ['year' => $year]), number_format($yearTotal, 3).' TND')
+                ->description(__(':n opérations ce mois', ['n' => $count]))
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->color('warning'),
 
-            Stat::make('Catégorie principale', $topCatName)
-                ->description($topCatAmount.' TND cette année')
+            Stat::make(__('Catégorie principale'), $topCatName)
+                ->description(__(':amount TND cette année', ['amount' => $topCatAmount]))
                 ->descriptionIcon('heroicon-m-tag')
                 ->color('primary'),
 
-            Stat::make('Opérations ce mois', $count)
-                ->description(now()->locale('fr')->isoFormat('MMMM YYYY'))
+            Stat::make(__('Opérations ce mois'), $count)
+                ->description(ucfirst(now()->locale(app()->getLocale())->isoFormat('MMMM YYYY')))
                 ->descriptionIcon('heroicon-m-document-text')
                 ->color('info'),
         ];

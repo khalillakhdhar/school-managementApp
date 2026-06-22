@@ -22,23 +22,23 @@ class ServicesListStatsWidget extends StatsOverviewWidget
         $avgAmount  = round((float) Service::where('is_active', true)->avg('amount') ?? 0, 3);
 
         return [
-            Stat::make('Total services', $total)
-                ->description("{$active} actif(s)")
+            Stat::make(__('Total services'), $total)
+                ->description(__(':n actif(s)', ['n' => $active]))
                 ->descriptionIcon('heroicon-m-squares-plus')
                 ->color('primary'),
 
-            Stat::make('Services souscrits', $subscribed)
-                ->description($total > 0 ? round($subscribed / $total * 100).'% utilisés' : '—')
+            Stat::make(__('Services souscrits'), $subscribed)
+                ->description($total > 0 ? __(':pct% utilisés', ['pct' => round($subscribed / $total * 100)]) : '—')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('success'),
 
-            Stat::make('Tarif moyen', number_format($avgAmount, 3).' TND')
+            Stat::make(__('Tarif moyen'), number_format($avgAmount, 3).' TND')
                 ->description(__('Services actifs'))
                 ->descriptionIcon('heroicon-m-tag')
                 ->color('info'),
 
-            Stat::make('Inactifs', $total - $active)
-                ->description(($total - $active) > 0 ? 'Non proposés actuellement' : 'Tous actifs')
+            Stat::make(__('Inactifs'), $total - $active)
+                ->description(($total - $active) > 0 ? __('Non proposés actuellement') : __('Tous actifs'))
                 ->descriptionIcon('heroicon-m-pause-circle')
                 ->color($total - $active > 0 ? 'warning' : 'gray'),
         ];

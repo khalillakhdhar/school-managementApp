@@ -55,7 +55,7 @@ class MainDashboardWidget extends Widget
         // ── Student Evolution chart (6 months) ──────────────────────────────────
         $evolutionMonths = collect(range(5, 0))->map(fn ($i) => $now->copy()->subMonths($i));
         $evolution = [
-            'labels'  => $evolutionMonths->map(fn ($m) => ucfirst(Carbon::create($m->year, $m->month)->locale('fr')->isoFormat('MMM')))->toArray(),
+            'labels'  => $evolutionMonths->map(fn ($m) => ucfirst(Carbon::create($m->year, $m->month)->locale(app()->getLocale())->isoFormat('MMM')))->toArray(),
             'counts'  => $evolutionMonths->map(fn ($m) =>
                 Student::where('created_at', '<=', Carbon::create($m->year, $m->month)->endOfMonth())->count()
             )->toArray(),
@@ -66,16 +66,16 @@ class MainDashboardWidget extends Widget
             ->where('students.status', 'active')
             ->leftJoin('classrooms', 'students.classroom_id', '=', 'classrooms.id')
             ->leftJoin('levels', 'classrooms.level_id', '=', 'levels.id')
-            ->selectRaw("COALESCE(levels.name, 'Sans niveau') as label, COUNT(*) as count")
+            ->selectRaw("COALESCE(levels.name, '__no_level__') as label, COUNT(*) as count")
             ->groupBy('label')
             ->orderBy('label')
             ->get()
-            ->map(fn ($r) => ['label' => $r->label, 'count' => (int) $r->count])
+            ->map(fn ($r) => ['label' => $r->label === '__no_level__' ? __('Sans niveau') : $r->label, 'count' => (int) $r->count])
             ->toArray();
 
         // ── Revenue chart (6 months) ─────────────────────────────────────────────
         $revenueChart = [
-            'labels'   => $evolutionMonths->map(fn ($m) => ucfirst(Carbon::create($m->year, $m->month)->locale('fr')->isoFormat('MMM')))->toArray(),
+            'labels'   => $evolutionMonths->map(fn ($m) => ucfirst(Carbon::create($m->year, $m->month)->locale(app()->getLocale())->isoFormat('MMM')))->toArray(),
             'revenue'  => $evolutionMonths->map(fn ($m) => (float) Payment::where('status','paid')
                 ->whereYear('payment_date',$m->year)->whereMonth('payment_date',$m->month)->sum('amount'))->toArray(),
             'expenses' => $evolutionMonths->map(fn ($m) => (float) Expense::whereYear('date',$m->year)
@@ -98,7 +98,7 @@ class MainDashboardWidget extends Widget
         $recentPayments = Payment::where('status','paid')->with('student')
             ->orderByDesc('payment_date')->take(3)->get()
             ->map(fn ($p) => ['type'=>'payment','color'=>'#10b981',
-                'text' => 'Paiement reçu — '.($p->student?->full_name ?? '—'),
+                'text' => __('Paiement reçu — :name', ['name' => $p->student?->full_name ?? '—']),
                 'meta' => number_format($p->amount,3).' TND',
                 'at'   => $p->payment_date ?? $p->created_at]);
 
@@ -106,14 +106,14 @@ class MainDashboardWidget extends Widget
             ->orderByDesc('incident_date')->take(2)->get()
             ->map(fn ($i) => ['type'=>'incident',
                 'color' => $i->severity==='high'?'#ef4444':($i->severity==='medium'?'#f59e0b':'#94a3b8'),
-                'text'  => 'Incident — '.($i->student?->full_name ?? '—'),
+                'text'  => __('Incident — :name', ['name' => $i->student?->full_name ?? '—']),
                 'meta'  => ucfirst($i->severity),
                 'at'    => $i->incident_date ?? $i->created_at]);
 
         $recentStudents = Student::orderByDesc('created_at')->take(2)->get()
             ->map(fn ($s) => ['type'=>'student','color'=>'#1d4ed8',
-                'text' => 'Nouvel élève — '.$s->full_name,
-                'meta' => $s->created_at->locale('fr')->diffForHumans(),
+                'text' => __('Nouvel élève — :name', ['name' => $s->full_name]),
+                'meta' => $s->created_at->locale(app()->getLocale())->diffForHumans(),
                 'at'   => $s->created_at]);
 
         $activities = $recentPayments->concat($recentIncidents)->concat($recentStudents)

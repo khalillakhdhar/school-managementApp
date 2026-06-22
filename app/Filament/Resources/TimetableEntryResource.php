@@ -53,7 +53,7 @@ class TimetableEntryResource extends Resource
                         ->nullable()->searchable()->placeholder(__('Non assigné')),
                     Forms\Components\Select::make('day_of_week')
                         ->label(__('Jour'))
-                        ->options(array_combine(TimetableEntry::$days, TimetableEntry::$days))
+                        ->options(array_combine(TimetableEntry::$days, array_map('__', TimetableEntry::$days)))
                         ->required(),
                     Forms\Components\TimePicker::make('start_time')
                         ->label(__('Heure début'))
@@ -97,6 +97,7 @@ class TimetableEntryResource extends Resource
                         'Samedi'   => 'gray',
                         default    => 'gray',
                     })
+                    ->formatStateUsing(fn ($state) => __($state))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('start_time')
                     ->label(__('Début'))
@@ -139,11 +140,11 @@ class TimetableEntryResource extends Resource
                     ),
                 Tables\Filters\SelectFilter::make('day_of_week')
                     ->label(__('Jour'))
-                    ->options(array_combine(TimetableEntry::$days, TimetableEntry::$days)),
+                    ->options(array_combine(TimetableEntry::$days, array_map('__', TimetableEntry::$days))),
             ])
             ->emptyStateIcon('heroicon-o-calendar-days')
-            ->emptyStateHeading('Aucune séance planifiée')
-            ->emptyStateDescription('Construisez les emplois du temps en ajoutant des séances.')
+            ->emptyStateHeading(__('Aucune séance planifiée'))
+            ->emptyStateDescription(__('Construisez les emplois du temps en ajoutant des séances.'))
             ->emptyStateActions([Actions\CreateAction::make()->label(__('Ajouter une séance'))])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);

@@ -80,8 +80,8 @@ class HolidayResource extends Resource
                     }),
             ])
             ->emptyStateIcon('heroicon-o-calendar-date-range')
-            ->emptyStateHeading('Aucun jour férié')
-            ->emptyStateDescription('Utilisez « Synchroniser une année » pour générer automatiquement les jours fériés tunisiens.')
+            ->emptyStateHeading(__('Aucun jour férié'))
+            ->emptyStateDescription(__('Utilisez « Synchroniser une année » pour générer automatiquement les jours fériés tunisiens.'))
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

@@ -9,11 +9,16 @@ use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Database\Eloquent\Model;
 
 class IncidentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'incidents';
-    protected static ?string $title       = 'Incidents';
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('Incidents');
+    }
 
     public function form(Schema $schema): Schema
     {

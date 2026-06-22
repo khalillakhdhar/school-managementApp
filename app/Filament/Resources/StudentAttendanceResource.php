@@ -41,7 +41,7 @@ class StudentAttendanceResource extends Resource
                     Forms\Components\DatePicker::make('date')->label(__('Date'))->required()->default(now())->displayFormat('d/m/Y'),
                     Forms\Components\Select::make('status')
                         ->label(__('Statut'))
-                        ->options(['present' => 'Présent', 'absent' => 'Absent', 'late' => 'En retard', 'excused' => 'Excusé'])
+                        ->options(['present' => __('Présent'), 'absent' => __('Absent'), 'late' => __('En retard'), 'excused' => __('Excusé')])
                         ->required()->default('present'),
                     Forms\Components\Textarea::make('notes')->label(__('Remarque'))->columnSpanFull()->rows(2),
                 ])->columns(2),
@@ -65,7 +65,7 @@ class StudentAttendanceResource extends Resource
                         'present' => 'success', 'absent' => 'danger', 'late' => 'warning', 'excused' => 'info', default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'present' => 'Présent', 'absent' => 'Absent', 'late' => 'En retard', 'excused' => 'Excusé', default => $state,
+                        'present' => __('Présent'), 'absent' => __('Absent'), 'late' => __('En retard'), 'excused' => __('Excusé'), default => $state,
                     }),
                 Tables\Columns\TextColumn::make('employee.first_name')
                     ->label(__('Saisi par'))
@@ -79,11 +79,11 @@ class StudentAttendanceResource extends Resource
                     ->options(fn () => Classroom::with('level')->get()->mapWithKeys(fn ($c) => [$c->id => $c->full_name])),
                 Tables\Filters\SelectFilter::make('status')
                     ->label(__('Statut'))
-                    ->options(['present' => 'Présent', 'absent' => 'Absent', 'late' => 'En retard', 'excused' => 'Excusé']),
+                    ->options(['present' => __('Présent'), 'absent' => __('Absent'), 'late' => __('En retard'), 'excused' => __('Excusé')]),
             ])
             ->emptyStateIcon('heroicon-o-clipboard-document-check')
-            ->emptyStateHeading('Aucune présence enregistrée')
-            ->emptyStateDescription('Les appels saisis par les enseignants apparaîtront ici.')
+            ->emptyStateHeading(__('Aucune présence enregistrée'))
+            ->emptyStateDescription(__('Les appels saisis par les enseignants apparaîtront ici.'))
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

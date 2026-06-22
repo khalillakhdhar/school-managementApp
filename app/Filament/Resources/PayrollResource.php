@@ -133,7 +133,7 @@ class PayrollResource extends Resource
 
             // ── Employee & Period ──────────────────────────────────────────────
             Section::make(__('Employé et période'))
-                ->description('Sélectionnez l\'employé et la période de paie concernée')
+                ->description(__("Sélectionnez l'employé et la période de paie concernée"))
                 ->icon('heroicon-o-calendar-days')
                 ->schema([
                 Forms\Components\Select::make('employee_id')
@@ -180,10 +180,10 @@ class PayrollResource extends Resource
                 Forms\Components\Select::make('status')
                     ->label(__('Statut de la fiche'))
                     ->options([
-                        'draft'     => 'Brouillon',
-                        'finalized' => 'Finalisée',
-                        'paid'      => 'Payée',
-                        'rejected'  => 'Rejetée',
+                        'draft'     => __('Brouillon'),
+                        'finalized' => __('Finalisée'),
+                        'paid'      => __('Payée'),
+                        'rejected'  => __('Rejetée'),
                     ])
                     ->required()->default('draft'),
             ])->columns(2),
@@ -213,7 +213,7 @@ class PayrollResource extends Resource
                     Forms\Components\TextInput::make('gross_salary')
                         ->label(__('Montant brut'))
                         ->prefix('TND')->disabled()->dehydrated()
-                        ->hint('Calculé automatiquement')
+                        ->hint(__('Calculé automatiquement'))
                         ->hintIcon('heroicon-o-calculator')
                         ->hintColor('info'),
                     Forms\Components\TextInput::make('retenue_source')
@@ -229,7 +229,7 @@ class PayrollResource extends Resource
                     Forms\Components\TextInput::make('net_salary')
                         ->label(__('Net à payer'))
                         ->prefix('TND')->disabled()->dehydrated()
-                        ->hint('Calculé automatiquement')
+                        ->hint(__('Calculé automatiquement'))
                         ->hintIcon('heroicon-o-calculator')
                         ->hintColor('success')
                         ->extraAttributes(['class' => 'font-bold']),
@@ -269,7 +269,7 @@ class PayrollResource extends Resource
                     Forms\Components\TextInput::make('gross_salary')
                         ->label(__('Salaire brut total'))
                         ->prefix('TND')->disabled()->dehydrated()
-                        ->hint('Calculé automatiquement')
+                        ->hint(__('Calculé automatiquement'))
                         ->hintIcon('heroicon-o-calculator')
                         ->hintColor('info')
                         ->extraAttributes(['class' => 'font-bold']),
@@ -299,7 +299,7 @@ class PayrollResource extends Resource
                     Forms\Components\TextInput::make('net_salary')
                         ->label(__('Salaire net à payer'))
                         ->prefix('TND')->disabled()->dehydrated()
-                        ->hint('Calculé automatiquement')
+                        ->hint(__('Calculé automatiquement'))
                         ->hintIcon('heroicon-o-calculator')
                         ->hintColor('success')
                         ->extraAttributes(['class' => 'font-bold']),
@@ -398,16 +398,16 @@ class PayrollResource extends Resource
                         default     => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'draft'     => 'Brouillon',
-                        'finalized' => 'Finalisé',
-                        'paid'      => 'Payé',
-                        'rejected'  => 'Rejeté',
+                        'draft'     => __('Brouillon'),
+                        'finalized' => __('Finalisé'),
+                        'paid'      => __('Payé'),
+                        'rejected'  => __('Rejeté'),
                         default     => $state,
                     }),
             ])
             ->emptyStateIcon('heroicon-o-banknotes')
-            ->emptyStateHeading('Aucune fiche de paie')
-            ->emptyStateDescription('Générez les fiches de paie du personnel ici.')
+            ->emptyStateHeading(__('Aucune fiche de paie'))
+            ->emptyStateDescription(__('Générez les fiches de paie du personnel ici.'))
             ->defaultSort('year', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')

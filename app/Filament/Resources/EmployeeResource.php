@@ -62,15 +62,15 @@ class EmployeeResource extends Resource
                 ])->columns(2),
 
             Section::make(__('Détails du poste'))
-                ->description('Type de contrat, poste occupé et dates d\'emploi')
+                ->description(__("Type de contrat, poste occupé et dates d'emploi"))
                 ->icon('heroicon-o-briefcase')
                 ->schema([
                     Forms\Components\Select::make('contract_type')
                         ->label(__('Type de contrat'))
                         ->options([
-                            'permanent' => 'CDI (Permanent)',
-                            'temporary' => 'CDD (Durée déterminée)',
-                            'contract'  => 'Vacataire / Prestataire',
+                            'permanent' => __('CDI (Permanent)'),
+                            'temporary' => __('CDD (Durée déterminée)'),
+                            'contract'  => __('Vacataire / Prestataire'),
                         ])
                         ->required()->default('permanent')->live(),
                     Forms\Components\TextInput::make('position')
@@ -83,7 +83,7 @@ class EmployeeResource extends Resource
                         ->label(__('Employé actif'))->default(true)->inline(false),
                     Forms\Components\Toggle::make('is_teacher')
                         ->label(__('Est enseignant'))
-                        ->helperText('Active les champs spécifiques aux enseignants et l\'affectation aux classes')
+                        ->helperText(__("Active les champs spécifiques aux enseignants et l'affectation aux classes"))
                         ->default(false)->inline(false)->live(),
                 ])->columns(2),
 
@@ -98,14 +98,14 @@ class EmployeeResource extends Resource
                     Forms\Components\Select::make('situation_familiale')
                         ->label(__('Situation familiale'))
                         ->options([
-                            'celibataire' => 'Célibataire',
-                            'marie'       => 'Marié(e)',
-                            'divorce'     => 'Divorcé(e)',
-                            'veuf'        => 'Veuf/Veuve',
+                            'celibataire' => __('Célibataire'),
+                            'marie'       => __('Marié(e)'),
+                            'divorce'     => __('Divorcé(e)'),
+                            'veuf'        => __('Veuf/Veuve'),
                         ])
                         ->default('celibataire')->required(),
                     Forms\Components\TextInput::make('nb_enfants')
-                        ->label('Nombre d\'enfants')
+                        ->label(__("Nombre d'enfants"))
                         ->numeric()->default(0)->minValue(0)->maxValue(20),
                 ])
                 ->columns(2)
@@ -123,14 +123,14 @@ class EmployeeResource extends Resource
                                 ->mapWithKeys(fn ($c) => [
                                     $c->id => $c->full_name
                                         . ($c->teacher
-                                            ? ' — (actuel: ' . $c->teacher->full_name . ')'
+                                            ? ' — ' . __('(actuel: :name)', ['name' => $c->teacher->full_name])
                                             : ''),
                                 ]);
                         })
                         ->multiple()
                         ->searchable()
                         ->columnSpanFull()
-                        ->helperText('Les classes ayant déjà un enseignant l\'affichent entre parenthèses.'),
+                        ->helperText(__("Les classes ayant déjà un enseignant l'affichent entre parenthèses.")),
                 ])
                 ->visible(fn (callable $get) => (bool) $get('is_teacher')),
 
@@ -263,7 +263,7 @@ class EmployeeResource extends Resource
                     ->icon('heroicon-o-key')
                     ->color('primary')
                     ->requiresConfirmation()
-                    ->modalHeading(fn (Employee $record) => 'Créer un accès pour ' . $record->full_name)
+                    ->modalHeading(fn (Employee $record) => __('Créer un accès pour :name', ['name' => $record->full_name]))
                     ->modalDescription(__('Un compte « Espace Personnel » sera créé. Le mot de passe temporaire devra être changé à la première connexion.'))
                     ->action(function (Employee $record): void {
                         $result = \App\Services\AccountService::forEmployee($record, null, true);
@@ -350,8 +350,8 @@ class EmployeeResource extends Resource
                 Actions\DeleteAction::make(),
             ])
             ->emptyStateIcon('heroicon-o-identification')
-            ->emptyStateHeading('Aucun employé enregistré')
-            ->emptyStateDescription('Ajoutez les membres du personnel de l\'établissement.')
+            ->emptyStateHeading(__('Aucun employé enregistré'))
+            ->emptyStateDescription(__("Ajoutez les membres du personnel de l'établissement."))
             ->emptyStateActions([Actions\CreateAction::make()->label(__('Ajouter un employé'))])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
     }

@@ -6,11 +6,16 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class AttendancesRelationManager extends RelationManager
 {
     protected static string $relationship = 'attendances';
-    protected static ?string $title       = 'Présences';
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('Présences');
+    }
 
     public function form(Schema $schema): Schema
     {
@@ -20,14 +25,14 @@ class AttendancesRelationManager extends RelationManager
             Forms\Components\Select::make('status')
                 ->label(__('Statut'))
                 ->options([
-                    'present' => 'Présent',
-                    'absent'  => 'Absent',
-                    'late'    => 'Retard',
-                    'leave'   => 'Congé',
+                    'present' => __('Présent'),
+                    'absent'  => __('Absent'),
+                    'late'    => __('Retard'),
+                    'leave'   => __('Congé'),
                 ])
                 ->default('present')->required(),
             Forms\Components\TimePicker::make('time_in')
-                ->label('Heure d\'arrivée')->seconds(false),
+                ->label(__("Heure d'arrivée"))->seconds(false),
             Forms\Components\TimePicker::make('time_out')
                 ->label(__('Heure de départ'))->seconds(false),
             Forms\Components\TextInput::make('total_hours')
@@ -59,10 +64,10 @@ class AttendancesRelationManager extends RelationManager
                         default   => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'present' => 'Présent',
-                        'absent'  => 'Absent',
-                        'late'    => 'Retard',
-                        'leave'   => 'Congé',
+                        'present' => __('Présent'),
+                        'absent'  => __('Absent'),
+                        'late'    => __('Retard'),
+                        'leave'   => __('Congé'),
                         default   => $state,
                     }),
                 Tables\Columns\TextColumn::make('time_in')
@@ -82,10 +87,10 @@ class AttendancesRelationManager extends RelationManager
                 Tables\Filters\SelectFilter::make('status')
                     ->label(__('Statut'))
                     ->options([
-                        'present' => 'Présent',
-                        'absent'  => 'Absent',
-                        'late'    => 'Retard',
-                        'leave'   => 'Congé',
+                        'present' => __('Présent'),
+                        'absent'  => __('Absent'),
+                        'late'    => __('Retard'),
+                        'leave'   => __('Congé'),
                     ]),
             ])
             ->headerActions([Tables\Actions\CreateAction::make()->label(__('Ajouter une présence'))])

@@ -89,8 +89,8 @@ class SubjectResource extends Resource
                     ->trueLabel('Actives')->falseLabel('Inactives'),
             ])
             ->emptyStateIcon('heroicon-o-book-open')
-            ->emptyStateHeading('Aucune matière créée')
-            ->emptyStateDescription('Créez les matières enseignées dans votre établissement.')
+            ->emptyStateHeading(__('Aucune matière créée'))
+            ->emptyStateDescription(__('Créez les matières enseignées dans votre établissement.'))
             ->emptyStateActions([Actions\CreateAction::make()->label(__('Créer une matière'))])
             ->actions([Actions\EditAction::make(), Actions\DeleteAction::make()])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
