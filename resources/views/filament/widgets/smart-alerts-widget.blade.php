@@ -17,15 +17,15 @@
                 @endif
             </div>
             <div>
-                <div style="font-size:15px;font-weight:700;color:#0f172a;">Centre de notifications</div>
+                <div style="font-size:15px;font-weight:700;color:#0f172a;">{{ __('Centre de notifications') }}</div>
                 <div style="font-size:12px;color:#64748b;">
                     @if($totalCount > 0)
-                        {{ $totalCount }} alerte{{ $totalCount > 1 ? 's' : '' }} active{{ $totalCount > 1 ? 's' : '' }}
+                        {{ __(':count alerte(s) active(s)', ['count' => $totalCount]) }}
                         @if($criticalCount > 0)
-                            · <span style="color:#ef4444;font-weight:600;">{{ $criticalCount }} critique{{ $criticalCount > 1 ? 's' : '' }}</span>
+                            · <span style="color:#ef4444;font-weight:600;">{{ __(':count critique(s)', ['count' => $criticalCount]) }}</span>
                         @endif
                     @else
-                        Tout est à jour
+                        {{ __('Tout est à jour') }}
                     @endif
                 </div>
             </div>
@@ -36,19 +36,19 @@
             @if($criticalCount > 0)
             <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;background:#fff1f2;border:1px solid #fecdd3;border-radius:20px;font-size:11px;font-weight:700;color:#dc2626;">
                 <span style="width:6px;height:6px;background:#ef4444;border-radius:50%;display:inline-block;"></span>
-                {{ $criticalCount }} Critique{{ $criticalCount > 1 ? 's' : '' }}
+                {{ __(':count Critique(s)', ['count' => $criticalCount]) }}
             </span>
             @endif
             @if($warningCount > 0)
             <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;background:#fffbeb;border:1px solid #fde68a;border-radius:20px;font-size:11px;font-weight:700;color:#d97706;">
                 <span style="width:6px;height:6px;background:#f59e0b;border-radius:50%;display:inline-block;"></span>
-                {{ $warningCount }} Avert.
+                {{ __(':count Avert.', ['count' => $warningCount]) }}
             </span>
             @endif
             @if($infoCount > 0)
             <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:20px;font-size:11px;font-weight:700;color:#0284c7;">
                 <span style="width:6px;height:6px;background:#0ea5e9;border-radius:50%;display:inline-block;"></span>
-                {{ $infoCount }} Info
+                {{ __(':count Info', ['count' => $infoCount]) }}
             </span>
             @endif
         </div>
@@ -64,8 +64,8 @@
                 <polyline points="22 4 12 14.01 9 11.01"/>
             </svg>
         </div>
-        <div style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:4px;">Tout est à jour !</div>
-        <div style="font-size:13px;color:#64748b;">Aucune alerte active. Votre établissement fonctionne parfaitement.</div>
+        <div style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:4px;">{{ __('Tout est à jour !') }}</div>
+        <div style="font-size:13px;color:#64748b;">{{ __('Aucune alerte active. Votre établissement fonctionne parfaitement.') }}</div>
     </div>
 
     @else
@@ -74,9 +74,9 @@
         @php
             $isLast = $i === count($notifications) - 1;
             $colors = match($notif['level']) {
-                'critical' => ['accent'=>'#ef4444','bg'=>'#fff1f2','badge_bg'=>'#ef4444','text'=>'#b91c1c','icon_bg'=>'#fee2e2','label'=>'Critique','label_color'=>'#dc2626','label_bg'=>'#fff1f2','label_border'=>'#fecdd3'],
-                'warning'  => ['accent'=>'#f59e0b','bg'=>'#fffbeb','badge_bg'=>'#f59e0b','text'=>'#92400e','icon_bg'=>'#fef3c7','label'=>'Avert.','label_color'=>'#d97706','label_bg'=>'#fffbeb','label_border'=>'#fde68a'],
-                default    => ['accent'=>'#0ea5e9','bg'=>'#f0f9ff','badge_bg'=>'#0ea5e9','text'=>'#0369a1','icon_bg'=>'#e0f2fe','label'=>'Info','label_color'=>'#0284c7','label_bg'=>'#f0f9ff','label_border'=>'#bae6fd'],
+                'critical' => ['accent'=>'#ef4444','bg'=>'#fff1f2','badge_bg'=>'#ef4444','text'=>'#b91c1c','icon_bg'=>'#fee2e2','label'=>__('Critique'),'label_color'=>'#dc2626','label_bg'=>'#fff1f2','label_border'=>'#fecdd3'],
+                'warning'  => ['accent'=>'#f59e0b','bg'=>'#fffbeb','badge_bg'=>'#f59e0b','text'=>'#92400e','icon_bg'=>'#fef3c7','label'=>__('Avert.'),'label_color'=>'#d97706','label_bg'=>'#fffbeb','label_border'=>'#fde68a'],
+                default    => ['accent'=>'#0ea5e9','bg'=>'#f0f9ff','badge_bg'=>'#0ea5e9','text'=>'#0369a1','icon_bg'=>'#e0f2fe','label'=>__('Info'),'label_color'=>'#0284c7','label_bg'=>'#f0f9ff','label_border'=>'#bae6fd'],
             };
         @endphp
         <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 20px;border-inline-start:3px solid {{ $colors['accent'] }};{{ !$isLast ? 'border-bottom:1px solid #f1f5f9;' : '' }}background:{{ $notif['level'] === 'critical' ? '#fffafa' : 'white' }};">

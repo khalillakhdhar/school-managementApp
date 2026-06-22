@@ -81,13 +81,13 @@ class ClassTimetable extends Page
             ->get();
 
         return [
-            ['label' => 'Séances / semaine',  'value' => $entries->count(),
+            ['label' => __('Séances / semaine'),  'value' => $entries->count(),
              'color' => '#1d4ed8', 'bg' => '#eff6ff'],
-            ['label' => 'Heures / semaine',    'value' => number_format($entries->sum(fn ($e) => $e->duration_hours), 1) . 'h',
+            ['label' => __('Heures / semaine'),    'value' => number_format($entries->sum(fn ($e) => $e->duration_hours), 1) . 'h',
              'color' => '#059669', 'bg' => '#ecfdf5'],
-            ['label' => 'Matières enseignées', 'value' => $entries->pluck('subject_id')->unique()->count(),
+            ['label' => __('Matières enseignées'), 'value' => $entries->pluck('subject_id')->unique()->count(),
              'color' => '#7c3aed', 'bg' => '#f5f3ff'],
-            ['label' => 'Enseignants actifs',  'value' => $entries->pluck('employee_id')->filter()->unique()->count(),
+            ['label' => __('Active Teachers'),  'value' => $entries->pluck('employee_id')->filter()->unique()->count(),
              'color' => '#d97706', 'bg' => '#fffbeb'],
         ];
     }

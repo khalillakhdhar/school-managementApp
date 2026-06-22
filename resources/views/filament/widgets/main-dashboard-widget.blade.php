@@ -121,7 +121,7 @@
         </div>
         <div style="font-size:22px;font-weight:800;color:{{ $overdueCount > 0 ? '#dc2626' : '#0f172a' }};letter-spacing:-0.5px;line-height:1.1;">{{ number_format($overdueTotal,0,',',' ') }} TND</div>
         <div style="font-size:11px;font-weight:600;color:{{ $overdueCount > 0 ? '#dc2626' : '#10b981' }};">
-            {{ $overdueCount > 0 ? $overdueCount.' paiement(s) échu(s)' : 'Aucun impayé' }}
+            {{ $overdueCount > 0 ? __(':count paiement(s) échu(s)', ['count' => $overdueCount]) : __('Aucun impayé') }}
         </div>
         <div style="height:24px;background:{{ $overdueCount > 0 ? '#fecaca' : '#d1fae5' }};border-radius:4px;margin-top:2px;"></div>
     </div>
@@ -137,12 +137,12 @@
     <div style="background:white;border-radius:14px;padding:20px 24px;box-shadow:0 1px 3px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04);">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
             <div>
-                <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0;">Évolution des élèves</h3>
-                <p style="font-size:12px;color:#64748b;margin:3px 0 0;">6 derniers mois</p>
+                <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0;">{{ __('Évolution des élèves') }}</h3>
+                <p style="font-size:12px;color:#64748b;margin:3px 0 0;">{{ __('6 derniers mois') }}</p>
             </div>
             <div style="display:flex;align-items:center;gap:12px;font-size:11px;color:#64748b;">
                 <span style="display:flex;align-items:center;gap:4px;">
-                    <span style="width:12px;height:3px;background:#2563eb;border-radius:2px;display:inline-block;"></span>Élèves
+                    <span style="width:12px;height:3px;background:#2563eb;border-radius:2px;display:inline-block;"></span>{{ __('Élèves') }}
                 </span>
             </div>
         </div>
@@ -154,13 +154,13 @@
     {{-- Class Distribution Doughnut --}}
     <div style="background:white;border-radius:14px;padding:20px 24px;box-shadow:0 1px 3px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04);">
         <div style="margin-bottom:16px;">
-            <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0;">Répartition par niveau</h3>
-            <p style="font-size:12px;color:#64748b;margin:3px 0 0;">Élèves actifs</p>
+            <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0;">{{ __('Répartition par niveau') }}</h3>
+            <p style="font-size:12px;color:#64748b;margin:3px 0 0;">{{ __('Élèves actifs') }}</p>
         </div>
         @if(empty($distribution))
             <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:180px;color:#94a3b8;">
                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                <span style="font-size:13px;margin-top:8px;">Aucune donnée</span>
+                <span style="font-size:13px;margin-top:8px;">{{ __('Aucune donnée') }}</span>
             </div>
         @else
             <div style="position:relative;height:160px;">
@@ -190,13 +190,13 @@
     <div style="background:white;border-radius:14px;padding:20px 24px;box-shadow:0 1px 3px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04);">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
             <div>
-                <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0;">Paiements en retard</h3>
-                <p style="font-size:12px;color:#64748b;margin:3px 0 0;">{{ $overdueCount }} paiement(s) échu(s)</p>
+                <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0;">{{ __('Overdue Payments') }}</h3>
+                <p style="font-size:12px;color:#64748b;margin:3px 0 0;">{{ __(':count paiement(s) échu(s)', ['count' => $overdueCount]) }}</p>
             </div>
             @if($overdueCount > 0)
             <a href="{{ \App\Filament\Resources\PaymentResource::getUrl('index') }}"
                style="font-size:12px;font-weight:600;color:#2563eb;text-decoration:none;display:flex;align-items:center;gap:3px;">
-                Voir tout
+                {{ __('Voir tout') }}
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
             </a>
             @endif
@@ -207,17 +207,17 @@
                 <div style="width:44px;height:44px;background:#f0fdf4;border-radius:12px;display:flex;align-items:center;justify-content:center;">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 </div>
-                <span style="font-size:13px;font-weight:600;color:#10b981;">Aucun paiement en retard</span>
-                <span style="font-size:12px;color:#94a3b8;">Tous les paiements sont à jour</span>
+                <span style="font-size:13px;font-weight:600;color:#10b981;">{{ __('Aucun paiement en retard') }}</span>
+                <span style="font-size:12px;color:#94a3b8;">{{ __('Tous les paiements sont à jour') }}</span>
             </div>
         @else
             <table style="width:100%;border-collapse:collapse;">
                 <thead>
                     <tr style="border-bottom:1px solid #f1f5f9;">
-                        <th style="text-align:start;font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:0 0 10px;">Élève</th>
-                        <th style="text-align:start;font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:0 0 10px;">Classe</th>
-                        <th style="text-align:end;font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:0 0 10px;">Montant</th>
-                        <th style="text-align:end;font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:0 0 10px;">Retard</th>
+                        <th style="text-align:start;font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:0 0 10px;">{{ __('Élève') }}</th>
+                        <th style="text-align:start;font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:0 0 10px;">{{ __('Classe') }}</th>
+                        <th style="text-align:end;font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:0 0 10px;">{{ __('Montant') }}</th>
+                        <th style="text-align:end;font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:0 0 10px;">{{ __('Retard') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -231,7 +231,7 @@
                         <td style="padding:9px 0;text-align:end;">
                             <span style="font-size:11px;font-weight:700;color:white;padding:2px 8px;border-radius:20px;
                                 background:{{ $row['days'] > 60 ? '#dc2626' : ($row['days'] > 30 ? '#f59e0b' : '#ef4444') }};">
-                                {{ $row['days'] }}j
+                                {{ __(':n j', ['n' => $row['days']]) }}
                             </span>
                         </td>
                     </tr>
@@ -246,23 +246,23 @@
 
         {{-- Financial Summary --}}
         <div style="background:white;border-radius:14px;padding:20px 24px;box-shadow:0 1px 3px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04);">
-            <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0 0 14px;">Résumé financier</h3>
+            <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0 0 14px;">{{ __('Résumé financier') }}</h3>
             <div style="display:flex;flex-direction:column;gap:12px;">
                 <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:13px;color:#64748b;">Total facturé ({{ now()->year }})</span>
+                    <span style="font-size:13px;color:#64748b;">{{ __('Total facturé (:year)', ['year' => now()->year]) }}</span>
                     <span style="font-size:13px;font-weight:700;color:#0f172a;font-variant-numeric:tabular-nums;">{{ number_format($invoiced,3) }} TND</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:13px;color:#64748b;">Total encaissé</span>
+                    <span style="font-size:13px;color:#64748b;">{{ __('Total encaissé') }}</span>
                     <span style="font-size:13px;font-weight:700;color:#10b981;font-variant-numeric:tabular-nums;">{{ number_format($received,3) }} TND</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:13px;color:#64748b;">En attente</span>
+                    <span style="font-size:13px;color:#64748b;">{{ __('En attente') }}</span>
                     <span style="font-size:13px;font-weight:700;color:#f59e0b;font-variant-numeric:tabular-nums;">{{ number_format($pending,3) }} TND</span>
                 </div>
                 <div style="border-top:1px solid #f1f5f9;padding-top:12px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                        <span style="font-size:13px;font-weight:600;color:#0f172a;">Taux de recouvrement</span>
+                        <span style="font-size:13px;font-weight:600;color:#0f172a;">{{ __('Collection Rate') }}</span>
                         <span style="font-size:16px;font-weight:800;color:{{ $collectRate >= 80 ? '#10b981' : ($collectRate >= 50 ? '#f59e0b' : '#ef4444') }};">{{ $collectRate }}%</span>
                     </div>
                     <div style="background:#f1f5f9;border-radius:4px;height:8px;overflow:hidden;">
@@ -274,11 +274,11 @@
 
         {{-- Recent Activities --}}
         <div style="background:white;border-radius:14px;padding:20px 24px;box-shadow:0 1px 3px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04);flex:1;">
-            <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0 0 14px;">Activités récentes</h3>
+            <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0 0 14px;">{{ __('Activités récentes') }}</h3>
             @if(empty($activities))
                 <div style="display:flex;align-items:center;gap:8px;color:#94a3b8;font-size:13px;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
-                    Aucune activité récente
+                    {{ __('Aucune activité récente') }}
                 </div>
             @else
                 <div style="display:flex;flex-direction:column;gap:0;">
@@ -318,7 +318,7 @@ if (evoEl) {
         data: {
             labels: @json($evolution['labels']),
             datasets: [{
-                label: 'Élèves',
+                label: '{{ __('Élèves') }}',
                 data: @json($evolution['counts']),
                 borderColor: '#2563eb',
                 backgroundColor: 'rgba(29,78,216,0.08)',
@@ -342,7 +342,7 @@ if (evoEl) {
                     cornerRadius: 8,
                     titleFont: { size: 12, weight: '700' },
                     bodyFont: { size: 12 },
-                    callbacks: { label: ctx => ' ' + ctx.parsed.y + ' élèves' }
+                    callbacks: { label: ctx => ' ' + ctx.parsed.y + ' {{ __('élèves') }}' }
                 }
             },
             scales: {
@@ -386,7 +386,7 @@ if (distEl) {
                         padding: 10,
                         cornerRadius: 8,
                         callbacks: {
-                            label: ctx => ' ' + ctx.label + ': ' + ctx.parsed + ' élèves'
+                            label: ctx => ' ' + ctx.label + ': ' + ctx.parsed + ' {{ __('élèves') }}'
                         }
                     }
                 }

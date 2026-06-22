@@ -46,30 +46,30 @@ html.dark .ss-save-bar{background:#1e293b;border-color:#334155}
                 </svg>
             </div>
             <div>
-                <div class="ss-section-title">Identité de l'établissement</div>
-                <div class="ss-section-desc">Nom, slogan, type et année scolaire</div>
+                <div class="ss-section-title">{{ __("Identité de l'établissement") }}</div>
+                <div class="ss-section-desc">{{ __('Nom, slogan, type et année scolaire') }}</div>
             </div>
         </div>
         <div class="ss-body">
             <div>
-                <label class="ss-label">Nom de l'établissement *</label>
+                <label class="ss-label">{{ __("Nom de l'établissement") }} *</label>
                 <input class="ss-input" type="text" wire:model="school_name" placeholder="EliteCampus">
             </div>
             <div>
-                <label class="ss-label">Type d'établissement</label>
-                <input class="ss-input" type="text" wire:model="school_type" placeholder="École primaire / Lycée...">
+                <label class="ss-label">{{ __("Type d'établissement") }}</label>
+                <input class="ss-input" type="text" wire:model="school_type" placeholder="{{ __('École primaire / Lycée...') }}">
             </div>
             <div>
-                <label class="ss-label">Slogan</label>
-                <input class="ss-input" type="text" wire:model="slogan" placeholder="L'excellence au service de l'avenir">
+                <label class="ss-label">{{ __('Slogan') }}</label>
+                <input class="ss-input" type="text" wire:model="slogan" placeholder="{{ __("L'excellence au service de l'avenir") }}">
             </div>
             <div>
-                <label class="ss-label">Année scolaire</label>
+                <label class="ss-label">{{ __('Année scolaire') }}</label>
                 <input class="ss-input" type="text" wire:model="academic_year" placeholder="2025-2026">
             </div>
             <div class="ss-full">
-                <label class="ss-label">Description</label>
-                <textarea class="ss-input ss-textarea" wire:model="description" placeholder="Présentation de l'établissement..."></textarea>
+                <label class="ss-label">{{ __('Description') }}</label>
+                <textarea class="ss-input ss-textarea" wire:model="description" placeholder="{{ __("Présentation de l'établissement...") }}"></textarea>
             </div>
         </div>
     </div>
@@ -83,22 +83,22 @@ html.dark .ss-save-bar{background:#1e293b;border-color:#334155}
                 </svg>
             </div>
             <div>
-                <div class="ss-section-title">Logo et Favicon</div>
-                <div class="ss-section-desc">Images de branding utilisées dans l'interface</div>
+                <div class="ss-section-title">{{ __('Logo et Favicon') }}</div>
+                <div class="ss-section-desc">{{ __("Images de branding utilisées dans l'interface") }}</div>
             </div>
         </div>
         <div class="ss-body">
             <div>
-                <label class="ss-label">Logo (PNG, SVG recommandé)</label>
+                <label class="ss-label">{{ __('Logo (PNG, SVG recommandé)') }}</label>
                 @if($existing_logo)
-                <img class="ss-preview" src="{{ Storage::url($existing_logo) }}" alt="Logo actuel">
+                <img class="ss-preview" src="{{ Storage::url($existing_logo) }}" alt="{{ __('Logo actuel') }}">
                 @endif
                 <input type="file" wire:model="logo" accept="image/*" class="ss-input" style="padding:6px">
             </div>
             <div>
-                <label class="ss-label">Favicon (ICO, PNG 32x32)</label>
+                <label class="ss-label">{{ __('Favicon (ICO, PNG 32x32)') }}</label>
                 @if($existing_favicon)
-                <img class="ss-preview" src="{{ Storage::url($existing_favicon) }}" alt="Favicon actuel">
+                <img class="ss-preview" src="{{ Storage::url($existing_favicon) }}" alt="{{ __('Favicon actuel') }}">
                 @endif
                 <input type="file" wire:model="favicon" accept="image/*" class="ss-input" style="padding:6px">
             </div>
@@ -114,37 +114,37 @@ html.dark .ss-save-bar{background:#1e293b;border-color:#334155}
                 </svg>
             </div>
             <div>
-                <div class="ss-section-title">Coordonnées</div>
-                <div class="ss-section-desc">Adresse, téléphone, email et site web</div>
+                <div class="ss-section-title">{{ __('Coordonnées') }}</div>
+                <div class="ss-section-desc">{{ __('Adresse, téléphone, email et site web') }}</div>
             </div>
         </div>
         <div class="ss-body">
             <div class="ss-full">
-                <label class="ss-label">Adresse</label>
+                <label class="ss-label">{{ __('Adresse') }}</label>
                 <input class="ss-input" type="text" wire:model="address" placeholder="12 Rue des Écoles">
             </div>
             <div>
-                <label class="ss-label">Ville</label>
+                <label class="ss-label">{{ __('Ville') }}</label>
                 <input class="ss-input" type="text" wire:model="city" placeholder="Tunis">
             </div>
             <div>
-                <label class="ss-label">Pays</label>
+                <label class="ss-label">{{ __('Pays') }}</label>
                 <input class="ss-input" type="text" wire:model="country" placeholder="Tunisie">
             </div>
             <div>
-                <label class="ss-label">Téléphone fixe</label>
+                <label class="ss-label">{{ __('Téléphone fixe') }}</label>
                 <input class="ss-input" type="text" wire:model="phone" placeholder="+216 71 000 000">
             </div>
             <div>
-                <label class="ss-label">Mobile</label>
+                <label class="ss-label">{{ __('Mobile') }}</label>
                 <input class="ss-input" type="text" wire:model="mobile" placeholder="+216 XX XXX XXX">
             </div>
             <div>
-                <label class="ss-label">Email</label>
+                <label class="ss-label">{{ __('Email') }}</label>
                 <input class="ss-input" type="email" wire:model="email" placeholder="contact@ecole.tn">
             </div>
             <div>
-                <label class="ss-label">Site web</label>
+                <label class="ss-label">{{ __('Site web') }}</label>
                 <input class="ss-input" type="url" wire:model="website" placeholder="https://www.ecole.tn">
             </div>
         </div>
@@ -159,8 +159,8 @@ html.dark .ss-save-bar{background:#1e293b;border-color:#334155}
                 </svg>
             </div>
             <div>
-                <div class="ss-section-title">Réseaux sociaux</div>
-                <div class="ss-section-desc">Liens vers les pages officielles de l'établissement</div>
+                <div class="ss-section-title">{{ __('Réseaux sociaux') }}</div>
+                <div class="ss-section-desc">{{ __("Liens vers les pages officielles de l'établissement") }}</div>
             </div>
         </div>
         <div class="ss-body">
@@ -186,8 +186,8 @@ html.dark .ss-save-bar{background:#1e293b;border-color:#334155}
     {{-- Save --}}
     <div class="ss-save-bar">
         <button class="ss-btn-save" wire:click="save" wire:loading.attr="disabled">
-            <span wire:loading.remove>Sauvegarder les paramètres</span>
-            <span wire:loading>Sauvegarde...</span>
+            <span wire:loading.remove>{{ __('Sauvegarder les paramètres') }}</span>
+            <span wire:loading>{{ __('Sauvegarde...') }}</span>
         </button>
     </div>
 

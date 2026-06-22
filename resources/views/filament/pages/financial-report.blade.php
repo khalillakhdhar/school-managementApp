@@ -76,8 +76,8 @@
     $eBadge = $badge($expenseGrowth, true);
     $nBadge = $badge($net >= 0 ? 1 : -1);
 
-    $fromFmt  = \Carbon\Carbon::parse($from)->locale('fr')->isoFormat('D MMM YYYY');
-    $untilFmt = \Carbon\Carbon::parse($until)->locale('fr')->isoFormat('D MMM YYYY');
+    $fromFmt  = \Carbon\Carbon::parse($from)->locale(app()->getLocale())->isoFormat('D MMM YYYY');
+    $untilFmt = \Carbon\Carbon::parse($until)->locale(app()->getLocale())->isoFormat('D MMM YYYY');
     $chartColors = ['#1d4ed8','#ef4444','#f59e0b','#10b981','#06b6d4','#8b5cf6','#ec4899','#14b8a6','#f97316','#84cc16'];
 @endphp
 
@@ -97,7 +97,7 @@
                 </svg>
             </div>
             <div>
-                <div style="font-size:18px;font-weight:800;color:white;letter-spacing:-0.3px;">Rapport Financier</div>
+                <div style="font-size:18px;font-weight:800;color:white;letter-spacing:-0.3px;">{{ __('Rapport Financier') }}</div>
                 <div style="font-size:12px;color:rgba(147,197,253,0.85);margin-top:1px;">{{ $fromFmt }} → {{ $untilFmt }}</div>
             </div>
         </div>
@@ -105,7 +105,7 @@
         {{-- Controls --}}
         <div class="ec-period-row" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
             {{-- Period toggles --}}
-            @foreach(['month'=>'Ce mois','quarter'=>'Trimestre','year'=>'Année'] as $key=>$lbl)
+            @foreach(['month'=>__('Ce mois'),'quarter'=>__('Trimestre'),'year'=>__('Année')] as $key=>$lbl)
             <button wire:click="setPeriod('{{ $key }}')"
                 style="padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,0.2);cursor:pointer;transition:all .15s;
                 {{ $period===$key ? 'background:rgba(255,255,255,0.95);color:#1d4ed8;border-color:transparent;' : 'background:rgba(255,255,255,0.1);color:white;' }}">
@@ -147,12 +147,12 @@
             <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
         </svg>
     </div>
-    <div style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:8px;">Aucune donnée financière disponible</div>
-    <div style="font-size:14px;color:#64748b;max-width:400px;margin:0 auto 24px;">Commencez à enregistrer des paiements et des dépenses pour générer des rapports financiers détaillés.</div>
+    <div style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:8px;">{{ __('Aucune donnée financière disponible') }}</div>
+    <div style="font-size:14px;color:#64748b;max-width:400px;margin:0 auto 24px;">{{ __('Commencez à enregistrer des paiements et des dépenses pour générer des rapports financiers détaillés.') }}</div>
     <a href="{{ \App\Filament\Resources\PaymentResource::getUrl('create') }}"
         style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:#1d4ed8;color:white;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Enregistrer un paiement
+        {{ __('Enregistrer un paiement') }}
     </a>
 </div>
 
@@ -173,9 +173,9 @@
             <span style="padding:3px 8px;background:{{ $rBadge['bg'] }};color:{{ $rBadge['clr'] }};border-radius:20px;font-size:11px;font-weight:700;">{{ $rBadge['arr'] }} {{ abs($revenueGrowth) }}%</span>
             @endif
         </div>
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">Revenus</div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">{{ __('Revenus') }}</div>
         <div style="font-size:26px;font-weight:800;color:#0f172a;letter-spacing:-0.8px;line-height:1.1;margin:4px 0 2px;">{{ number_format($revenue, 3) }}</div>
-        <div style="font-size:11px;color:#94a3b8;">TND · cette période</div>
+        <div style="font-size:11px;color:#94a3b8;">{{ __('TND · cette période') }}</div>
         <svg viewBox="0 0 100 34" style="width:100%;height:34px;margin-top:12px;" preserveAspectRatio="none">
             <defs><linearGradient id="gRev" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#10b981" stop-opacity="0.18"/><stop offset="100%" stop-color="#10b981" stop-opacity="0"/></linearGradient></defs>
             @php $p = $spark($chartData['revenue']); @endphp
@@ -194,9 +194,9 @@
             <span style="padding:3px 8px;background:{{ $eBadge['bg'] }};color:{{ $eBadge['clr'] }};border-radius:20px;font-size:11px;font-weight:700;">{{ $eBadge['arr'] }} {{ abs($expenseGrowth) }}%</span>
             @endif
         </div>
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">Dépenses</div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;">{{ __('Dépenses') }}</div>
         <div style="font-size:26px;font-weight:800;color:#0f172a;letter-spacing:-0.8px;line-height:1.1;margin:4px 0 2px;">{{ number_format($expenses, 3) }}</div>
-        <div style="font-size:11px;color:#94a3b8;">TND · cette période</div>
+        <div style="font-size:11px;color:#94a3b8;">{{ __('TND · cette période') }}</div>
         <svg viewBox="0 0 100 34" style="width:100%;height:34px;margin-top:12px;" preserveAspectRatio="none">
             <defs><linearGradient id="gExp" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ef4444" stop-opacity="0.18"/><stop offset="100%" stop-color="#ef4444" stop-opacity="0"/></linearGradient></defs>
             @php $p = $spark($chartData['expenses']); @endphp

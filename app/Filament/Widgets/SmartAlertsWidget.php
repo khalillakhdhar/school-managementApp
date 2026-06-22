@@ -40,11 +40,11 @@ class SmartAlertsWidget extends Widget
             $notifications[] = [
                 'level'       => 'critical',
                 'icon'        => 'banknote',
-                'title'       => "{$overdueCount} paiement" . ($overdueCount > 1 ? 's' : '') . " en retard",
-                'description' => number_format($overdueTotal, 3) . ' TND impayés · le plus ancien depuis ' . $daysLate . ' jours',
+                'title'       => __(':count paiement(s) en retard', ['count' => $overdueCount]),
+                'description' => __(':amount TND impayés · le plus ancien depuis :days jours', ['amount' => number_format($overdueTotal, 3), 'days' => $daysLate]),
                 'action_url'  => \App\Filament\Resources\PaymentResource::getUrl('index'),
-                'action_label'=> 'Voir les paiements',
-                'time'        => 'Mis à jour maintenant',
+                'action_label'=> __('Voir les paiements'),
+                'time'        => __('Mis à jour maintenant'),
             ];
         }
 
@@ -56,11 +56,11 @@ class SmartAlertsWidget extends Widget
             $notifications[] = [
                 'level'       => 'critical',
                 'icon'        => 'triangle-alert',
-                'title'       => "{$highIncidents} incident" . ($highIncidents > 1 ? 's' : '') . " grave non notifié" . ($highIncidents > 1 ? 's' : ''),
-                'description' => 'Les parents concernés n\'ont pas encore été informés',
+                'title'       => __(':count incident(s) grave(s) non notifié(s)', ['count' => $highIncidents]),
+                'description' => __("Les parents concernés n'ont pas encore été informés"),
                 'action_url'  => \App\Filament\Resources\IncidentResource::getUrl('index'),
-                'action_label'=> 'Notifier les parents',
-                'time'        => 'Action requise',
+                'action_label'=> __('Notifier les parents'),
+                'time'        => __('Action requise'),
             ];
         }
 
@@ -72,11 +72,11 @@ class SmartAlertsWidget extends Widget
             $notifications[] = [
                 'level'       => 'warning',
                 'icon'        => 'alert-circle',
-                'title'       => "{$otherIncidents} incident" . ($otherIncidents > 1 ? 's' : '') . " en attente de notification",
-                'description' => 'Incidents mineurs ou moyens sans notification parentale',
+                'title'       => __(':count incident(s) en attente de notification', ['count' => $otherIncidents]),
+                'description' => __('Incidents mineurs ou moyens sans notification parentale'),
                 'action_url'  => \App\Filament\Resources\IncidentResource::getUrl('index'),
-                'action_label'=> 'Voir les incidents',
-                'time'        => 'Aujourd\'hui',
+                'action_label'=> __('Voir les incidents'),
+                'time'        => __("Aujourd'hui"),
             ];
         }
 
@@ -87,11 +87,11 @@ class SmartAlertsWidget extends Widget
             $notifications[] = [
                 'level'       => 'warning',
                 'icon'        => 'building-2',
-                'title'       => "{$classesNoTeacher} classe" . ($classesNoTeacher > 1 ? 's' : '') . " sans enseignant",
-                'description' => 'Ces classes n\'ont pas encore d\'enseignant titulaire assigné',
+                'title'       => __(':count classe(s) sans enseignant', ['count' => $classesNoTeacher]),
+                'description' => __("Ces classes n'ont pas encore d'enseignant titulaire assigné"),
                 'action_url'  => \App\Filament\Resources\ClassroomResource::getUrl('index'),
-                'action_label'=> 'Assigner un enseignant',
-                'time'        => 'À planifier',
+                'action_label'=> __('Assigner un enseignant'),
+                'time'        => __('À planifier'),
             ];
         }
 
@@ -103,11 +103,11 @@ class SmartAlertsWidget extends Widget
             $notifications[] = [
                 'level'       => 'warning',
                 'icon'        => 'wallet',
-                'title'       => "{$pendingPayroll} fiche" . ($pendingPayroll > 1 ? 's' : '') . " de paie finalisée" . ($pendingPayroll > 1 ? 's' : '') . " non payée" . ($pendingPayroll > 1 ? 's' : ''),
-                'description' => number_format($pendingAmount, 3) . ' TND à virer aux employés',
+                'title'       => __(':count fiche(s) de paie finalisée(s) non payée(s)', ['count' => $pendingPayroll]),
+                'description' => __(':amount TND à virer aux employés', ['amount' => number_format($pendingAmount, 3)]),
                 'action_url'  => \App\Filament\Resources\PayrollResource::getUrl('index'),
-                'action_label'=> 'Voir les fiches de paie',
-                'time'        => 'En attente',
+                'action_label'=> __('Voir les fiches de paie'),
+                'time'        => __('En attente'),
             ];
         }
 
@@ -118,11 +118,11 @@ class SmartAlertsWidget extends Widget
             $notifications[] = [
                 'level'       => 'info',
                 'icon'        => 'file-text',
-                'title'       => "{$draftPayroll} fiche" . ($draftPayroll > 1 ? 's' : '') . " de paie en brouillon",
-                'description' => 'À finaliser avant envoi en paiement',
+                'title'       => __(':count fiche(s) de paie en brouillon', ['count' => $draftPayroll]),
+                'description' => __('À finaliser avant envoi en paiement'),
                 'action_url'  => \App\Filament\Resources\PayrollResource::getUrl('index'),
-                'action_label'=> 'Finaliser',
-                'time'        => 'Brouillon',
+                'action_label'=> __('Finaliser'),
+                'time'        => __('Brouillon'),
             ];
         }
 
@@ -148,11 +148,11 @@ class SmartAlertsWidget extends Widget
             $notifications[] = [
                 'level'        => 'warning',
                 'icon'         => 'calendar-clock',
-                'title'        => "{$expiringContracts} contrat" . ($expiringContracts > 1 ? 's' : '') . " CDD expirant dans 30 jours",
-                'description'  => 'Le plus proche expire dans ' . $daysLeft . ' jour' . ($daysLeft > 1 ? 's' : '') . ' — renouvelez ou terminez le contrat',
+                'title'        => __(':count contrat(s) CDD expirant dans 30 jours', ['count' => $expiringContracts]),
+                'description'  => __('Le plus proche expire dans :days jour(s) — renouvelez ou terminez le contrat', ['days' => $daysLeft]),
                 'action_url'   => \App\Filament\Resources\EmployeeResource::getUrl('index'),
-                'action_label' => 'Voir les employés',
-                'time'         => 'Échéance proche',
+                'action_label' => __('Voir les employés'),
+                'time'         => __('Échéance proche'),
             ];
         }
 
@@ -166,11 +166,11 @@ class SmartAlertsWidget extends Widget
             $notifications[] = [
                 'level'       => 'info',
                 'icon'        => 'user-x',
-                'title'       => "{$inactiveTeachers} enseignant" . ($inactiveTeachers > 1 ? 's' : '') . " inactif" . ($inactiveTeachers > 1 ? 's' : '') . " avec classes assignées",
-                'description' => 'Ces enseignants inactifs sont encore affectés à des classes',
+                'title'       => __(':count enseignant(s) inactif(s) avec classes assignées', ['count' => $inactiveTeachers]),
+                'description' => __('Ces enseignants inactifs sont encore affectés à des classes'),
                 'action_url'  => \App\Filament\Resources\ClassroomResource::getUrl('index'),
-                'action_label'=> 'Vérifier les classes',
-                'time'        => 'À vérifier',
+                'action_label'=> __('Vérifier les classes'),
+                'time'        => __('À vérifier'),
             ];
         }
 

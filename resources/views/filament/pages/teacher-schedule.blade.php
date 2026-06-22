@@ -129,7 +129,7 @@ html.dark .ts-empty-title{color:#cbd5e1}
      STATE 1 — Teacher selection list
      ══════════════════════════════════════════════════════════════════════ --}}
 <p class="ts-list-intro">
-    Sélectionnez un enseignant pour consulter son planning hebdomadaire, ses heures de cours et les classes dont il a la charge.
+    {{ __('Sélectionnez un enseignant pour consulter son planning hebdomadaire, ses heures de cours et les classes dont il a la charge.') }}
 </p>
 
 <div class="ts-cards-grid">
@@ -164,11 +164,11 @@ html.dark .ts-empty-title{color:#cbd5e1}
         <div class="ts-card-stats">
             <div class="ts-stat-pill">
                 <div class="ts-stat-pill-val">{{ $t['sessions'] }}</div>
-                <div class="ts-stat-pill-lbl">Séances</div>
+                <div class="ts-stat-pill-lbl">{{ __('Séances') }}</div>
             </div>
             <div class="ts-stat-pill">
                 <div class="ts-stat-pill-val">{{ $t['hours'] }}h</div>
-                <div class="ts-stat-pill-lbl">/ sem.</div>
+                <div class="ts-stat-pill-lbl">{{ __('/ sem.') }}</div>
             </div>
         </div>
 
@@ -177,7 +177,7 @@ html.dark .ts-empty-title{color:#cbd5e1}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
             </svg>
-            @if($t['hasData']) Voir le planning @else Aucune séance planifiée @endif
+            @if($t['hasData']) {{ __('Voir le planning') }} @else {{ __('Aucune séance planifiée') }} @endif
         </button>
     </div>
     @empty
@@ -185,8 +185,8 @@ html.dark .ts-empty-title{color:#cbd5e1}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/>
         </svg>
-        <div class="ts-empty-title">Aucun enseignant actif</div>
-        <p>Ajoutez des enseignants dans le module RH et activez l'option "Enseignant".</p>
+        <div class="ts-empty-title">{{ __('Aucun enseignant actif') }}</div>
+        <p>{{ __('Ajoutez des enseignants dans le module RH et activez l\'option "Enseignant".') }}</p>
     </div>
     @endforelse
 </div>
@@ -201,7 +201,7 @@ html.dark .ts-empty-title{color:#cbd5e1}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M19 12H5M12 5l-7 7 7 7"/>
         </svg>
-        Retour aux enseignants
+        {{ __('Retour aux enseignants') }}
     </button>
 </div>
 
@@ -223,8 +223,8 @@ html.dark .ts-empty-title{color:#cbd5e1}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
     </svg>
-    <div class="ts-empty-title">Aucune séance planifiée pour cet enseignant</div>
-    <p>Assignez des séances à cet enseignant dans le module Emplois du temps.</p>
+    <div class="ts-empty-title">{{ __('Aucune séance planifiée pour cet enseignant') }}</div>
+    <p>{{ __('Assignez des séances à cet enseignant dans le module Emplois du temps.') }}</p>
 </div>
 @else
 <div class="ts-table-outer">

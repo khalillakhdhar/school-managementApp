@@ -82,13 +82,13 @@ class TeacherSchedule extends Page
             ->get();
 
         return [
-            ['label' => 'Séances / semaine',  'value' => $entries->count(),
+            ['label' => __('Séances / semaine'),  'value' => $entries->count(),
              'color' => '#7c3aed', 'bg' => '#f5f3ff'],
-            ['label' => 'Heures / semaine',    'value' => number_format($entries->sum(fn ($e) => $e->duration_hours), 1) . 'h',
+            ['label' => __('Heures / semaine'),    'value' => number_format($entries->sum(fn ($e) => $e->duration_hours), 1) . 'h',
              'color' => '#059669', 'bg' => '#ecfdf5'],
-            ['label' => 'Classes enseignées',  'value' => $entries->pluck('classroom_id')->unique()->count(),
+            ['label' => __('Classes enseignées'),  'value' => $entries->pluck('classroom_id')->unique()->count(),
              'color' => '#1d4ed8', 'bg' => '#eff6ff'],
-            ['label' => 'Matières',            'value' => $entries->pluck('subject_id')->unique()->count(),
+            ['label' => __('Matières'),            'value' => $entries->pluck('subject_id')->unique()->count(),
              'color' => '#d97706', 'bg' => '#fffbeb'],
         ];
     }

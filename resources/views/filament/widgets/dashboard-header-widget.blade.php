@@ -96,7 +96,7 @@
                 </div>
             </div>
             <div style="color:{{ $pendingIncidents > 0 ? '#fde68a' : 'white' }};font-size:30px;font-weight:800;letter-spacing:-1px;line-height:1;">{{ $pendingIncidents }}</div>
-            <div style="color:rgba(255,255,255,0.5);font-size:11px;margin-top:5px;">{{ $pendingIncidents === 0 ? __('Parents Notified') : __('parent(s) non notifié(s)') }}</div>
+            <div style="color:rgba(255,255,255,0.5);font-size:11px;margin-top:5px;">{{ $pendingIncidents === 0 ? __('Parents notifiés') : __('parent(s) non notifié(s)') }}</div>
         </div>
 
     </div>
