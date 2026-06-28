@@ -2,18 +2,42 @@
 
 namespace App\Providers;
 
+use App\Models\Attendance;
+use App\Models\AuditLog;
+use App\Models\BlogPost;
+use App\Models\Classroom;
 use App\Models\Employee;
+use App\Models\Expense;
+use App\Models\ExpenseCategory;
 use App\Models\Grade;
+use App\Models\Holiday;
 use App\Models\Incident;
+use App\Models\Level;
 use App\Models\Payment;
 use App\Models\Payroll;
+use App\Models\Service;
 use App\Models\Student;
+use App\Models\StudentAttendance;
+use App\Models\Subject;
+use App\Models\TimetableEntry;
+use App\Policies\AttendancePolicy;
+use App\Policies\AuditLogPolicy;
+use App\Policies\BlogPostPolicy;
+use App\Policies\ClassroomPolicy;
 use App\Policies\EmployeePolicy;
+use App\Policies\ExpenseCategoryPolicy;
+use App\Policies\ExpensePolicy;
 use App\Policies\GradePolicy;
+use App\Policies\HolidayPolicy;
 use App\Policies\IncidentPolicy;
+use App\Policies\LevelPolicy;
 use App\Policies\PaymentPolicy;
 use App\Policies\PayrollPolicy;
+use App\Policies\ServicePolicy;
+use App\Policies\StudentAttendancePolicy;
 use App\Policies\StudentPolicy;
+use App\Policies\SubjectPolicy;
+use App\Policies\TimetableEntryPolicy;
 use BezhanSalleh\LanguageSwitch\LanguageSwitch;
 use Filament\Resources\Resource;
 use Filament\Support\Facades\FilamentView;
@@ -36,6 +60,18 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Grade::class, GradePolicy::class);
         Gate::policy(Incident::class, IncidentPolicy::class);
         Gate::policy(Employee::class, EmployeePolicy::class);
+        Gate::policy(Level::class, LevelPolicy::class);
+        Gate::policy(Service::class, ServicePolicy::class);
+        Gate::policy(Expense::class, ExpensePolicy::class);
+        Gate::policy(ExpenseCategory::class, ExpenseCategoryPolicy::class);
+        Gate::policy(AuditLog::class, AuditLogPolicy::class);
+        Gate::policy(BlogPost::class, BlogPostPolicy::class);
+        Gate::policy(Holiday::class, HolidayPolicy::class);
+        Gate::policy(Attendance::class, AttendancePolicy::class);
+        Gate::policy(StudentAttendance::class, StudentAttendancePolicy::class);
+        Gate::policy(Classroom::class, ClassroomPolicy::class);
+        Gate::policy(Subject::class, SubjectPolicy::class);
+        Gate::policy(TimetableEntry::class, TimetableEntryPolicy::class);
 
         Gate::before(fn ($user) => $user?->role === 'admin' ? true : null);
 
