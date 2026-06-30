@@ -51,6 +51,27 @@ Total cœur (Phases 0-9) : ~13-15 jours.  Facturation : +4 j.
 
 > Livrable : note de spike (3 lignes) confirmant l'approche.
 
+### ✅ Résultat du spike (2026-06-27) — **GO**
+
+Exécuté sur la branche `saas`. Filament v5.6 confirmé avec tenancy native.
+
+**Mis en place (fondation réutilisable, conservée pour Phases 1-3) :**
+- Migrations `schools`, `school_user` (pivot), `students.school_id` (nullable, pilote).
+- `App\Models\School` (tenant, SoftDeletes, relations `users`/`students`).
+- Trait `App\Models\Concerns\BelongsToSchool` : global scope lecture (`Filament::getTenant()`) + estampillage `school_id` en création. No-op hors tenant (CLI/queue/super-admin).
+- `User implements HasTenants` (`getTenants`, `canAccessTenant`, relation `schools`).
+
+**Jetable (à supprimer en Phase 4) :** `SpikePanelProvider` (`/spike`, tenancy active), `App\Filament\Spike\Resources\SpikeStudentResource` + page, son entrée dans `bootstrap/providers.php`.
+
+**Validations :**
+1. Routing tenant natif OK — `spike/{tenant:slug}/spike-students` + `RedirectToTenantController` enregistrés ; les 3 panels de prod (`/admin`, `/parent`, `/staff`) **intacts** (aucun `{tenant}` injecté).
+2. Scope lecture OK — sans tenant : 3 élèves visibles ; tenant=A : 2 ; tenant=B : 1.
+3. Scope écriture OK — création sous tenant A → `school_id=A` automatique.
+4. Contrôle d'accès tenant OK — un user ne voit que ses écoles rattachées.
+5. **Zéro régression** — suite complète 22/22 verte (19 existants + 3 spike, `tests/Feature/SpikeTenancyTest.php`).
+
+**Conclusion : approche Filament v5 tenancy validée. GO pour Phase 1.** Le seul point d'attention confirmé : `Filament::getTenant()` est `null` hors contexte panel → le scope est volontairement no-op en CLI/queue/API (à gérer explicitement en Phase 3/4).
+
 ---
 
 ## Phase 1 — Modèle `School` (tenant)
@@ -102,6 +123,21 @@ Schema::create('school_user', function (Blueprint $table) {
 ```
 > Sur `User` : `public function schools(): BelongsToMany { return $this->belongsToMany(School::class, 'school_user'); }`
 > Implémenter le contrat Filament `HasTenants` sur `User` (`getTenants()`, `canAccessTenant()`).
+
+### ✅ Résultat Phase 1 (2026-06-27)
+
+**Modèle `School` complet** (`app/Models/School.php`) :
+- Implémente `HasName`, `HasAvatar`, `HasCurrentTenantLabel` → le tenant switcher et le brand du panel affichent le nom + logo de l'école.
+- Champs de branding ajoutés (migration `..._add_branding_to_schools` append-only) : `logo_path`, `primary_color`, `email`, `phone`, `city`, `country`.
+- Helpers de statut/abonnement : `isActive()`, `isSuspended()`, `isOnTrial()`, `trialHasExpired()` + constantes `STATUS_*`.
+- Auto-slug unique à la création (`uniqueSlug()`, respecte le soft-delete), accessors `logoUrl()` / `brandColor()` (défaut `#2563EB`).
+- `SchoolFactory` avec états `trial()` / `suspended()`.
+
+**Branding par tenant câblé** (sur le panel spike, à porter sur les vrais panels en Phase 4) :
+- `->brandName(fn () => Filament::getTenant()?->name)` + `->brandLogo(fn () => Filament::getTenant()?->logoUrl())` (closures).
+- Couleur d'accent par école via render hook CSS (`--tenant-accent` sur boutons primaires + item de nav actif).
+
+**Tests** : `tests/Feature/SchoolModelTest.php` (6 cas — slug auto/unique, contrats branding, couleur par défaut, helpers statut/essai, unicité slug avec soft-delete). Suite complète **28/28 verte**.
 
 ---
 

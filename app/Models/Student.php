@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToSchool;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -8,7 +9,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Student extends Model
 {
+    use BelongsToSchool; // PHASE 0 SPIKE — pilot tenant scoping
+
     protected $fillable = [
+        'school_id',
         'first_name', 'last_name', 'date_of_birth', 'id_number',
         'class', 'level', 'classroom_id', 'enrollment_date',
         'status', 'address', 'health_info',
