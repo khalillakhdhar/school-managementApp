@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToSchool;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Subject extends Model
 {
+    use BelongsToSchool;
+
     protected $fillable = [
-        'name', 'code', 'description', 'coefficient', 'color', 'is_active',
+        'school_id', 'name', 'code', 'description', 'coefficient', 'color', 'is_active',
     ];
 
     protected $casts = [

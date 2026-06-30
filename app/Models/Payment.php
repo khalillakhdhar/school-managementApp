@@ -2,13 +2,14 @@
 namespace App\Models;
 
 use App\Models\Concerns\Auditable;
+use App\Models\Concerns\BelongsToSchool;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Payment extends Model
 {
-    use Auditable;
+    use Auditable, BelongsToSchool;
 
     public function auditLabel(): string
     {
@@ -16,6 +17,7 @@ class Payment extends Model
     }
 
     protected $fillable = [
+        'school_id',
         'student_id', 'amount', 'payment_date', 'due_date', 'payment_method',
         'reference_number', 'status', 'notes', 'receipt_path',
         'is_verified', 'verified_at', 'verified_by',

@@ -51,6 +51,9 @@ trait Auditable
 
         try {
             AuditLog::create([
+                // Inherit the audited model's tenant so logs stay scoped even
+                // outside a Filament tenant context (CLI, queue, API).
+                'school_id'      => $this->school_id ?? null,
                 'user_id'        => auth()->id(),
                 'user_name'      => auth()->user()?->name,
                 'event'          => $event,

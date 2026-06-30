@@ -3,39 +3,38 @@
 namespace App\Models\Concerns;
 
 use App\Models\School;
-use Filament\Facades\Filament;
+use App\Support\Tenancy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * PHASE 0 SPIKE — tenant scoping based on the current Filament tenant.
+ * Tenant scoping based on the current tenant resolved by App\Support\Tenancy
+ * (Filament tenant in web requests, or an app-bound school in CLI/queue).
  *
  * Defence-in-depth on top of Filament's own resource scoping:
  *  - read  : a global scope filters every query by the current tenant's id
  *  - write : the creating event stamps school_id from the current tenant
  *
- * When there is no Filament tenant (CLI, queue, API, super-admin /platform),
- * the scope is a no-op — those contexts must set the tenant explicitly
- * (Filament::setTenant) or be allowed to see across tenants on purpose.
+ * With no current tenant (plain CLI, super-admin /platform), the scope is a
+ * no-op — those contexts see across tenants on purpose, or wrap their work in
+ * Tenancy::runFor() / Tenancy::eachSchool() to opt into a tenant.
  */
 trait BelongsToSchool
 {
     protected static function bootBelongsToSchool(): void
     {
         static::addGlobalScope('school', function (Builder $builder): void {
-            $tenant = Filament::getTenant();
-
-            if ($tenant instanceof School) {
+            if ($schoolId = Tenancy::id()) {
                 $builder->where(
                     $builder->getModel()->getTable() . '.school_id',
-                    $tenant->getKey()
+                    $schoolId
                 );
             }
         });
 
         static::creating(function ($model): void {
-            if (! $model->school_id && ($tenant = Filament::getTenant()) instanceof School) {
-                $model->school_id = $tenant->getKey();
+            if (! $model->school_id && $schoolId = Tenancy::id()) {
+                $model->school_id = $schoolId;
             }
         });
     }

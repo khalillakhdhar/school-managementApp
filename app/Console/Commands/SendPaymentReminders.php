@@ -3,15 +3,33 @@ namespace App\Console\Commands;
 
 use App\Mail\PaymentReminderMail;
 use App\Models\Payment;
+use App\Models\School;
+use App\Support\Tenancy;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
 class SendPaymentReminders extends Command
 {
     protected $signature   = 'payments:send-reminders';
-    protected $description = 'Send email reminders for overdue or upcoming pending payments';
+    protected $description = 'Send email reminders for overdue or upcoming pending payments (per school)';
 
     public function handle(): int
+    {
+        $totalSent = 0;
+
+        // Each school is processed inside its own tenant context, so every
+        // Eloquent query below is automatically scoped to that school.
+        Tenancy::eachSchool(function (School $school) use (&$totalSent) {
+            $totalSent += $this->remindForSchool($school);
+        });
+
+        $this->info("Sent {$totalSent} payment reminder(s) across all schools.");
+
+        return Command::SUCCESS;
+    }
+
+    /** Send reminders for the current tenant (school) and notify its admins. */
+    private function remindForSchool(School $school): int
     {
         $pending = Payment::with(['student.parents'])
             ->where('status', 'pending')
@@ -53,25 +71,25 @@ class SendPaymentReminders extends Command
             ]);
         }
 
-        $this->info("Sent {$sent} payment reminder(s).");
+        // In-app digest to THIS school's admins only (scoped via the pivot).
+        $overdue = Payment::where('status', 'pending')
+            ->whereNotNull('due_date')->whereDate('due_date', '<', now());
+        $overdueCount = $overdue->count();
 
-        // Notification in-app aux admins : synthèse des impayés en retard.
-        $overdueCount = Payment::where('status', 'pending')
-            ->whereNotNull('due_date')->whereDate('due_date', '<', now())->count();
         if ($overdueCount > 0) {
-            $overdueTotal = (float) Payment::where('status', 'pending')
-                ->whereNotNull('due_date')->whereDate('due_date', '<', now())->sum('amount');
+            $overdueTotal = (float) (clone $overdue)->sum('amount');
             $notification = \Filament\Notifications\Notification::make()
                 ->title(__(':count paiement(s) en retard', ['count' => $overdueCount]))
                 ->body(__('Total dû : :amount TND', ['amount' => number_format($overdueTotal, 3)]))
                 ->icon('heroicon-o-exclamation-circle')
                 ->color('danger')
                 ->toDatabase();
-            foreach (\App\Models\User::where('role', 'admin')->get() as $admin) {
+
+            foreach ($school->users()->where('role', 'admin')->get() as $admin) {
                 $admin->notifyNow($notification);
             }
         }
 
-        return Command::SUCCESS;
+        return $sent;
     }
 }

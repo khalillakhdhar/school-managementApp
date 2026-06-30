@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToSchool;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -8,7 +9,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Classroom extends Model
 {
-    protected $fillable = ['name', 'level_id', 'teacher_id', 'capacity', 'notes'];
+    use BelongsToSchool;
+
+    protected $fillable = ['school_id', 'name', 'level_id', 'teacher_id', 'capacity', 'notes'];
 
     public function level(): BelongsTo
     {

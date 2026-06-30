@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Models\Concerns\Auditable;
+use App\Models\Concerns\BelongsToSchool;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Grade extends Model
 {
-    use Auditable;
+    use Auditable, BelongsToSchool;
 
     public function auditLabel(): string
     {
@@ -16,6 +17,7 @@ class Grade extends Model
     }
 
     protected $fillable = [
+        'school_id',
         'student_id', 'subject_id', 'classroom_id', 'employee_id',
         'term', 'score', 'max_score', 'coefficient', 'date', 'comment',
     ];

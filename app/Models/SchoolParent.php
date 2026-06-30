@@ -1,15 +1,19 @@
 <?php
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToSchool;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class SchoolParent extends Model
 {
+    use BelongsToSchool;
+
     protected $table = 'parents';
 
     protected $fillable = [
+        'school_id',
         'first_name', 'last_name', 'phone', 'email',
         'address', 'occupation', 'is_payer', 'user_id',
     ];

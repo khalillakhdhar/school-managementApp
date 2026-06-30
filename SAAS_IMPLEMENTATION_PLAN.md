@@ -180,6 +180,22 @@ Schema::table('students', function (Blueprint $table) {
 - L'`AuditLog` (trait `Auditable`) : le `school_id` doit être rempli à la création de chaque log → ajouter dans le trait.
 - `SchoolSetting` : aujourd'hui singleton `firstOrCreate(['id' => 1])`. Devient `1 ligne par école` → réécrire `getInstance()` pour résoudre via le tenant courant (Phase 8).
 
+### ✅ Résultat Phase 2 (2026-06-27, sur base démo)
+
+**`school_id` ajouté aux 20 tables** (migration `..._add_school_id_to_tenant_tables`, looping, idempotente, FK `cascadeOnDelete`, **nullable**). `students` déjà fait en Phase 0.
+
+**Trait `BelongsToSchool` appliqué à 19 modèles** (+ `school_id` en `fillable`) : `Student`, `SchoolParent`, `Employee`, `Classroom`, `Level`, `Subject`, `Payment`, `Payroll`, `Expense`, `ExpenseCategory`, `Incident`, `Attendance`, `StudentAttendance`, `Holiday`, `BlogPost`, `Service`, `TimetableEntry`, `Grade`, `AuditLog`. Les modèles déjà `Auditable` (Payment/Payroll/Grade) combinent les deux traits sans conflit (`use Auditable, BelongsToSchool;`).
+
+**`SchoolSetting`** : colonne `school_id` + relation `school()` ajoutées, **sans** global scope (singleton, réécriture `getInstance()` reportée en Phase 8).
+
+**`Auditable` mis à jour** : chaque `AuditLog` hérite du `school_id` du modèle audité (robuste hors contexte tenant).
+
+**Backfill** : commande **idempotente** `php artisan tenancy:backfill` (plutôt qu'une migration de données qui se déclencherait à tort sur `migrate:fresh`). Crée/résout le tenant #1 depuis `school_settings`, backfill les 20 tables (NULL → #1), rattache les admins via `school_user`, **rapport de vérification** (0 orphelin). Exécutée sur la démo : tenant #1 « École Privée El Amana », 48 élèves / 480 paiements / 960 notes / 720 présences… tous rattachés, **0 ligne orpheline**.
+
+**Décision de séquençage** : colonnes laissées **NULLABLE**. Le flip non-nullable (Migration C) est reporté en **Phase 5**, après que la tenancy soit active sur les vrais panels (Phase 4) — sinon les créations dans `/admin` (sans tenant) ne seraient pas estampillées et violeraient la contrainte. L'app démo reste 100 % fonctionnelle entre-temps (scope no-op sans tenant → l'admin voit tout).
+
+**Tests** : `tests/Feature/TenantScopeRolloutTest.php` (scope lecture/écriture sur Level/Service/Subject/Classroom). Suite complète **30/30 verte**. Boot des 3 panels prod OK, admin voit les 48 élèves (tous `school_id=1`).
+
 ---
 
 ## Phase 3 — Trait `BelongsToSchool` + Global Scope
@@ -218,6 +234,23 @@ trait BelongsToSchool
 - Soit définir le tenant manuellement dans les jobs (`Filament::setTenant($school)`).
 - Soit prévoir un helper applicatif `app()->instance('currentSchool', $school)` et lire les deux dans le scope.
 - La commande `payments:send-reminders` (existe déjà) **doit boucler sur chaque école** et set le tenant à chaque itération.
+
+### ✅ Résultat Phase 3 (2026-06-27)
+
+**Helper central `App\Support\Tenancy`** :
+- `current()` / `id()` / `check()` — résolvent le tenant depuis le **tenant Filament** (web) **ou** un contexte applicatif lié (`currentSchool`, pour CLI/queue). `Filament::getTenant()` enveloppé dans try/catch (pas de panel courant en CLI).
+- `runFor(School, Closure)` — exécute un callback dans le contexte d'une école (nestable, restaure le contexte précédent en `finally`).
+- `eachSchool(Closure)` — boucle sur chaque école **vivante** (active ou en essai), chacune dans son propre contexte.
+
+**`BelongsToSchool` rebranché sur `Tenancy::id()`** (au lieu de `Filament::getTenant()` direct) → le scope fonctionne désormais aussi en CLI/queue via `runFor`/`eachSchool`.
+
+**`payments:send-reminders` refactorée** : boucle `Tenancy::eachSchool` → chaque école ne traite que **ses** impayés (Eloquent auto-scopé), et le digest in-app va aux admins de **cette** école uniquement (`$school->users()->where('role','admin')`, via le pivot `school_user`) — plus de notification globale tous-admins.
+
+**Audit des requêtes SQL brutes** (résultat) : toutes les agrégations des widgets/rapports (`MainDashboardWidget` `leftJoin+selectRaw`, `FinancialReport`, `ExpensesListStatsWidget`, les 13 `*ListStatsWidget`) partent d'une **base Eloquent** (`Student::`, `Expense::`, `Payment::`) → le Global Scope s'applique automatiquement dès qu'un tenant est actif (Phase 4). **Aucun `DB::table()` dans l'UI** ; les seuls usages (`DemoDataService`, `TenancyBackfill`) sont du seeding/backfill intentionnel. → **Aucune correction de requête nécessaire** dans les widgets.
+
+> Reste pour Phase 6 : `DemoDataService` crée encore des données sans tenant (à rendre tenant-aware lors du provisioning).
+
+**Tests** : `tests/Feature/TenancyContextTest.php` (3 cas — `runFor` actif/restauré, `eachSchool` ignore les écoles suspendues, isolation des rappels par école avec `Mail::assertQueued`). Suite complète **33/33 verte**. Commande de rappels vérifiée sur la démo (boucle par école).
 
 ---
 

@@ -1,13 +1,17 @@
 <?php
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToSchool;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
 class BlogPost extends Model
 {
+    use BelongsToSchool;
+
     protected $fillable = [
+        'school_id',
         'title', 'slug', 'excerpt', 'content', 'cover_image_path',
         'author_id', 'is_published', 'published_at',
     ];

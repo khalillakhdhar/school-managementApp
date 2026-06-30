@@ -2,12 +2,13 @@
 namespace App\Models;
 
 use App\Models\Concerns\Auditable;
+use App\Models\Concerns\BelongsToSchool;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Payroll extends Model
 {
-    use Auditable;
+    use Auditable, BelongsToSchool;
 
     public function auditLabel(): string
     {
@@ -15,6 +16,7 @@ class Payroll extends Model
     }
 
     protected $fillable = [
+        'school_id',
         'employee_id', 'month', 'year',
         'period_from', 'period_to',
         'total_hours_worked', 'hourly_rate_used',

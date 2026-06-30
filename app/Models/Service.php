@@ -1,12 +1,15 @@
 <?php
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToSchool;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Service extends Model
 {
-    protected $fillable = ['name', 'type', 'amount', 'description', 'is_active'];
+    use BelongsToSchool;
+
+    protected $fillable = ['school_id', 'name', 'type', 'amount', 'description', 'is_active'];
 
     protected $casts = ['is_active' => 'boolean', 'amount' => 'decimal:3'];
 
