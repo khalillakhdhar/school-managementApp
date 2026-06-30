@@ -15,6 +15,7 @@ use App\Models\Incident;
 use App\Models\Level;
 use App\Models\Payment;
 use App\Models\Payroll;
+use App\Models\SchoolParent;
 use App\Models\Service;
 use App\Models\Student;
 use App\Models\StudentAttendance;
@@ -33,13 +34,13 @@ use App\Policies\IncidentPolicy;
 use App\Policies\LevelPolicy;
 use App\Policies\PaymentPolicy;
 use App\Policies\PayrollPolicy;
+use App\Policies\SchoolParentPolicy;
 use App\Policies\ServicePolicy;
 use App\Policies\StudentAttendancePolicy;
 use App\Policies\StudentPolicy;
 use App\Policies\SubjectPolicy;
 use App\Policies\TimetableEntryPolicy;
 use BezhanSalleh\LanguageSwitch\LanguageSwitch;
-use Filament\Resources\Resource;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -50,10 +51,6 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Filament v5: skip ALL resource authorization — single-role admin ERP
-        // This is the correct Filament v5 API (overrides get_authorization_response)
-        Resource::skipAuthorization();
-
         Gate::policy(Student::class, StudentPolicy::class);
         Gate::policy(Payment::class, PaymentPolicy::class);
         Gate::policy(Payroll::class, PayrollPolicy::class);
@@ -72,10 +69,10 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Classroom::class, ClassroomPolicy::class);
         Gate::policy(Subject::class, SubjectPolicy::class);
         Gate::policy(TimetableEntry::class, TimetableEntryPolicy::class);
+        Gate::policy(SchoolParent::class, SchoolParentPolicy::class);
 
         Gate::before(fn ($user) => $user?->role === 'admin' ? true : null);
 
-        // Observers — notifications in-app
         Incident::observe(\App\Observers\IncidentObserver::class);
         Payroll::observe(\App\Observers\PayrollObserver::class);
 
@@ -93,7 +90,8 @@ class AppServiceProvider extends ServiceProvider
             'panels::head.end',
             function (): string {
                 $locale = app()->getLocale();
-                $dir    = $locale === 'ar' ? 'rtl' : 'ltr';
+                $dir = $locale === 'ar' ? 'rtl' : 'ltr';
+
                 return <<<HTML
                 <script>
                     (function(){
@@ -105,9 +103,6 @@ class AppServiceProvider extends ServiceProvider
             }
         );
 
-        // Recover from stale/expired Livewire requests (bfcache restore, expired
-        // session, cached endpoint after deploy) instead of showing the raw
-        // 403/404/419 error modal. Registered globally → applies to every panel.
         FilamentView::registerRenderHook(
             'panels::head.end',
             fn (): string => view('filament.livewire-error-recovery')->render(),

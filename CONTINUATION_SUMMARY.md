@@ -201,3 +201,13 @@ Continuer par ce workflow:
 3. Pousser les trois branches.
 4. Ouvrir une passe dédiée "design system + CSS inline".
 5. Ouvrir ensuite une passe "audit métier + reset password sécurisé".
+
+## Plan Design SaaS
+
+Un plan design détaillé a été ajouté dans:
+
+```text
+SAAS_DESIGN_IMPROVEMENT_PLAN.md
+```
+
+Ce fichier doit servir de point d'entrée pour une prochaine discussion dédiée à la finition SaaS professionnelle sur `main`, `saas` et la branche de durcissement.

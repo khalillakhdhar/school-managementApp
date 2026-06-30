@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Payment;
@@ -19,6 +20,7 @@ class PaymentService
                 'reference_number' => $referenceNumber,
                 'status' => 'paid',
             ]);
+
             if (! empty($serviceIds)) {
                 $services = Service::whereIn('id', $serviceIds)->get();
                 $pivotData = $services->mapWithKeys(fn (Service $service) => [
@@ -34,17 +36,26 @@ class PaymentService
 
     public function getStudentBalance(Student $student): array
     {
-        $totalDue = $student->payments()->where('status', 'pending')->sum('amount');
-        $totalPaid = $student->payments()->where('status', 'paid')->sum('amount');
-        $outstanding = max(0, $totalDue);
+        $pendingAmount = (float) $student->payments()->where('status', 'pending')->sum('amount');
+        $paidAmount = (float) $student->payments()->where('status', 'paid')->sum('amount');
+        $overdueQuery = $student->payments()
+            ->where('status', 'pending')
+            ->whereNotNull('due_date')
+            ->whereDate('due_date', '<', now());
+        $overdueAmount = (float) (clone $overdueQuery)->sum('amount');
+        $overdueCount = (int) (clone $overdueQuery)->count();
         $daysOverdue = $this->calculateDaysOverdue($student);
 
         return [
-            'total_due' => $totalDue,
-            'total_paid' => $totalPaid,
-            'outstanding' => $outstanding,
+            'total_due' => $pendingAmount,
+            'total_paid' => $paidAmount,
+            'outstanding' => max(0, $pendingAmount),
+            'pending_amount' => $pendingAmount,
+            'paid_amount' => $paidAmount,
+            'overdue_amount' => $overdueAmount,
+            'overdue_count' => $overdueCount,
             'days_overdue' => $daysOverdue,
-            'is_overdue' => $daysOverdue > 7,
+            'is_overdue' => $overdueCount > 0,
             'is_suspended' => $daysOverdue > 45,
         ];
     }
@@ -61,8 +72,6 @@ class PaymentService
         return $oldestOverdue ? (int) $oldestOverdue->due_date->diffInDays(now()) : 0;
     }
 
-    // ── Transitions d'état (source unique, séparation des tâches) ──────────────
-
     /** Arrondi monétaire standard (millime tunisien = 3 décimales). */
     public static function money(float|int|string $amount): float
     {
@@ -73,7 +82,7 @@ class PaymentService
     public function markPaid(Payment $payment): Payment
     {
         $payment->update([
-            'status'       => 'paid',
+            'status' => 'paid',
             'payment_date' => $payment->payment_date ?: now()->toDateString(),
         ]);
 

@@ -19,33 +19,9 @@
     <meta name="theme-color" content="#0f172a">
     <link rel="icon" href="{{ asset('favicon.svg') }}">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] },
-                    colors: {
-                        brand: { 50:'#eff6ff',100:'#dbeafe',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a' },
-                        ink: '#0f172a',
-                    },
-                },
-            },
-        }
-    </script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <style>
-        body{font-family:'Inter',sans-serif}
-        .grad-text{background:linear-gradient(135deg,#2563eb,#60a5fa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-        .grad-hero{background:radial-gradient(1200px 600px at 50% -10%,rgba(37,99,235,.18),transparent),linear-gradient(180deg,#0f172a,#0b1222)}
-        .card-hover{transition:transform .2s,box-shadow .2s,border-color .2s}
-        .card-hover:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(2,6,23,.10);border-color:#bfdbfe}
-        details>summary{list-style:none;cursor:pointer}
-        details>summary::-webkit-details-marker{display:none}
-        details[open] .faq-chevron{transform:rotate(180deg)}
-    </style>
 </head>
 <body class="bg-white text-slate-700 antialiased">
 
@@ -526,6 +502,5 @@
     </div>
 </footer>
 
-<style>[x-cloak]{display:none!important}</style>
 </body>
 </html>
