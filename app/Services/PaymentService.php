@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Payment;
@@ -19,6 +20,7 @@ class PaymentService
                 'reference_number' => $referenceNumber,
                 'status' => 'paid',
             ]);
+
             if (! empty($serviceIds)) {
                 $services = Service::whereIn('id', $serviceIds)->get();
                 $pivotData = $services->mapWithKeys(fn (Service $service) => [
@@ -70,8 +72,6 @@ class PaymentService
         return $oldestOverdue ? (int) $oldestOverdue->due_date->diffInDays(now()) : 0;
     }
 
-    // ── Transitions d'état (source unique, séparation des tâches) ──────────────
-
     /** Arrondi monétaire standard (millime tunisien = 3 décimales). */
     public static function money(float|int|string $amount): float
     {
@@ -82,7 +82,7 @@ class PaymentService
     public function markPaid(Payment $payment): Payment
     {
         $payment->update([
-            'status'       => 'paid',
+            'status' => 'paid',
             'payment_date' => $payment->payment_date ?: now()->toDateString(),
         ]);
 

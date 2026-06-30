@@ -24,7 +24,7 @@ class EncodingSmokeTest extends TestCase
             ->push(base_path('MAIN_CODE_DESIGN_REVIEW.md'))
             ->filter(fn (string $path) => is_file($path));
 
-        $markers = ['Ã', 'Â', '�', 'â€', 'â”', 'â•'];
+        $markers = ['Ã', 'Â', '�', 'â€', 'â”', 'â•', 'Ãƒ', 'Ã‚', 'ï¿½', 'Ã¢â‚¬', 'Ã¢â€', 'Ã¢â€¢'];
         $offenders = [];
 
         foreach ($files as $path) {

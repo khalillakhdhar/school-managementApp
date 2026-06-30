@@ -10,7 +10,9 @@ use Illuminate\Support\Str;
 
 /**
  * Provisions login accounts for parents and employees (teachers/staff).
- * Returns the generated plaintext password so the admin can hand it over.
+ * Returns the generated plaintext password only to the immediate caller so it
+ * can be sent through the controlled welcome/reset workflow. Do not log it or
+ * persist it outside the hashed User password.
  */
 class AccountService
 {

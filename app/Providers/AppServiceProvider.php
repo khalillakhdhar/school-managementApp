@@ -51,9 +51,6 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Filament v5: skip ALL resource authorization — single-role admin ERP
-        // This is the correct Filament v5 API (overrides get_authorization_response)
-
         Gate::policy(Student::class, StudentPolicy::class);
         Gate::policy(Payment::class, PaymentPolicy::class);
         Gate::policy(Payroll::class, PayrollPolicy::class);
@@ -76,7 +73,6 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::before(fn ($user) => $user?->role === 'admin' ? true : null);
 
-        // Observers — notifications in-app
         Incident::observe(\App\Observers\IncidentObserver::class);
         Payroll::observe(\App\Observers\PayrollObserver::class);
 
@@ -94,7 +90,8 @@ class AppServiceProvider extends ServiceProvider
             'panels::head.end',
             function (): string {
                 $locale = app()->getLocale();
-                $dir    = $locale === 'ar' ? 'rtl' : 'ltr';
+                $dir = $locale === 'ar' ? 'rtl' : 'ltr';
+
                 return <<<HTML
                 <script>
                     (function(){
@@ -106,9 +103,6 @@ class AppServiceProvider extends ServiceProvider
             }
         );
 
-        // Recover from stale/expired Livewire requests (bfcache restore, expired
-        // session, cached endpoint after deploy) instead of showing the raw
-        // 403/404/419 error modal. Registered globally → applies to every panel.
         FilamentView::registerRenderHook(
             'panels::head.end',
             fn (): string => view('filament.livewire-error-recovery')->render(),

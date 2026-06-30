@@ -7,9 +7,19 @@ Positionnement: version "one install", single-school, non-SaaS.
 
 ## Score global
 
-Score: 7.4 / 10
+Score initial: 7.4 / 10  
+Score apres passe de correction main: 8.2 / 10
 
 La branche `main` est une bonne base MVP avancee pour une installation unique. Elle est plus solide que le premier MVP: policies nombreuses, audit log, notifications in-app, PDF, jours feries, portails parent/staff, tests fonctionnels et API desactivee par defaut.
+
+Mise a jour apres correction:
+
+- `Resource::skipAuthorization()` a ete retire du code applicatif.
+- Le PDF bulletin passe par `Gate::authorize('view', $student)`.
+- Les acces parent/teacher/admin sur PDF et panel admin sont couverts par tests.
+- `PaymentService::getStudentBalance()` expose maintenant `pending_amount`, `paid_amount`, `overdue_amount`, `overdue_count`.
+- Le CSS admin inline a ete extrait vers `resources/views/filament/admin-theme.blade.php`.
+- Un smoke test encodage protege les fichiers visibles contre le retour de mojibake.
 
 Elle n'est pas encore une version "production propre" a cause de trois familles de dette:
 
