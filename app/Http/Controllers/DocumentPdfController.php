@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Services\ReportCardService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
 class DocumentPdfController extends Controller
@@ -17,6 +18,7 @@ class DocumentPdfController extends Controller
     {
         abort_unless(in_array($term, ['T1', 'T2', 'T3'], true), 404);
 
+        Gate::authorize('view', $student);
         $user = Auth::user();
         // Sécurité : admin OK ; parent uniquement ses enfants.
         if ($user->role === 'parent') {
