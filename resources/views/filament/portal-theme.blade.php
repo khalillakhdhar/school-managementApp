@@ -65,6 +65,12 @@ html:not(.dark) .fi-badge{border-radius:7px!important;font-weight:600!important;
 .fi-logo span,.fi-brand-name{color:#e2e8f0!important}
 .fi-sidebar-footer a,.fi-sidebar-footer button{color:#4a6480!important;font-size:12.5px!important}
 .fi-sidebar-footer a:hover,.fi-sidebar-footer button:hover{color:#8dafc8!important}
+
+/* Language switcher: cleaner topbar control without separator line */
+.language-switch-trigger{border:none!important;box-shadow:none!important;outline:none!important;--tw-ring-shadow:none!important;--tw-ring-offset-shadow:none!important;background:#f8fafc!important;color:#334155!important}
+.language-switch-trigger:hover{background:#eef2f7!important;color:#0f172a!important}
+.fi-topbar .fi-dropdown.fi-user-menu{border-inline-start:none!important;margin-inline-start:0!important;padding-inline-start:0!important}
+.fi-topbar .fi-dropdown.fi-user-menu::before,.fi-topbar .fi-dropdown.fi-user-menu::after{display:none!important;content:none!important}
 </style>
 <script>
 window.addEventListener("pageshow", function (e) {

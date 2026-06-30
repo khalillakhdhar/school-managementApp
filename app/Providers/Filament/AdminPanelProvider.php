@@ -356,6 +356,17 @@ html:not(.dark) .fi-main-ctn{border-left:none!important}
 
 /* Topbar toggle buttons */
 .fi-topbar-open-sidebar-btn{color:#64748b!important}
+
+/* Language switcher: cleaner topbar control without separator line */
+.language-switch-trigger{
+  border:none!important;box-shadow:none!important;outline:none!important;
+  --tw-ring-shadow:none!important;--tw-ring-offset-shadow:none!important;
+  background:#f8fafc!important;color:#334155!important;
+}
+.language-switch-trigger:hover{background:#eef2f7!important;color:#0f172a!important}
+.fi-topbar .fi-dropdown.fi-user-menu{border-inline-start:none!important;margin-inline-start:0!important;padding-inline-start:0!important}
+.fi-topbar .fi-dropdown.fi-user-menu::before,
+.fi-topbar .fi-dropdown.fi-user-menu::after{display:none!important;content:none!important}
 </style>'
                        . '<script>
 /* Force a fresh load when the page is restored from the browser back-forward
