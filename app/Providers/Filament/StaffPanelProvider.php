@@ -42,8 +42,6 @@ class StaffPanelProvider extends PanelProvider
                 NavigationGroup::make('Enseignement')->icon('heroicon-o-academic-cap'),
             ])
             ->sidebarCollapsibleOnDesktop()
-            ->databaseNotifications()
-            ->databaseNotificationsPolling('60s')
             ->discoverPages(in: app_path('Filament/Staff/Pages'), for: 'App\Filament\Staff\Pages')
             ->discoverWidgets(in: app_path('Filament/Staff/Widgets'), for: 'App\Filament\Staff\Widgets')
             ->renderHook('panels::head.end', fn () => view('filament.portal-theme'))
