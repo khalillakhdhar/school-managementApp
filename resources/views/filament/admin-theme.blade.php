@@ -166,6 +166,33 @@
         color: #ffffff !important;
         font-weight: 600 !important;
     }
+
+    .language-switch-trigger {
+        background: #f8fafc !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: #334155 !important;
+        outline: none !important;
+        --tw-ring-shadow: none !important;
+        --tw-ring-offset-shadow: none !important;
+    }
+
+    .language-switch-trigger:hover {
+        background: #eef2f7 !important;
+        color: #0f172a !important;
+    }
+
+    .fi-topbar .fi-dropdown.fi-user-menu {
+        border-inline-start: none !important;
+        margin-inline-start: 0 !important;
+        padding-inline-start: 0 !important;
+    }
+
+    .fi-topbar .fi-dropdown.fi-user-menu::before,
+    .fi-topbar .fi-dropdown.fi-user-menu::after {
+        content: none !important;
+        display: none !important;
+    }
 </style>
 
 <script>
