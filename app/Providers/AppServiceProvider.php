@@ -104,5 +104,13 @@ class AppServiceProvider extends ServiceProvider
                 HTML;
             }
         );
+
+        // Recover from stale/expired Livewire requests (bfcache restore, expired
+        // session, cached endpoint after deploy) instead of showing the raw
+        // 403/404/419 error modal. Registered globally → applies to every panel.
+        FilamentView::registerRenderHook(
+            'panels::head.end',
+            fn (): string => view('filament.livewire-error-recovery')->render(),
+        );
     }
 }
