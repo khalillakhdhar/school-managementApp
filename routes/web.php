@@ -16,6 +16,20 @@ Route::get('/', function () {
     return view('landing', ['appName' => 'EliteCampus', 'schoolName' => $schoolName]);
 })->name('home');
 
+// Leave an impersonation session started from the /platform panel and return
+// to the super-admin account. Guarded: only acts if an impersonator is stored.
+Route::get('/impersonate/leave', function () {
+    $originalId = session()->pull('impersonator_id');
+
+    if ($originalId && ($original = \App\Models\User::find($originalId))) {
+        auth()->login($original);
+
+        return redirect('/platform');
+    }
+
+    return redirect('/');
+})->middleware('auth')->name('impersonate.leave');
+
 // First-login / forced password change (any authenticated user)
 Route::middleware('auth')->group(function () {
     Route::get('/account/password', [PasswordChangeController::class, 'show'])->name('password.change');

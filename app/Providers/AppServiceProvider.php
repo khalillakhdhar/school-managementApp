@@ -112,5 +112,31 @@ class AppServiceProvider extends ServiceProvider
             'panels::head.end',
             fn (): string => view('filament.livewire-error-recovery')->render(),
         );
+
+        // Impersonation banner — shown on tenant panels while a platform_admin is
+        // logged in as a school admin (Phase 7). Offers a one-click return.
+        FilamentView::registerRenderHook(
+            'panels::body.start',
+            function (): string {
+                if (! session()->has('impersonator_id')) {
+                    return '';
+                }
+
+                $url  = route('impersonate.leave');
+                $back = e(__('Revenir à la plateforme'));
+                $who  = e(auth()->user()?->name ?? '');
+                $as   = e(__('Vous êtes connecté en tant que :name (mode plateforme).', ['name' => $who]));
+
+                return <<<HTML
+                <div style="position:sticky;top:0;z-index:9999;display:flex;align-items:center;justify-content:center;gap:14px;
+                            padding:8px 16px;background:#7C3AED;color:#fff;font-size:13px;font-weight:600;">
+                    <span>{$as}</span>
+                    <a href="{$url}" style="background:rgba(255,255,255,.2);padding:4px 12px;border-radius:8px;color:#fff;text-decoration:none;">
+                        {$back}
+                    </a>
+                </div>
+                HTML;
+            }
+        );
     }
 }

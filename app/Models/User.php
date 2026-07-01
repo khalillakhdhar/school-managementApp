@@ -57,24 +57,27 @@ class User extends Authenticatable implements FilamentUser, HasTenants
         return $this->schools()->whereKey($tenant->getKey())->exists();
     }
 
-    public function isAdmin(): bool    { return $this->role === 'admin'; }
-    public function isParent(): bool   { return $this->role === 'parent'; }
-    public function isTeacher(): bool  { return in_array($this->role, ['teacher', 'employee'], true); }
+    public function isAdmin(): bool         { return $this->role === 'admin'; }
+    public function isParent(): bool        { return $this->role === 'parent'; }
+    public function isTeacher(): bool       { return in_array($this->role, ['teacher', 'employee'], true); }
+    public function isPlatformAdmin(): bool { return $this->role === 'platform_admin'; }
 
     /**
-     * Which Filament panel each role may enter.
-     * - admin    -> every panel (convenience)
-     * - parent   -> /parent
+     * Which Filament panel each role may enter. Filament additionally checks
+     * canAccessTenant() for the tenant-scoped panels (admin/staff/parent).
+     * - platform_admin -> /platform (super-admin, above tenants)
+     * - admin          -> a school's /admin (+ staff/parent for convenience)
+     * - parent         -> /parent
      * - teacher/employee -> /staff
      */
     public function canAccessPanel(Panel $panel): bool
     {
         return match ($panel->getId()) {
-            'admin'  => $this->role === 'admin',
-            'parent' => in_array($this->role, ['parent', 'admin'], true),
-            'staff'  => in_array($this->role, ['teacher', 'employee', 'admin'], true),
-            'spike'  => $this->role === 'admin', // PHASE 0 SPIKE — throwaway tenancy panel
-            default  => false,
+            'platform' => $this->role === 'platform_admin',
+            'admin'    => $this->role === 'admin',
+            'parent'   => in_array($this->role, ['parent', 'admin'], true),
+            'staff'    => in_array($this->role, ['teacher', 'employee', 'admin'], true),
+            default    => false,
         };
     }
 }

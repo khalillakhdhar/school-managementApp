@@ -42,10 +42,12 @@ class TenancyBackfill extends Command
             }
         });
 
-        // 2. Attach all admin users as members of the primary tenant.
-        $adminIds = DB::table('users')->where('role', 'admin')->pluck('id');
+        // 2. Attach every existing user (admins, teachers, parents, employees) as
+        //    members of the primary tenant, EXCEPT platform super-admins who live
+        //    above tenants and must not belong to a school.
+        $userIds = DB::table('users')->where('role', '!=', 'platform_admin')->pluck('id');
         $attached = 0;
-        foreach ($adminIds as $uid) {
+        foreach ($userIds as $uid) {
             $inserted = DB::table('school_user')->insertOrIgnore([
                 'school_id' => $school->id, 'user_id' => $uid,
                 'created_at' => now(), 'updated_at' => now(),
@@ -60,7 +62,7 @@ class TenancyBackfill extends Command
             $this->line(sprintf('  %-22s %d', $table, $count));
         }
         $this->newLine();
-        $this->info("Admins rattachés au tenant : {$attached} (sur {$adminIds->count()}).");
+        $this->info("Utilisateurs rattachés au tenant : {$attached} (sur {$userIds->count()}).");
 
         // 4. Integrity check — no NULL school_id should remain.
         $remaining = [];

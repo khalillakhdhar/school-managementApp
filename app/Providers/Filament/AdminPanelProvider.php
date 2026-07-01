@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Models\School;
+use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -27,8 +29,10 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName('EliteCampus')
-            ->brandLogo(asset('images/logo-elitecampus.svg'))
+            ->tenant(School::class, slugAttribute: 'slug', ownershipRelationship: 'school')
+            // Per-tenant branding: the current school's own name + logo.
+            ->brandName(fn (): string => Filament::getTenant()?->name ?? 'EliteCampus')
+            ->brandLogo(fn (): string => Filament::getTenant()?->logoUrl() ?? asset('images/logo-elitecampus.svg'))
             ->darkModeBrandLogo(asset('images/logo-elitecampus-white.svg'))
             ->brandLogoHeight('2rem')
             ->favicon(asset('favicon.svg'))
@@ -379,6 +383,16 @@ window.addEventListener("pageshow", function (e) {
 </script>'
             )
 
+            // Per-tenant accent color — overrides primary blue with the school's brand color.
+            ->renderHook(
+                'panels::head.end',
+                fn (): string => ($t = Filament::getTenant()) && $t->primary_color
+                    ? "<style>:root{--tenant-accent:{$t->brandColor()}}"
+                        . '.fi-btn-color-primary{background:var(--tenant-accent)!important;border-color:var(--tenant-accent)!important}'
+                        . '.fi-sidebar-item.fi-active .fi-sidebar-item-btn{background:var(--tenant-accent)!important}'
+                        . '</style>'
+                    : ''
+            )
             ->renderHook(
                 'panels::auth.login.form.before',
                 fn () => view('filament.auth.login-branding')

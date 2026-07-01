@@ -1,13 +1,12 @@
 <?php
+
 namespace App\Providers\Filament;
 
-use App\Filament\Parent\Pages\ParentDashboard;
-use App\Models\School;
-use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -18,32 +17,35 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-class ParentPanelProvider extends PanelProvider
+/**
+ * PHASE 7 — Super-admin panel for the SaaS operator, ABOVE all tenants.
+ *
+ * Deliberately has NO ->tenant(): it manages the client schools themselves
+ * (create, suspend, inspect, impersonate). Reserved to the `platform_admin`
+ * role (see User::canAccessPanel). Its SchoolResource operates on the tenant
+ * model, which is not tenant-scoped, so it sees every school.
+ */
+class PlatformPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->id('parent')
-            ->path('parent')
+            ->id('platform')
+            ->path('platform')
             ->login()
-            ->tenant(School::class, slugAttribute: 'slug', ownershipRelationship: 'school')
-            ->brandName(fn (): string => (($t = Filament::getTenant()) ? $t->name . ' — ' : '') . 'Portail Parents')
-            ->brandLogo(asset('images/logo-elitecampus.svg'))
-            ->darkModeBrandLogo(asset('images/logo-elitecampus-white.svg'))
-            ->brandLogoHeight('2rem')
+            ->brandName('EliteCampus — Plateforme')
             ->favicon(asset('favicon.svg'))
             ->colors([
-                'primary' => Color::hex('#2563EB'),
+                'primary' => Color::hex('#7C3AED'), // violet — visually distinct from tenant panels
                 'gray'    => Color::Slate,
-                'info'    => Color::Sky,
                 'success' => Color::hex('#10B981'),
                 'warning' => Color::hex('#F59E0B'),
                 'danger'  => Color::hex('#EF4444'),
             ])
             ->sidebarCollapsibleOnDesktop()
-            ->discoverPages(in: app_path('Filament/Parent/Pages'), for: 'App\Filament\Parent\Pages')
-            ->pages([ParentDashboard::class])
-            ->renderHook('panels::head.end', fn () => view('filament.portal-theme'))
+            ->discoverResources(in: app_path('Filament/Platform/Resources'), for: 'App\\Filament\\Platform\\Resources')
+            ->discoverWidgets(in: app_path('Filament/Platform/Widgets'), for: 'App\\Filament\\Platform\\Widgets')
+            ->pages([Dashboard::class])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -57,8 +59,6 @@ class ParentPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-                \App\Http\Middleware\ForcePasswordChange::class,
-            ])
-            ->authGuard('web');
+            ]);
     }
 }

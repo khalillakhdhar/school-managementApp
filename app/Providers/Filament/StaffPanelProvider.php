@@ -1,6 +1,8 @@
 <?php
 namespace App\Providers\Filament;
 
+use App\Models\School;
+use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -24,7 +26,8 @@ class StaffPanelProvider extends PanelProvider
             ->id('staff')
             ->path('staff')
             ->login()
-            ->brandName('EliteCampus — Espace Personnel')
+            ->tenant(School::class, slugAttribute: 'slug', ownershipRelationship: 'school')
+            ->brandName(fn (): string => (($t = Filament::getTenant()) ? $t->name . ' — ' : '') . 'Espace Personnel')
             ->brandLogo(asset('images/logo-elitecampus.svg'))
             ->darkModeBrandLogo(asset('images/logo-elitecampus-white.svg'))
             ->brandLogoHeight('2rem')

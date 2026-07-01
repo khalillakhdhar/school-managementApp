@@ -63,7 +63,9 @@ class ErpCoreTest extends TestCase
     public function test_admin_peut_acceder_au_panel_admin(): void
     {
         $admin = User::create(['name' => 'Admin', 'email' => 'a@test.tn', 'password' => bcrypt('x'), 'role' => 'admin']);
-        $this->actingAs($admin)->get('/admin/students')->assertStatus(200);
+        $school = \App\Models\School::create(['name' => 'École', 'slug' => 'ecole']);
+        $school->users()->attach($admin->id);
+        $this->actingAs($admin)->get("/admin/{$school->slug}/students")->assertStatus(200);
     }
 
     public function test_enseignant_ne_peut_pas_acceder_au_panel_admin(): void
@@ -76,7 +78,9 @@ class ErpCoreTest extends TestCase
     {
         $user = User::create(['name' => 'P', 'email' => 'p@test.tn', 'password' => bcrypt('x'), 'role' => 'parent']);
         SchoolParent::create(['first_name' => 'Par', 'last_name' => 'Ent', 'phone' => '+216 20 000 002', 'email' => 'p@test.tn', 'user_id' => $user->id]);
-        $this->actingAs($user)->get('/parent/parent-dashboard')->assertStatus(200);
+        $school = \App\Models\School::create(['name' => 'École', 'slug' => 'ecole']);
+        $school->users()->attach($user->id);
+        $this->actingAs($user)->get("/parent/{$school->slug}/parent-dashboard")->assertStatus(200);
     }
 
     public function test_premiere_connexion_force_le_changement_de_mot_de_passe(): void
