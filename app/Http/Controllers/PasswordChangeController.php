@@ -11,6 +11,7 @@ class PasswordChangeController extends Controller
     public function show(Request $request)
     {
         $panel = match ($request->user()?->role) {
+            'platform_admin'      => 'platform',
             'parent'              => 'parent',
             'teacher', 'employee' => 'staff',
             default               => 'admin',
@@ -48,6 +49,7 @@ class PasswordChangeController extends Controller
     protected function homeFor($user): string
     {
         return match ($user->role) {
+            'platform_admin'     => '/platform',
             'admin'              => '/admin',
             'parent'             => '/parent',
             'teacher', 'employee' => '/staff',
