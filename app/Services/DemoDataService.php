@@ -90,6 +90,7 @@ class DemoDataService
             $students  = self::seedStudents($classes);
             $parents   = self::seedParents($students);
             self::seedAccounts($employees, $parents);
+            self::attachMembersToTenant();
             $services  = self::seedServices();
             self::seedServiceSubscriptions($students, $services);
             self::seedPayments($students, $services);
@@ -130,6 +131,14 @@ class DemoDataService
 
     protected static function wipe(): void
     {
+        // MULTI-TENANT SAFETY: inside a tenant panel, only wipe THIS school's
+        // rows — never TRUNCATE (which would erase every school's data).
+        if ($schoolId = \App\Support\Tenancy::id()) {
+            self::wipeTenant($schoolId);
+            return;
+        }
+
+        // Legacy single-school path (mono-school install / CLI with no tenant).
         $driver = DB::connection()->getDriverName();
         if ($driver === 'mysql') {
             DB::statement('SET FOREIGN_KEY_CHECKS=0');
@@ -144,6 +153,50 @@ class DemoDataService
         if ($driver === 'mysql') {
             DB::statement('SET FOREIGN_KEY_CHECKS=1');
         }
+    }
+
+    /**
+     * Delete only the given school's business data + demo login accounts.
+     * Pivots (no school_id) are cleared via their scoped parent ids.
+     */
+    protected static function wipeTenant(int $schoolId): void
+    {
+        $ids = fn (string $table) => DB::table($table)->where('school_id', $schoolId)->pluck('id');
+
+        $students  = $ids('students');
+        $payments  = $ids('payments');
+        $services  = $ids('services');
+        $parents   = $ids('parents');
+        $employees = $ids('employees');
+        $classrooms = $ids('classrooms');
+
+        // 1. Pivots without school_id, scoped by this tenant's parent rows.
+        DB::table('payment_service')->whereIn('payment_id', $payments)->delete();
+        DB::table('service_student')->whereIn('student_id', $students)->delete();
+        DB::table('parent_student')->whereIn('student_id', $students)->delete();
+        DB::table('employee_subject')->whereIn('employee_id', $employees)->delete();
+        DB::table('classroom_subject')->whereIn('classroom_id', $classrooms)->delete();
+
+        // 2. school_id-owned tables, children before parents (FK-safe order).
+        $ordered = [
+            'grades', 'student_attendances', 'attendances', 'payments', 'payrolls',
+            'incidents', 'timetable_entries',
+            'students', 'parents', 'classrooms', 'subjects', 'levels', 'services',
+            'expenses', 'expense_categories', 'blog_posts',
+        ];
+        foreach ($ordered as $table) {
+            if (DB::getSchemaBuilder()->hasTable($table)) {
+                DB::table($table)->where('school_id', $schoolId)->delete();
+            }
+        }
+
+        // 3. This tenant's demo login accounts (members), keeping admins.
+        $memberIds = DB::table('school_user')->where('school_id', $schoolId)->pluck('user_id');
+        User::whereIn('id', $memberIds)->where('role', '!=', 'admin')->delete();
+        DB::table('school_user')
+            ->where('school_id', $schoolId)
+            ->whereNotIn('user_id', DB::table('users')->pluck('id'))
+            ->delete();
     }
 
     // ── Levels ────────────────────────────────────────────────────────────
@@ -344,6 +397,31 @@ class DemoDataService
         }
     }
 
+    /**
+     * Attach every demo login account (teachers + parents of the current school)
+     * as a member of the active tenant, so they can reach the staff/parent panels.
+     * No-op when there is no active tenant (legacy mono-school install).
+     */
+    protected static function attachMembersToTenant(): void
+    {
+        if (! $schoolId = \App\Support\Tenancy::id()) {
+            return;
+        }
+
+        $userIds = Employee::whereNotNull('user_id')->pluck('user_id')
+            ->merge(SchoolParent::whereNotNull('user_id')->pluck('user_id'))
+            ->filter()->unique();
+
+        foreach ($userIds as $uid) {
+            DB::table('school_user')->insertOrIgnore([
+                'school_id'  => $schoolId,
+                'user_id'    => $uid,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+    }
+
     // ── Services ───────────────────────────────────────────────────────────
     protected static function seedServices()
     {
@@ -522,6 +600,7 @@ class DemoDataService
                         'employee_id'  => $recorder,
                         'date'         => $day->toDateString(),
                         'status'       => $status,
+                        'school_id'    => \App\Support\Tenancy::id(),
                         'created_at'   => $now,
                         'updated_at'   => $now,
                     ];
@@ -564,6 +643,7 @@ class DemoDataService
                             'max_score'    => 20,
                             'coefficient'  => $subject->coefficient,
                             'date'         => $now->copy()->subDays($daysAgo + rand(0, 20)),
+                            'school_id'    => \App\Support\Tenancy::id(),
                             'created_at'   => $now,
                             'updated_at'   => $now,
                         ];

@@ -4,6 +4,28 @@
 
 ---
 
+## ⚡ Mise à jour 2026-07-01 — Phases 4, 6, 7, 8.2, 9 IMPLÉMENTÉES
+
+Le SaaS multi-tenant est désormais **fonctionnel de bout en bout** (hors facturation). **42/42 tests verts** (sqlite). Fait dans cette session :
+
+- **Phase 4** ✅ — `->tenant(School::class, slugAttribute:'slug', ownershipRelationship:'school')` activé sur les 3 panels (`/admin`, `/staff`, `/parent`) → routes `/{panel}/{école-slug}/...`. Branding par tenant (nom + logo + couleur d'accent). **Panel spike supprimé** (provider, `app/Filament/Spike`, entrée `bootstrap/providers.php`, `SpikeTenancyTest`, case `spike` de `canAccessPanel`). Backfill étendu : **tous** les users (sauf `platform_admin`) rattachés au tenant (pour staff/parent).
+- **Phase 6** ✅ — `php artisan school:create "Nom" --admin-email=… --admin-name=…` (école trial + admin `must_change_password` + `SchoolSetting` + seed scopé niveaux/jours fériés). **`DemoDataService` rendu tenant-safe** : `wipe()` ne fait plus de `TRUNCATE` global sous un tenant (→ `wipeTenant()` scopé, sinon on effaçait toutes les écoles !), `Grade::insert`/`StudentAttendance::insert` estampillent `school_id`, comptes démo rattachés au tenant.
+- **Phase 7** ✅ — Panel super-admin **`/platform`** (violet, **sans** `->tenant()`), rôle `platform_admin`, `SchoolResource` (CRUD écoles, statut, plan, compteurs élèves/users, activer/suspendre, **impersonation** avec bannière de retour), `PlatformStatsWidget`. Commande `php artisan platform:create-admin`.
+- **Phase 8.2** ✅ — `SchoolSetting::getInstance()` résout la ligne **du tenant courant** (fallback singleton id=1 hors tenant).
+- **Contraintes uniques** ✅ — migration `make_tenant_uniques_composite` : `levels.code`, `subjects.code`, `blog_posts.slug`, `holidays.date` passent en **composite `(school_id, X)`** (sinon 2 écoles ne pouvaient pas réutiliser le même code/date).
+- **Phase 9** ✅ — `tests/Feature/TenantIsolationTest.php` (9 cas) + `SchoolProvisioningTest.php` (3 cas) : isolation lecture/écriture, accès HTTP inter-tenant refusé (403/404), agrégations scopées, rappels isolés, unicité per-tenant, settings per-tenant, `platform_admin` vs `admin`.
+
+**Reste à faire** : Phase 5 flip `NOT NULL` (**volontairement différé** — casserait les tests core qui créent des modèles sans tenant ; l'isolation est déjà garantie par le scope), Phase 8.1 (préfixe fichiers/PDF par `school_id`), Phase 10 (facturation Stripe).
+
+**À exécuter une fois MySQL démarré** (non fait ici car MySQL était éteint) :
+```bash
+php artisan migrate            # applique make_tenant_uniques_composite + add_platform_admin_role
+php artisan tenancy:backfill   # rattache MAINTENANT tous les users (pas que les admins) au tenant #1
+php artisan platform:create-admin --email=ops@elitecampus.tn --name="Ops"   # crée le super-admin /platform
+```
+
+---
+
 ## 0. L'application en bref
 
 - **EliteCampus** : ERP de gestion scolaire (Tunisie). Laravel 13, **Filament v5.6**, **Livewire 4**, PHP 8.3/8.4, MySQL.

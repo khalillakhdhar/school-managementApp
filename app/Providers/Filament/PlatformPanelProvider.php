@@ -59,6 +59,7 @@ class PlatformPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                \App\Http\Middleware\ForcePasswordChange::class,
             ]);
     }
 }
